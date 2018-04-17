@@ -17,7 +17,7 @@ var login=()=>{
 	           +'<div class="loginDiv">'
 	             +'<label>아이디</label>'
 	             +'<input id="id" type="text" class="form-control" name="" >'
-	           +'</div>'
+	           +'</div> '
 	           +'<div class="loginDiv">'
 	             +'<label>비밀번호</label>'
 	             +'<input id="pw" type="text" class="form-control" name="" >'
