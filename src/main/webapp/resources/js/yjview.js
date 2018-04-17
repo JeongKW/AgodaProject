@@ -22,7 +22,7 @@ var login=()=>{
 	             +'<label>비밀번호</label>'
 	             +'<input id="pw" type="text" class="form-control" name="" >'
 	           +'<div>비밀번호를 잊으셨나요?</div>'
-	           +'</div>'
+	           +'</div> '
 	          +'<div id="div-login" class="loginDiv">'
 	          +'</div>  '
 	          +'</div>'
