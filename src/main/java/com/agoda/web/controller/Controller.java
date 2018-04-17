@@ -40,6 +40,7 @@ public class Controller {
 				return mapper.selectById(cmd);
 			}
 		}.excute(cmd));
+		//yongdae
 		map.put("success", new ICountService() {
 			@Override
 			public int excute(Command cmd) {
