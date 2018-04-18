@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
-@Component @Data
-@Lazy
-public class Command {
-	private String table, data1, data2;
+@Component
+@Data @Lazy
+public class Board {
+	private String bbsSeq, title, content, regdate, id;
 }

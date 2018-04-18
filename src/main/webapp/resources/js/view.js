@@ -60,7 +60,7 @@ var createLI=x=>{
 }
 var createInput=x=>{
 	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz
-      +' "value="'+x.placeholder+'">';
+      +' "value="'+x.value+'">';
 }
 var createBtn=x=>{
 	return '<button id="'+ x.id +'" class="'+ x.clazz +'">'+ x.val +'</button>';
