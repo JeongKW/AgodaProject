@@ -59,15 +59,13 @@ var createLI=x=>{
 	return '<li id="'+x.id+'" class="'+x.clazz+'"></li>';
 }
 var createInput=x=>{
-	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz
-      +' "value="'+x.value+'">';
+	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz+'" value="'+x.value+'">';
 }
 var createBtn=x=>{
 	return '<button id="'+ x.id +'" class="'+ x.clazz +'">'+ x.val +'</button>';
 };
 var createForm=x=>{
-	return '<form id="'+ x.id +'" class="'+ x.clazz +
-		'action="'+ x.action +'" method="'+ x.method +'"></form>';
+	return '<form id="'+ x.id +'" class="'+ x.clazz + '" action="'+ x.action +'" method="'+ x.method +'"></form>';
 };
 var createDiv=x=>{
 	return '<div id="'+ x.id +'" class="'+ x.clazz +'"></div>';

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 create table member(
 	id varchar(20) primary key,
 	pw varchar(20),
@@ -102,3 +103,22 @@ INSERT INTO Member VALUES ('test1', 'test1', '김아무개', 'tester1@naver.com'
 INSERT INTO Member VALUES ('test2', 'test2', '하아무개', 'tester2@hanmail.com', '010-7231-5892');
 INSERT INTO Member VALUES ('test3', 'test3', '차아무개', 'jku0150@nate.com', '010-3572-8297');
 
+=======
+create table member(
+	id varchar(20) primary key,
+	pw varchar(20),
+	name varchar(20),
+	email varchar(40),
+	phone varchar(20)
+);
+
+drop table member;
+
+insert into member values('test1234', '1234', '테스터', 'youjin813@naver.com', '010-1111-1234');
+
+
+
+select count(*) from member;
+
+SELECT * FROM Member WHERE id like 'test1234' AND pw like '1234';
+>>>>>>> refs/heads/Yongdae

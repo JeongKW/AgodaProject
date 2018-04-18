@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -18,4 +19,17 @@
 	<delete id="delete">
 		
 	</delete>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.agoda.web.mapper.Mapper">
+	<select id="exist" resultType="int" parameterType="com.agoda.web.domain.Command">
+		SELECT COUNT(*) FROM Member WHERE id like #{data1}
+	</select>
+	<select id="selectById" resultType="com.agoda.web.domain.Member" parameterType="com.agoda.web.domain.Command">
+		SELECT * FROM Member WHERE id like #{data1} AND pw like #{data2}
+	</select>
+>>>>>>> refs/heads/Yongdae
 </mapper>
