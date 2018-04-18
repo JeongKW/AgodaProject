@@ -64,7 +64,7 @@ var createBtn=x=>{
 };
 var createForm=x=>{
 	return '<form id="'+ x.id +'" class="'+ x.clazz +
-		'action="'+ x.action +'" method="'+ x.method +'"></form>';
+		'" action="'+ x.action +'" method="'+ x.method +'"></form>';
 };
 var createDiv=x=>{
 	return '<div id="'+ x.id +'" class="'+ x.clazz +'"></div>';

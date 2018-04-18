@@ -41,6 +41,7 @@ public class Controller {
 				return mapper.select(cmd);
 			}
 		}.excute(cmd));
+		//test
 		map.put("success", new ICountService() {
 			@Override
 			public int excute(Command cmd) {
