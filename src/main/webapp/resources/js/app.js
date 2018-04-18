@@ -6,7 +6,7 @@ app = {
 			$.extend(new router(x));
 			app.nav.onCreate();
 			app.residence.onCreate();
-			app.member.onCreate();
+			app.login.onCreate();
 		})
 	}
 };

@@ -176,10 +176,12 @@
 /* MINWOO */
 /* Create two unequal columns that floats next to each other */
 /* Left column */
+
 .leftcolumn {   
     float: left;
     width: 20%;
     padding-right : 20px;
+    padding-left : 20px;
 }
 .midcolumn {   
     float: left;
@@ -199,6 +201,7 @@
     background-color: #aaa;
     width: 100%;
     padding: 20px;
+}
 =======
 @charset "UTF-8";
 
@@ -400,5 +403,5 @@
     background-color: #aaa;
     width: 100%;
     padding: 20px;
->>>>>>> refs/heads/Youjin
 }
+>>>>>>> refs/heads/Youjin
