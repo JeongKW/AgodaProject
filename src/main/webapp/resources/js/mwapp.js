@@ -138,7 +138,7 @@ app.flight=(()=>{
 		view = $.javascript()+'/mwview.js';
 		setContentView();
 	};
-	var setContentView=()=>{
+	var setContentView=()=>{//
 		$.getScript(view, ()=>{
 			/*메인 페이지 중단 (항공권, 숙소 탭)*/
 			$content.html(createDiv({id : 'div-flight' , clazz : ''}));
