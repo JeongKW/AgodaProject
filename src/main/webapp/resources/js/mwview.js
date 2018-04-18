@@ -1,5 +1,5 @@
 var flight=()=>{
-	return +'<div class="container-fluid" style="background-color: #333; padding: 20px">'
+	return '<div class="container-fluid" style="background-color: #333; padding: 20px">'
 	  +'<div class="container">'
 	    +'<div class="row">'
 	      +'<div class=" col-sm-4">'
@@ -244,7 +244,7 @@ var createLI=x=>{
 }
 var createInput=x=>{
 	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz
-      +' "value="'+x.placeholder+'">';
+      +' "value="'+x.value+'">';
 }
 var createBtn=x=>{
 	return '<button id="'+ x.id +'" class="'+ x.clazz +'">'+ x.val +'</button>';
@@ -255,4 +255,16 @@ var createForm=x=>{
 };
 var createDiv=x=>{
 	return '<div id="'+ x.id +'" class="'+ x.clazz +'"></div>';
+};
+var createSection=x=>{
+	return '<section id="'+x.id+'" class = "'+x.clazz+'"></section>'
+}
+var createImg=x=>{
+	return '<img id = "'+x.id+'" src = "'+x.src+'" alt="'+x.alt+'"></img>'
+}
+var createPTag=x=>{
+	return '<p>'+x.val+'</p>'
+}
+var createSpan2=x=>{
+	return '<span id="'+x.id+'" class="'+x.clazz+'">'+x.val+'</span>';
 };
