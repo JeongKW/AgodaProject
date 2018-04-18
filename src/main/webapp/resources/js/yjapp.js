@@ -90,4 +90,81 @@ app.member = (()=>{
         });
     };
 	return {onCreate : onCreate};
+});
+
+app.join = (()=>{
+	var context, view;
+	var onCreate =()=>{
+	    $login = $('#login');
+	    $content = $('#content');
+	    context = $.context();
+	    view = $.javascript()+'/yjview.js';
+	    setContentView();
+	};
+	var setContentView=()=>{
+        $.getScript(view, ()=>{
+        	  $login.html($(createDiv({id:'myModal',clazz:'modal fade'}))
+                      .attr('role','dialog')
+                      .append($(createDiv({id:'',clazz:'modal-dialog modal-lg'}))
+                      .append($(createDiv({id:'',clazz:'modal-content'}))
+                      .append($(createDiv({id:'join-modal-header',clazz:'modal-header'}))
+                      .append($(createBtn({id:'',clazz:'close',val:'&times;'})).attr('aria-label','Close').attr('data-dismiss','modal'))))));
+                  $(createDiv({id:'join-col-sm-6',clazz:'col-sm-6'}))
+                  	  .attr('style', 'margin-top: 8%')
+                  	  .appendTo('#join-modal-header')
+                  	  .append($(createDiv({id:'',clazz:''}))
+                      .append($(createHTag({num:'3',val:'회원가입'})).attr('align','center')))
+                  	  .append($(createDiv({id:'',clazz:'modal-body'}))
+                  	  .append($(createDiv({id:'',clazz:''}))
+      			      .append($(createBtn({id:'',clazz:'btn btn-primary btn-block',val:'페이스북으로 가입하기'}))
+      			      .prepend($(createImg({src:'https://static.xx.fbcdn.net/rsrc.php/v3/yC/r/aMltqKRlCHD.png'}))))));
+                  $(createForm({id:'join-form',clazz:'',action:'post'}))
+                  	  .attr('style', 'margin: 15px 20px 20px 30px')
+      				  .appendTo('#join-col-sm-6')
+      				  .append($(createDiv({id:'',clazz:''}))
+      				  .append($(createLabel({val:'아이디*'})))
+      				  .append($(createInput({type:'text',id:'id',clazz:'form-control',placeholder:''}))))
+      			      .append($(createDiv({id:'',clazz:''}))
+      			      .append($(createLabel({val:'비밀번호*'})))
+      			      .append($(createInput({type:'password',id:'pw',clazz:'form-control',placeholder:''}))))
+      			      .append($(createDiv({id:'',clazz:''}))
+      			      .append($(createLabel({val:'비밀번호 재 확인*'})))
+      			      .append($(createInput({type:'password',id:'',clazz:'form-control',placeholder:''}))))
+      			      .append($(createDiv({id:'',clazz:''}))
+      			      .append($(createLabel({val:'이름*'})))
+      			      .append($(createInput({type:'text',id:'name',clazz:'form-control',placeholder:''}))))
+      			      .append($(createDiv({id:'',clazz:''}))
+      			      .append($(createLabel({val:'핸드폰 번호*'})))
+      			      .append($(createInput({type:'text',id:'phone',clazz:'form-control',placeholder:''}))))
+      			      .append($(createDiv({id:'join-email-div',clazz:''}))
+      			      .append($(createLabel({val:'이메일*'})))
+      			      .append($(createInput({type:'text',id:'email',clazz:'form-control',placeholder:''}))));
+                  $(createBtn({id:'btn-auth',clazz:'',val:'인증 메일 전송'}))
+                  	  .appendTo('#join-email-div');
+   
+                  $(createInput({type:'checkbox',id:'email-checkbox',clazz:'',placeholder:''}))
+                   	  .appendTo('#join-email-div')
+                   	  .append($(createHTag({})));
+                  
+                  $(createBtn({id:'btn-join', clazz: 'btn btn-default btn-block', val: '회원가입'}))
+                  .on('click', e=>{
+                	  
+                  })
+                  	   .appendTo($('#join-form'))
+                  	  
+                  $(createHTag({num: '6', val:'계속 진행함으로써 이용 약관 및 개인정보 처리방침에 동의합니다.'})).attr('align', 'center')
+                    .appendTo($('#join-form'));
+                 
+                  $(createDiv({id:'',clazz:'col-sm-5'}))
+                      .appendTo('#join-modal-header')
+                      .append($(createDiv({id:'',clazz:''})).attr('style','background:#e6f7ff;')
+                    		  .attr('style', 'width: 127%; height: 537px')
+                      .append($(createImg({id: '', clazz: 'center-block', src:'https://cdn6.agoda.net/images/desktop/login/illustration-deals-social.svg'}))
+                    		  .attr('style', 'margin-top: 40%'))
+                      .append($(createDiv({id:'',clazz:''}))
+                      .append($(createHTag({num: '4', val:'[최대 30% OFF] 회원 특가 상품! <br>  회원 가입하는 순간 가격이 내려갑니다.'}))
+                    		  .attr('align', 'center'))))
+        });
+    };
+	return {onCreate : onCreate};
 })();
