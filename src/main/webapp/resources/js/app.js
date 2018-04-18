@@ -6,7 +6,6 @@ app = {
 			$.extend(new router(x));
 			app.nav.onCreate();
 			app.residence.onCreate();
-			app.login.onCreate();
 		})
 	}
 };
@@ -77,15 +76,16 @@ app.nav = (x=>{
 			$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
 				.append($(createLI({id: 'li-login', clazz: ''}))
 					.append($(createATag({id: 'a-login', clazz: '', val: '로그인'}))
-							.attr('href', '#myModal')
-							.attr('data-toggle', 'modal')
-							.attr('data-target', '#myModal')
+						.on('click', e=>{
+							e.preventDefault();
+							app.login.onCreate();
+						})
 					))
 				.append($(createLI({id: 'li-join', clazz: ''}))
 					.append($(createATag({id: 'a-join', clazz: '', val: '회원가입'})))
 						.on('click', e=>{
 							e.preventDefault();
-							
+							app.join.onCreate();
 						})
 					)
 				.appendTo('#navbar');
