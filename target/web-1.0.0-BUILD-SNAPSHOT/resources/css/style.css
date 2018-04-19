@@ -65,13 +65,21 @@
 	color: orange;
 }
 
+input[type=number]::-webkit-inner-spin-button{
+	opacity:1;
+	height: 20px;
+}
+
 .nav-pills > li.active > a, 
 .nav-pills > li.active > a:focus,
 v-pills > li.active > a:hover {
+	border-bottom: 4px solid red;
 	background-color: #333;
 }
 .nav-pills > li > a {
-	color: #fff;
+	border-bottom: 4px solid #fff;
+	background-color: rgba(255,255,255, .7);
+	color: #333;
 }
 /*Filp Animation*/
 .flip {
