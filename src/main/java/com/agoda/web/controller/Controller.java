@@ -32,14 +32,16 @@ public class Controller {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("ID : {}", id);
 		logger.info("PW : {}", m.getPw());
+		cmd.setTable("Member");
 		cmd.setData1(id);
 		cmd.setData2(m.getPw());
 		map.put("user", (Member) new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
-				return mapper.selectById(cmd);
+				return mapper.select(cmd);
 			}
 		}.excute(cmd));
+		//test
 		map.put("success", new ICountService() {
 			@Override
 			public int excute(Command cmd) {

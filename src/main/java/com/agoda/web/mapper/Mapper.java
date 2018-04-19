@@ -7,5 +7,8 @@ import com.agoda.web.domain.Command;
 @Repository
 public interface Mapper {
 	public int exist(Command cmd);
-	public Object selectById(Command cmd);
+	public Object select(Command cmd);
+	public void insert(Command cmd);
+	public void delete(Command cmd);
+	public void update(Command cmd);
 }

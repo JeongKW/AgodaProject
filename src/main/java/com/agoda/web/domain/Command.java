@@ -8,5 +8,5 @@ import lombok.Data;
 @Component @Data
 @Lazy
 public class Command {
-	private String data1, data2;
+	private String table, data1, data2;
 }
