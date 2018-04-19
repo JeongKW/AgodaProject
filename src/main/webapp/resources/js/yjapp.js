@@ -55,7 +55,7 @@ app.login = (()=>{
                             contentType : 'application/json',
                             success : x=>{
                                 alert('로그인 성공여부: '+x.success);
-                                if(x.success == 1){
+                                if(x.success == 1){                               	
                                     var json = {
                                             id : x.user.id,
                                             pass : x.user.pass,
