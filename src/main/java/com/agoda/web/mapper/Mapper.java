@@ -2,7 +2,7 @@ package com.agoda.web.mapper;
 
 import org.springframework.stereotype.Repository;
 
-import com.agoda.web.domain.Command;
+import com.agoda.web.common.Command;
 
 @Repository
 public interface Mapper {

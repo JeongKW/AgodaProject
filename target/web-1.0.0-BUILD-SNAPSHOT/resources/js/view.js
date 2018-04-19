@@ -73,3 +73,4 @@ var createDiv=x=>{
 var createImg=x=>{
 	return '<img id="'+x.id+'" class="'+x.clazz+'" src="'+x.src+'" alt="'+x.alt+'" />'
 };
+

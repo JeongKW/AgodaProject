@@ -66,35 +66,6 @@ app.login = (()=>{
                             contentType : 'application/json',
                             success : x=>{
                                 alert('로그인 성공여부: '+x.success);
-                                if(x.success == 1){
-                                	$('.navbar-right').remove();
-                            
-                                	/*   여기부터 다시
-                                 	$(createDiv({id:'',clazz:'dropdown'}))
-                                	.append($(createBtn({id:'',clazz:'btn btn-default dropdown-toggle',val:''}))
-                                	.attr('data-toggle','dropdown'))
-                                	.append($(createSpan({val:''}))
-                                	.attr('class','caret'));
-                                	$(createUL({id:'dropdown-menu',clazz:''}))
-                                	.attr('role','menu')
-                                	.attr('aria-labelledby','menu1')*/
-                                	
-                                	$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
-                    				.append($(createLI({id: 'li-login', clazz: ''}))
-                    				.append($(createATag({id: 'a-login', clazz: '', val: '000'}))
-                    				.on('click', e=>{
-                    							e.preventDefault();
-                    							app.login.onCreate();
-                    						})
-                    					))
-                    				.append($(createLI({id: 'li-join', clazz: ''}))
-                    				.append($(createATag({id: 'a-join', clazz: '', val: '회원가입'})))
-                    				.on('click', e=>{
-                    							e.preventDefault();
-                    							app.join.onCreate();
-                    						})
-                    					)
-                    				.appendTo('#navbar');
                                     var json = {
                                             id : x.user.id,
                                             pass : x.user.pass,
@@ -103,8 +74,6 @@ app.login = (()=>{
                                             phone : x.user.phone,
                                             email : x.user.email
                                     }
-                                } else {
-                                }
                             },
                             error : (x, h, m)=>{                            	
                                 alert('로그인에서 에러 발생 x='+x+', h='+h+', m='+m);

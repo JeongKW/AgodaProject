@@ -3,10 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.agoda.web.mapper.Mapper">
-	<select id="exist" resultType="int" parameterType="com.agoda.web.domain.Command">
+	<select id="exist" resultType="int" parameterType="com.agoda.web.common.Command">
 		SELECT COUNT(*) FROM ${table} WHERE id like #{data1}
 	</select>
-	<select id="select" resultType="com.agoda.web.domain.Member" parameterType="com.agoda.web.domain.Command">
+	<select id="select" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
 		SELECT * FROM ${table} WHERE id like #{data1} AND pw like #{data2}
 	</select>
 	<update id="update">

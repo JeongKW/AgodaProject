@@ -73,23 +73,7 @@ app.residenceSpec =(()=>{
 						.appendTo('.resi-searchLocation');
 							
 					$('.resi-searchLocation').magnificPopup({
-						items: {
-							src : 'https://maps.google.com/maps?q=221B+Baker+Street,+London,+United+Kingdom&hl=en&t=v&hnear=221B+Baker+St,+London+NW1+6XE,+United+Kingdom'
-						},
-						type : 'iframe',
-						iframe: {
-							markup: '<div class="mfp-iframe-scaler">'
-										+'<div class="mfp-close"></div>'
-										+'<iframe class="mfp-iframe" frameborder="0" allowfullscreen></iframe>'
-									+'</div>',
-							patterns: {
-								gmaps: {
-									index: '//maps.google.',
-									src: '%id%&output=embed'
-								}
-							},
-							srcAction: 'iframe_src',
-						}
+
 					});
 		
 					$(createDiv({id: '', clazz: 'resi-filters-list'}))
@@ -324,15 +308,16 @@ app.residence = (()=>{
 		$.getScript(view, ()=>{
 			$content.html($(createDiv({id : 'div-resi-main-search', clazz : 'container-fluid'}))
 				.attr('style', 'height: 450px; padding: 0px; position: relative;'));		
-			
+
 			$(createImg({id:'img-resi-main', clazz:'', src:'https://goo.gl/XRqXDA', alt:''}))
 			.attr('style', 'width: 100%; max-height: 100%; position: relative; z-index: -1')
 			.appendTo('#div-resi-main-search');
 			
 			$(createHTag({num:'2', val:'내 여행의 베이스캠프, [ 호텔 ] 예약'}))
+			.attr('id', 'resi-main-hotel-htag')
 			.attr('style', 'position: absolute; top: 15%; left: 50%; transform: translate(-50%, -15%); color: white; font-weight: bold;')
 			.appendTo('#div-resi-main-search');
-			$(createPTag({id:'', clazz:'', val:'전 세계 1,950,000개 이상의 다양한 숙소 특가 할인'}))
+			$(createPTag({id:'resi-main-hotel-ptag', clazz:'', val:'전 세계 1,950,000개 이상의 다양한 숙소 특가 할인'}))
 			.attr('style', 'position: absolute; top: 30%; left: 50%; transform: translate(-50%, -30%); color: white; font-size: 18px')
 			.appendTo('#div-resi-main-search');
 			$(createDiv({id:'', clazz:'container'}))
@@ -343,6 +328,11 @@ app.residence = (()=>{
 					.append($(createATag({id:'', clazz:'', link:'#hotel', val:'Hotel'}))
 						.attr('data-toggle', 'tab')
 						.attr('style', 'border-radius: 0px; text-align: center; font-size: 20px; font-weight: bold')
+						.on('click', ()=>{
+							$('#img-resi-main').attr('src', 'https://goo.gl/XRqXDA');
+							$('#resi-main-hotel-htag').text('내 여행의 베이스캠프, [ 호텔 ] 예약');
+							$('#resi-main-hotel-ptag').text('전 세계 1,950,000개 이상의 다양한 숙소 특가 할인');
+						})
 					)
 				)
 				.append($(createLI({id:'li-resi-main-2',clazz:''}))
@@ -350,6 +340,11 @@ app.residence = (()=>{
 					.append($(createATag({id:'', clazz:'', link:'#privateHouse', val:'Private House'}))
 						.attr('data-toggle', 'tab')
 						.attr('style', 'border-radius: 0px; text-align: center; font-size: 20px; font-weight: bold')
+						.on('click', ()=>{
+							$('#img-resi-main').attr('src', 'https://goo.gl/RXVz3g');
+							$('#resi-main-hotel-htag').text('내 여행의 베이스캠프, [ 프라이빗 하우스 ] 예약');
+							$('#resi-main-hotel-ptag').text('프라이빗 하우스나 아파트먼트에서 더 넓은 공간, 가치 및 현지 분위기를 즐겨보세요!');
+						})
 					)
 				)
 			)
@@ -361,51 +356,59 @@ app.residence = (()=>{
 						.append($(createDiv({id:'', clazz:'col-sm-4'}))
 							.append($(createDiv({id:'', clazz:'input-group'}))
 								.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:'Search...'}))
-									.attr('style', 'height: 60px')
+									.attr('style', 'height: 60px; border-radius: 0px')
 								)
 								.append($(createDiv({id:'', clazz:'input-group-btn'}))
 									.append($(createBtn({id:'', clazz:'btn btn-default input-lg', val:''}))
-										.attr('style', 'height: 60px')
+										.attr('style', 'height: 60px; border-radius: 0px')
 										.attr('type', 'submit')
 										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-search', val:''})))
 									)
 								)
 							)							
 						)
-						.append($(createDiv({id:'', clazz:'col-sm-2'}))
+						.append($(createDiv({id:'', clazz:'dropdown col-sm-4'}))
 							.append($(createDiv({id:'fromDate', clazz:'input-group date'}))
-									.attr('data-data-format', '"mm-dd-yyyy"')
-									.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:''}))
-											.attr('style', 'height: 60px')
-											.attr('name', 'daterange')
+								.attr('data-data-format', '"mm-dd-yyyy"')
+								.append($(createInput({id:'input-resi-date', clazz:'form-control input-lg', type:'text', placeholder:''}))
+									.attr('data-toggle', 'dropdown')
+									.attr('style', 'height: 60px; border-radius: 0px')
+									.attr('name', 'daterange')
+								)
+								.append($(createUL({id:'', clazz:'dropdown-menu'}))
+									.append($(createLI({id:'resi-li-date', clazz:''}))
+										.append($(createPTag({id:'', clazz:'', val:'hello'})))
+									)
 								)
 								.append($(createSpan({id:'', clazz:'input-group-addon input-lg', val:''}))
-										.attr('style', 'height: 60px')
+										.attr('style', 'height: 60px; border-radius: 0px')
 										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-calendar', val:''})))
 								)
 							)
 						)
 						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createDiv({id:'toDate', clazz:'input-group date'}))
-								.attr('data-data-format', '"mm-dd-yyyy"')
-								.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:''}))
-									.attr('style', 'height: 60px')
-									.attr('name', 'daterange')
+							.append($(createDiv({id:'', clazz:'div-resi-count dropdown'}))
+								.attr('style', 'height: 60px; border-radius: 0px; border: 1px solid gray; cursor: pointer')
+								.append($(createBtn({id:'', clazz:'btn input-lg', val:''}))
+									.attr('data-toggle', 'dropdown')
+									.attr('style', 'background-color: #333; color: #fff; height:60px; border-radius: 0px; width: 100%; font-size: 18px; font-weight: bold')
+									.append($(createPTag({id:'', clazz:'', val:'성인 ~명'}))
+										.attr('style', 'margin-bottom: 0px')
+									)
 								)
-								.append($(createSpan({id:'', clazz:'input-group-addon input-lg', val:''}))
-									.attr('style', 'height: 60px')
-									.append($(createSpan({id:'', clazz:'glyphicon glyphicon-calendar', val:''})))
+								.append($(createDiv({id:'', clazz:'dropdown-menu col-sm-2'}))
+									.attr('style', 'width: 118.328px')
+									.append($(createDiv({id:'', clazz:'input-group spinner'}))
+										.append($(createInput({id:'', clazz:'', type:'text', placeholder:'1'})).attr('value', '1'))
+										.append($(createBtn({id:'', clazz:'btn btn-default', val : $(createITag({id:'', clazz:'fa fa-minus', val:''}))})))
+										.append($(createBtn({id:'', clazz:'btn btn-default', val : $(createITag({id:'', clazz:'fa fa-plus', val:''}))})))
+									)
 								)
-							)
-						)
-						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:'인원수'}))
-								.attr('style', 'height: 60px')
 							)
 						)
 						.append($(createDiv({id:'', clazz:'col-sm-2'}))
 							.append($(createBtn({id:'btn-move-resi-spec', clazz:'btn input-lg', val:'요금 검색하기'}))
-								.attr('style', 'background-color: #333; color: #fff; height:60px; float: right')
+								.attr('style', 'background-color: #333; color: #fff; height:60px; border-radius: 0px; width: 100%; font-size: 18px; font-weight: bold')
 								.on('click', x=>{			
 									app.residenceSpec.onCreate();
 								})
@@ -430,7 +433,7 @@ app.residence = (()=>{
 						.append($(createDiv({id:'', clazz:'col-sm-2'}))
 							.append($(createDiv({id:'fromDate', clazz:'input-group date'}))
 									.attr('data-data-format', '"mm-dd-yyyy"')
-									.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:''}))
+									.append($(createInput({id:'input-resi-date', clazz:'form-control input-lg', type:'text', placeholder:''}))
 									.attr('name', 'daterange')
 								)
 								.append($(createSpan({id:'', clazz:'input-group-addon input-lg', val:''}))
@@ -761,13 +764,25 @@ app.residence = (()=>{
 					}
 				})
 				.hover(()=>{
-					$('#a-resi-youtube').attr('style', 'width:100px; height: 100px; border-radius: 50%; position: absolute; color: red; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid red;')
+					$('#a-resi-youtube').attr('style', 'width:100px; height: 100px; border-radius: 50%; position: absolute; color: red; top: 50%; left: 70%; transform: translate(-10%, -50%); border: 5px solid red;')
 				}, ()=>{
-					$('#a-resi-youtube').attr('style', 'width:100px; height: 100px; border-radius: 50%; position: absolute; color: white; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid white;')
+					$('#a-resi-youtube').attr('style', 'width:100px; height: 100px; border-radius: 50%; position: absolute; color: white; top: 50%; left: 70%; transform: translate(-10%, -50%); border: 5px solid white;')
 				})
 			)
+			.append($(createDiv({id:'', clazz:''}))
+				.attr('style', 'position: absolute; top: 50%; left: 30%; transform: translate(-50%, -50%); text-align: left; width: 35%')
+				.append($(createPTag({id:'', clazz:'', val:'아고다에서'}))
+					.attr('style', 'color: white; font-size: 30px; font-weight: bold')
+				)
+				.append($(createPTag({id:'', clazz:'', val:'객실밖의 세계를 만나다'}))
+					.attr('style', 'color: white; font-size: 30px; font-weight: bold')
+				)
+				.append($(createPTag({id:'', clazz:'', val:'그냥 객실이 아닙니다. 나만의 독특한 여행을 위한 \'베이스캠프\'입니다. 아고다의 쉽고 간편한 검색과 유용한 필터 기능을 통해 어떠한 여행에서도 적합한 숙소를 찾을 수 있습니다. 나만의 베이스캠프를 선택해 탐험을 시작하세요!'}))
+					.attr('style', 'color: white')
+				)		
+			)
 			.append($(createATag({id:'a-resi-youtube', clazz:'', link:'#', val:''}))
-				.attr('style', 'width:100px; height: 100px; border-radius: 50%; position: absolute; color: white; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid white;')
+				.attr('style', 'width:100px; height: 100px; border-radius: 50%; position: absolute; color: white; top: 50%; left: 70%; transform: translate(-10%, -50%); border: 5px solid white;')
 				.append($(createSpan({id:'', clazz:'glyphicon glyphicon-play', val:''}))
 					.attr('style', 'font-size: 50px; top: 50%; left: 10%; transform: translate(-10%, -50%)')
 				)
@@ -792,9 +807,9 @@ app.residence = (()=>{
 					}
 				})
 				.hover(()=>{
-					$('#a-resi-youtube').attr('style', 'cursor: pointer; width:100px; height: 100px; border-radius: 50%; position: absolute; color: red; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid red;')
+					$('#a-resi-youtube').attr('style', 'cursor: pointer; width:100px; height: 100px; border-radius: 50%; position: absolute; color: red; top: 50%; left: 70%; transform: translate(-10%, -50%); border: 5px solid red;')
 				}, ()=>{
-					$('#a-resi-youtube').attr('style', 'cursor: pointer; width:100px; height: 100px; border-radius: 50%; position: absolute; color: white; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 5px solid white;')
+					$('#a-resi-youtube').attr('style', 'cursor: pointer; width:100px; height: 100px; border-radius: 50%; position: absolute; color: white; top: 50%; left: 70%; transform: translate(-10%, -50%); border: 5px solid white;')
 				})
 			)
 			.appendTo($content)
@@ -899,6 +914,24 @@ app.residence = (()=>{
 			.appendTo($content)
 			
 			$(function(){
+				$('#input-resi-date').daterangepicker({
+					"locale": {
+				        "format": "YYYY/MM/DD",
+				        "separator": " - ",
+				        "applyLabel": "적용",
+				        "cancelLabel": "취소",
+				        "fromLabel": "From",
+				        "toLabel": "To",
+				        "customRangeLabel": "Custom",
+				        "weekLabel": "W",
+				        "daysOfWeek": ["일", "월", "화", "수", "목", "금", "토"],
+				        "monthNames": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+				        "firstDay": 1
+				    },
+				    "endDate": "2018/04/18",
+				    "timePicker": true
+				});
+				
 				$('#resi-content div img').hover(()=>{
 					$('#resi-content div img').attr('style', 'max-width:100%; min-height:100%; display: block; cursor:pointer; filter:brightness(40%)');
 				},()=>{
