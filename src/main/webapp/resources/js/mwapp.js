@@ -18,13 +18,82 @@ app.flightDtail=(()=>{
 			$('#air-leftcolumn-div')
 			.attr('style', 'margin-top : 20px;')
 			.append(createDiv({ id : '', clazz : ''}))
-			.append(createDiv({ id : 'air-leftbanner-div', clazz : ''}));
+			.append(createDiv({ id : 'air-leftbanner-div', clazz : 'container'}));
 			
 			
 			$('#air-leftbanner-div')
-			.attr('style', 'background : #fff; box-shadow: 0 3px 12px 1px rgba(0,0,0,0.26);')
-			.append('Some text about me in culpa qui officia deserunt mollit anim..');
+			.attr('style', 'width : 100%; background : #fff; box-shadow: 0 3px 12px 1px rgba(0,0,0,0.26);')
+			.append(createDiv({id : 'air-leftcontainer-div', clazz : ''}))
+			.append(createDiv({id : 'air-time-div', clazz : ''}));
 			
+			$('#air-time-div')
+			.attr('style', 'border-top : 1px solid #c5c5c7')
+			.append(createDiv({id : 'air-aroundtime-div', clazz : ''}));
+			
+			$('#air-aroundtime-div').attr('style', 'margin-top : 20px;')
+			.append(createSpan({id : 'air-span', clazz : ''}))
+			
+			$('#air-leftcontainer-div')
+			.attr('style', 'width : 100%; margin-bottom : 20px;')
+			.append(createDiv({id : 'air-leftform-div', clazz : ''}));
+			
+			$('#air-leftform-div')
+			.attr('style', 'width : 100%; padding-top : 15px;')
+			.append('<span id = "air-oderby-pt">정렬</span>')
+			.append(createDiv({id : 'air-leftorderby-div', clazz : 'dropdown'}));
+			
+			$('#air-oderby-pt').attr('style', 'font-weight: 900;')
+			
+			$('#air-leftorderby-div')
+			.attr('style', 'width : 100%; text-align : center;')
+			.append(createBtn({ id : 'air-leftdrop-btn', clazz : 'btn btn-default dropdown-toggle', val : ''
+				+ createSpan({ id : 'caret-span', clazz : 'caret', val :''})}))
+			.append(createUL({ id : 'air-leftdrop-ul', clazz : 'dropdown-menu'}));
+			//'<ul id="'+x.id+'" class="'+x.clazz+'"></ul>';
+			$('#air-leftdrop-btn')
+			.attr('style', 'border-radius : 0; width : 100%;')
+			.attr('data-toggle', 'dropdown')
+			.text('추천')
+			$('#air-leftdrop-ul')
+			.append(createLI({ id : 'air-rec-li', clazz : ''}))
+			.append(createLI({ id : 'air-row-li', clazz : ''}))
+			.append(createLI({ id : 'air-high-li', clazz : ''}))
+			.append(createLI({ id : 'air-short-li', clazz : ''}))
+			.append(createLI({ id : 'air-long-li', clazz : ''}));
+			
+			$('#air-rec-li').append(createATag({ id : 'air-a-rec', clazz : '', val : '추천'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('추천');
+			});
+			$('#air-a-rec').attr('href', '#');
+			$('#air-row-li').append(createATag({ id : 'air-a-row', clazz : '', val : '최저가순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최저가순');
+			});
+			$('#air-a-row').attr('href', '#');
+			$('#air-high-li').append(createATag({ id : 'air-a-high', clazz : '', val : '최고가순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최고가순');
+			});
+			$('#air-a-high').attr('href', '#');
+			
+			$('#air-short-li').append(createATag({ id : 'air-a-short', clazz : '', val : '최단시간순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최단시간순');
+			});
+			$('#air-a-short').attr('href', '#');
+			$('#air-long-li').append(createATag({ id : 'air-a-long', clazz : '', val : '최장시간순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최장시간순');
+			});
+			
+			$('#air-a-long').attr('href', '#');
+			
+			//'<a id="'+x.id+'" class="'+x.clazz+'" href="#">'+x.val+'</a>';
+			//'<li id="'+x.id+'" class="'+x.clazz+'"></li>';
+			//'<button id="'+ x.id +'" class="'+ x.clazz +'">'+ x.val +'</button>';
+			//'<span class="'+x.clazz+'">'+x.val+'</span>';
+				
 			$('#air-rightcolumn-div')
 			.attr('style', 'margin-top : 20px;')
 			.append(createDiv({ id : 'air-rightbanner-div', clazz : ''}));
@@ -50,7 +119,7 @@ app.flightDtail=(()=>{
 			$('#air-schedule-detail-div')
 			.attr('style', 'border-top: 1px solid #e4e5ea; height : 400px; width : 100%; background-color: #f1f1f1; display : none;')
 			.append(createDiv({id : 'air-detailwrapper-div', clazz : ''}));
-			$('#air-detailwrapper-div').attr('style', 'margin-top : 20px;')
+			$('#air-detailwrapper-div').attr('style', 'margin-top : 20px;');
 			
 			
 			$('#air-midcolumn-section').on('click', e=>{
@@ -151,7 +220,7 @@ app.flight=(()=>{
 			
 			$(createDiv({id : 'nav-option-div', clazz : ''})).appendTo('#div-background');
 			$('#nav-option-div')
-			.attr('style', 'width : 100%; border-radius : 0px; margin-bottom : 0; position : absolute; top : 30%; left : 15%;')
+			.attr('style', 'width : 100%; margin-bottom : 0; position : absolute; top : 30%; left : 10%;')
 			.append(createUL({id : 'nav-option-ul', clazz : 'nav nav-tabs'}))
 			.append(createDiv({id : 'tab-contents-div', clazz : 'tab-content'}));
 			
@@ -169,7 +238,7 @@ app.flight=(()=>{
 			$('#nav-option-div').append(createDiv({id : 'nav-menu-div', clazz : 'tab-content'}));
 			
 			$('#nav-menu-div')
-			.attr('style', 'text-align : center; min-height : 150px; position : relative; background-color : white; opacity : 0.8; margin-right : 400px;')
+			.attr('style', 'text-align : center; min-height : 150px; position : relative; background-color : white; opacity : 0.8; margin-right : 20%;')
 			.append(createDiv({id : 'home', clazz : 'tab-pane-fade'}))
 			.append(createDiv({id : 'menu1', clazz : 'tab-pane fade in active'}));
 			$('#menu1')
@@ -188,25 +257,26 @@ app.flight=(()=>{
 			$('#one-way-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
 			$('#many-ways-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
 			
-			$('#wrapper-div').append(createDiv({id : 'wrapper-container-div', clazz : 'container'}));
+			$('#wrapper-div').append(createDiv({id : 'wrapper-container-div', clazz : ''}));
 			$('#wrapper-div').attr('style', 'width : 100%; height : 45px;')
 			
 			
 			$('#wrapper-container-div').append(createDiv({id : 'wrapper-row-div', clazz : 'row-fixed'}));
-			$('#wrapper-row-div').attr('style', 'position : absolute;')
+			$('#wrapper-row-div').attr('style', 'position : absolute; padding: 15px;')
 			.append(createDiv({id : 'wrapper-col1-div', clazz : 'col-sm-2'}))
 			.append(createDiv({id : 'wrapper-col2-div', clazz : 'col-sm-2'}))
-			.append(createDiv({id : 'wrapper-col3-div', clazz : 'col-sm-2'}))
+			.append(createDiv({id : 'wrapper-col3-div', clazz : 'col-sm-3'}))
 			.append(createDiv({id : 'wrapper-col4-div', clazz : 'col-sm-2'}))
-			.append(createDiv({id : 'wrapper-col5-div', clazz : 'col-sm-2'}))
-			.append(createDiv({id : 'wrapper-col6-div', clazz : 'col-sm-2'}));
+			.append(createDiv({id : 'wrapper-col5-div', clazz : 'col-sm-1'}));
 			
-			$('#wrapper-col1-div').append(createDiv({id : 'wrapper-fromCity-div', clazz : 'input-group'}));
+			$('#wrapper-col1-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append(createDiv({id : 'wrapper-fromCity-div', clazz : 'input-group'}));
 			$('#wrapper-fromCity-div')
 			.append(createInput({id : 'input-find-fromcity', clazz : 'form-control', type : 'text', value : '', placeholder:'출발 도시'}))
 			.append(createDiv({id : 'wrapper-fromcity-btn-div', clazz : 'input-group-btn'}));
 			$(createBtn({id : 'changecity-btn', clazz : 'btn btn-default', type : 'submit', val : ''})).appendTo('#wrapper-fromcity-btn-div');
-			$(createITag({id : '', clazz : 'glyphicon glyphicon-transfer'})).appendTo('#changecity-btn');
+			$(createITag({id : '', clazz : 'glyphicon glyphicon-transfer', val : ''})).appendTo('#changecity-btn');
 			$('#changecity-btn').on('click', ()=>{
 				var fromcity = $('#input-find-fromcity').val();
 				var tocity = $('#input-find-tocity').val();
@@ -215,52 +285,70 @@ app.flight=(()=>{
 			});
 			
 			
-			$('#wrapper-col2-div').append(createDiv({id : 'wrapper-toCity-div', clazz : 'form-group'}));
+			$('#wrapper-col2-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append(createDiv({id : 'wrapper-toCity-div', clazz : 'form-group'}));
 			$('#wrapper-toCity-div')
 			.append(createInput({id : 'input-find-tocity', clazz : 'form-control', type : 'text', value : ''}))
 			.append(createDiv({id : 'wrapper-tocity-btn-div', clazz : 'input-group-btn'}));
 			$('#input-find-fromcity').attr('placeholder','출발 도시');
 			$('#input-find-tocity').attr('placeholder','도착 도시');
 			
-			$(createDiv({id: '', clazz: 'form-group'}))
-				.append($(createDiv({id : 'air-fromDate-div', clazz : 'input-group date'})))
-				.appendTo('#wrapper-col3-div');
+			$('#wrapper-col3-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append($(createDiv({id : 'air-fromDate-div', clazz : 'input-group date'})));
 			
 			$('#air-fromDate-div').append($(createInput({id : 'fromDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''})))
 			.append(createSpan2({ id : 'fromDate-addon-span', clazz : 'input-group-addon',
 				val : createSpan2({id : '', clazz : 'glyphicon glyphicon-calendar', val : ''})}));
-			$(function(){
-				$('#air-fromDate-div').datepicker();
+		
+			$('#air-fromDate-div').daterangepicker({
+			    "startDate": "04/12/2018",
+			    "endDate": "04/18/2018"
+			}, function(start, end, label) {
+			  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
 			});
+		
 //			$(createDiv({id : 'toDate', clazz : 'input-group date'})).attr('data-data-format','mm-dd-yyyy')
 //			.appendTo('#wrapper-col4-div');
 //			$('#toDate').append(createInput({id : 'toDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''}))
 //			.append(createSpan({clazz : 'input-group-addon',
 //				val : createSpan({clazz : 'glyphicon glyphicon-calendar', val : ''})}));
 			
-			$(createBtn({id : 'class-btn', clazz : 'btn btn-default dropdown-toggle',
+			
+			
+			$('#wrapper-col4-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append(createBtn({id : 'class-btn', clazz : 'btn btn-default dropdown-toggle',
 				val : '' + createSpan({clazz : 'caret',  
 					val : createDiv({id : 'test-div', clazz : 'dropdown-content'})
 					})
-				})).appendTo('#wrapper-col5-div');
+				}));
 			
 				
-			$('#class-btn').attr('style', 'width : 100px; height : 34px;');
+			$('#class-btn').attr('style', 'width : 100%; height : 34px;');
 			
 			$('#test-div').append(createDiv({id : 'test2-div', clazz : ''})).append(createDiv({id : 'test3-div', clazz : ''}))
 			
 			
 			
-			$(createBtn({id : 'flight-search-btn', clazz : 'btn btn-primary', val : '검색'})).appendTo('#wrapper-col6-div');
-			$('#flight-search-btn').on('click', ()=>{
+			$('#wrapper-col5-div')
+			.attr('style', 'padding-right : 0px; width : 10%')
+			.append(createBtn({id : 'flight-search-btn', clazz : 'btn btn-primary', val : '검색'}));
+			$('#flight-search-btn')
+			.attr('style', 'width : 100%;')
+			.on('click', ()=>{
 				app.flightDtail.onCreate();
 			});
+			
+			
 			
 			$(createDiv({id : 'footer-flight', clazz : ''})).appendTo($content);
 			
 			
 		});
 	}
+
 	
 	return {onCreate:onCreate};
 })();
