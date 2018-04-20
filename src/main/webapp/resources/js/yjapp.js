@@ -74,6 +74,13 @@ app.login = (()=>{
                                             phone : x.user.phone,
                                             email : x.user.email
                                     }
+                                    if(x.success === 1){
+                                    	if(x.user.id === "admin"){
+                                    		app.admin.onCreate(); // admin일 경우 관리자 페이지로
+                                    	} else {
+                                    		//mypage로 가게 해주세요
+                                    	}
+                                    }
                             },
                             error : (x, h, m)=>{                            	
                                 alert('로그인에서 에러 발생 x='+x+', h='+h+', m='+m);

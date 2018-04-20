@@ -9,6 +9,9 @@
 	<select id="select" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
 		SELECT * FROM ${table} WHERE id like #{data1} AND pw like #{data2}
 	</select>
+	<select id="selectAll" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
+		SELECT * FROM ${table}
+	</select>
 	<update id="update">
 		
 	</update>

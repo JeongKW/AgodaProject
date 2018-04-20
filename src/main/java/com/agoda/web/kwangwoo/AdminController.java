@@ -1,52 +1,68 @@
 package com.agoda.web.kwangwoo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.agoda.web.common.Command;
+import com.agoda.web.common.IGetService;
+import com.agoda.web.mapper.Mapper;
+
 @RestController
+@RequestMapping("/adminjk")
 public class AdminController {
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
-	@RequestMapping("/adminjk")
-	public Map<?,?> manageList(){
+	@Autowired Mapper mapper;
+	@Autowired Command cmd;
+	@RequestMapping("/residence/{pageNum}")
+	public Map<?,?> manageResidence(
+			@PathVariable String pageNum){
 		Map<String, Object> map = new HashMap<>();
-		
+		logger.info("manageResidence() is {}", "entered");
+		logger.info("pageNum is {}", pageNum);
 		return map;
 	}
 	
-	@RequestMapping("/adminjk/residence")
-	public Map<?,?> manageResidence(){
+	@RequestMapping("/flight/{pageNum}")
+	public Map<?,?> manageFlight(
+			@PathVariable String pageNum){
 		Map<String, Object> map = new HashMap<>();
-		
+		logger.info("manageFlight() is {}", "entered");
 		return map;
 	}
-	
-	@RequestMapping("/adminjk/flight")
-	public Map<?,?> manageFlight(){
+	@RequestMapping("/member/{pageNum}")
+	public Map<?,?> manageMember(
+			@PathVariable String pageNum){
 		Map<String, Object> map = new HashMap<>();
-		
+		logger.info("manageMember() is {}", "entered");
+		cmd.setTable("member");
+		map.put("users", (List<?>) new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.selectAll(cmd);
+			}
+		}.excute(cmd));
 		return map;
 	}
-	@RequestMapping("/adminjk/member")
-	public Map<?,?> manageMember(){
+	@RequestMapping("/statistics/{pageNum}")
+	public Map<?,?> manageStatistics(
+			@PathVariable String pageNum){
 		Map<String, Object> map = new HashMap<>();
-		
+		logger.info("manageStatistics() is {}", "entered");
 		return map;
 	}
-	@RequestMapping("/adminjk/statistics")
-	public Map<?,?> manageStatistics(){
+	@RequestMapping("/board/{pageNum}")
+	public Map<?,?> manageBoard(
+			@PathVariable String pageNum){
 		Map<String, Object> map = new HashMap<>();
-		
-		return map;
-	}
-	@RequestMapping("/adminjk/board")
-	public Map<?,?> manageBoard(){
-		Map<String, Object> map = new HashMap<>();
-		
+		logger.info("manageBoard() is {}", "entered");
 		return map;
 	}
 }
