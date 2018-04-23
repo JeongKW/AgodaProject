@@ -72,8 +72,34 @@ app.admin = (()=>{
 			$.getScript(view, ()=>{
 				$('#accord-content').empty();
 				$('#accord-content').html($(createHTag({num : '3', val: '회원 리스트'})).attr('class', 'page-header'));
-				$(test()).appendTo('#accord-content');
-				$(createBtn({id: 'btn-search', clazz: 'btn btn-default', val: createGlyphicon({clazz: 'glyphicon-search', val: ''})})).appendTo('#span-btn');
+				$(createForm({id: 'search-form', clazz: '', action: '', method: ''})).appendTo('#accord-content');
+				$(test()).appendTo('#search-form');
+				$(createBtn({id: 'btn-search', clazz: 'btn btn-default', val: createGlyphicon({clazz: 'glyphicon-search', val: ''})}))
+					.on('click', e=>{
+						e.preventDefault();
+						$.ajaxSettings.traditional = true;
+						var data = $('#input-search').val();
+						$.ajax({
+							url: context+'/adminjk/member/search/'+ data,
+							method : 'GET',
+                            dataType : 'json',
+                            contentType : 'application/json',
+                            success : x=>{
+                                alert('추가 성공여부: '+x);
+                                $.magnificPopup.close();
+                                $(function(){
+                                	$('#member-tab').empty();
+                                	$('#member-tab')
+                                		.append($(createThead(createTh({list: ['아이디', '이름', '이메일', '핸드폰', '수정/삭제']}))))
+                                		.append($(createTbody(createTr2({list : x.search}))));
+                                });
+                            },
+                            error : (x, h, m)=>{                            	
+                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+                            }
+						});
+					})
+					.appendTo('#span-btn');
 				$('.dropdown-menu').attr('style','min-width: 10px');
 				$(createTab({id: 'member-tab', clazz: 'hover'}))
 					.append($(createThead(createTh({list: ['아이디', '이름', '이메일', '핸드폰', '수정/삭제']}))))
@@ -82,77 +108,139 @@ app.admin = (()=>{
 				$('#member-tab thead tr th').addClass('text-center');
 				$('#member-tab tbody tr td').addClass('text-center');
 				$(function(){
-//					$('#member-tab tbody tr td .btn-success').on('click', e=>{
-//						e.preventDefault();
-//						alert('수정');
-//					});
-//					$('#member-tab tbody tr td .btn-danger').on('click', e=>{
-//						e.preventDefault();
-//						alert('삭제');
-//					});
 					$('#btn-member-add').magnificPopup({
 						items:{
 							src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
 							.append($(createFieldSet()))
 							.appendTo('#accord-content'),
 							type: 'inline'
+						},
+						open: function(){
+							$('#btn-add-submit').on('click', e=>{
+								e.preventDefault();
+								$.ajax({
+									url: context+'/adminjk/member/add',
+									method : 'POST',
+		                            data : JSON.stringify({
+		                            	id: $('#input-id').val(),
+		                            	pw: $('#input-pw').val(),
+		                            	name: $('#input-name').val(),
+		                            	email: $('#input-email').val(),
+		                            	phone: $('#input-phone').val()
+		                            }),
+		                            dataType : 'json',
+		                            contentType : 'application/json',
+		                            success : x=>{
+		                                alert('추가 성공여부: '+x.success);
+		                                $.magnificPopup.close();
+		                                app.admin.member(1);
+		                            },
+		                            error : (x, h, m)=>{                            	
+		                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+		                            }
+								});
+							});
+						},
+						close: function(){
+							app.admin.member(1);
 						}
 					});
-					$('.btn-success').magnificPopup({
-						items:{
-							src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-							.append($(createFieldSet2()))
-							.appendTo('#accord-content'),
-							type: 'inline'
-						},
-						callbacks: {
-							beforeOpen: function(){
-								var id = $('.btn-success').parent().siblings('td').eq(0).text();
-								var name = $('.btn-success').parent().siblings('td').eq(1).text();
-								$('#modify-id')
-									.val(id)
-									.attr('disabled', true);
-								$('#modify-name')
-									.val(name)
-									.attr('disabled', true);
+					$('.btn-success').click(function(){
+						var selected = $(this);
+						var id = selected.parent().siblings('td').eq(0).text();
+						var name = selected.parent().siblings('td').eq(1).text();
+						$.magnificPopup.open({
+							items:{
+								src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+								.append($(createFieldSet2()))
+								.appendTo('#accord-content'),
+								type: 'inline'
+							},
+							callbacks: {
+								beforeOpen: function(){
+									$('#modify-id').val(id).attr('disabled', true);
+									$('#modify-name').val(name).attr('disabled', true);
+									$('#btn-modify-submit').on('click', e=>{
+										e.preventDefault();
+										$.ajax({
+											url: context+'/adminjk/member/update',
+											method : 'POST',
+				                            data : JSON.stringify({
+				                            	id: $('#modify-id').val(),
+				                            	pw: $('#modify-pw').val(),
+				                            	name: $('#modify-name').val(),
+				                            	email: $('#modify-email').val(),
+				                            	phone: $('#modify-phone').val()
+				                            }),
+				                            dataType : 'json',
+				                            contentType : 'application/json',
+				                            success : x=>{
+				                                alert('수정 성공여부: '+x.success);
+				                                $.magnificPopup.close();
+				                                app.admin.member(1);
+				                            },
+				                            error : (x, h, m)=>{                            	
+				                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+				                            }
+										});
+									});
+								},
+								close: function(){
+									app.admin.member(1);
+								}
 							}
-						}
-					});
-					$('.btn-danger').magnificPopup({
-						items:{
-							src: '', 
-							type: 'inline'
-						},
-					});
-					$('#btn-add-submit').on('click', e=>{
-						e.preventDefault();
-						$.ajax({
-							url: context+'/adminjk/member/add',
-							method : 'POST',
-                            data : JSON.stringify({
-                            	id: $('#input-id').val(),
-                            	pw: $('#input-pw').val(),
-                            	name: $('#input-name').val(),
-                            	email: $('#input-email').val(),
-                            	phone: $('#input-phone').val()
-                            }),
-                            dataType : 'json',
-                            contentType : 'application/json',
-                            success : x=>{
-                                alert('추가 성공여부: '+x.success);
-                                $.magnificPopup.close();
-                                app.admin.member(1);
-                            },
-                            error : (x, h, m)=>{                            	
-                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
-                            }
 						});
 					});
 
+					$('.btn-danger').click(function(){
+						var selected = $(this);
+						var id = selected.parent().siblings('td').eq(0).text();
+						$.magnificPopup.open({
+							items:{
+								src: $(createForm({id: 'delete-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+								.append($(deleteView()))
+								.appendTo('#accord-content'),
+								type: 'inline'
+							},
+							callbacks: {
+								beforeOpen: function(){
+									$('#btn-delete-member').on('click', e=>{
+										e.preventDefault();
+										$.ajax({
+											url: context+'/adminjk/member/delete/'+id,
+											method : 'POST',
+											data : JSON.stringify({
+												id: $('#modify-id').val()
+											}),
+											dataType : 'json',
+											contentType : 'application/json',
+											success : x=>{
+												alert('삭제 성공여부: '+x.success);
+												$.magnificPopup.close();
+												app.admin.member(1);
+											},
+											error : (x, h, m)=>{                            	
+												alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+											}
+										});
+									});
+									$('#btn-cancel-member').on('click', e=>{
+										e.preventDefault();
+										$.magnificPopup.close();
+										app.admin.member(1);
+									});
+								},
+								close: function(){
+									app.admin.member(1);
+								}
+							}
+						});
+					})
 				});
 			});
 		});
 	};
+	
 	var board=x=>{
 		$.getJSON(context+'/adminjk/board/'+x, d=>{
 			$('#accord-content').empty();
