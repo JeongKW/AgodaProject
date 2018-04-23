@@ -162,14 +162,35 @@ app.join = (()=>{
       			      .append($(createInput({type:'text',id:'email',clazz:'form-control',placeholder:''}))));
                   $(createBtn({id:'btn-auth',clazz:'',val:'인증 메일 전송'}))
                   	  .appendTo('#join-email-div');
-   
                   $(createInput({type:'checkbox',id:'email-checkbox',clazz:'',placeholder:''}))
                    	  .appendTo('#join-email-div')
                    	  .append($(createHTag({})));
-                  
                   $(createBtn({id:'btn-join', clazz: 'btn btn-default btn-block', val: '회원가입'}))
                   .attr('style','background-color: #58ACFA; color: #FFFFFF ;font-size: 16px;ma')
                   .on('click', e=>{
+                	  e.preventDefault();
+                	  var json = {
+                              id : $('#id').val(),
+                              pw : $('#password').val(),
+                              name: $('#password').val(),
+                              phone: $('#phone').val(),
+                              email: $('#email').val(),
+                          }
+                	  $.ajax({
+                		  url : context+'/member/join',
+                          method : 'POST',
+                          data : JSON.stringify(json),
+                          dataType : 'json',
+                          contentType : 'application/json',
+                  		  success : x =>{
+        					alert('가입 버튼 클릭 ');
+        					
+        				},
+        				error : ()=>{
+        					alert('실패하셨습니다');
+        				}
+  			            	
+                	  });
                 	  
                   })
                   	   .appendTo($('#join-form'))
@@ -206,7 +227,6 @@ app.pass = (()=>{
 	};
 	var setContentView=()=>{
         $.getScript(view, ()=>{
-
         		$(createDiv({id:'mem-pass-div',clazz:''}))
         		.appendTo($content);
         	  	$('#mem-pass-div').html($(createDiv({id:'pass-modal',clazz:'modal fade'}))
@@ -237,11 +257,32 @@ app.pass = (()=>{
         	  				 .attr('align', 'center'))
         	  		 .append($(createLabel({val:'이메일'})))
         	  		 .append($(createForm({id:'mem-pass-form',clazz:'',action:'post'}))
-        	  				 .append($(createInput({type:'text',id:'pass-email',clazz:'form-control',placeholder:''}))));
+        	  				 .append($(createInput({type:'text',id:'email',clazz:'form-control',placeholder:''}))));
         	  	$(createBtn({id:'mem-pass-email-btn', clazz: 'btn btn-default btn-block', val: '확인'}))
                   		.attr('style','background-color: #58ACFA; color: #FFFFFF ;font-size: 16px;ma')
                   .on('click', e=>{
-                	  
+                	  e.preventDefault();
+                	//  var email = $('#email').val();
+                	  var json = {
+                			  email : $('#email').val()
+                          }
+                	  alert('입력한 이메일 : '+ json);
+                      $.ajax({
+                          url : '',
+                          method : 'POST',
+                          data : JSON.stringify(json),
+                          dataType : 'json',
+                          contentType : '',
+                          success : x=>{
+                              alert('로그인 성공여부: '+x.success);
+                                  var json = {
+                                       
+                                  }
+                          },
+                          error : ()=>{                            	
+                              alert('');
+                          }
+                      });
                   })
                   	   .appendTo($('#mem-pass-email'))
                   $(function(){
