@@ -60,19 +60,25 @@
 }
 
 /* YDKIM */
-
+.white-popup {
+  position: relative;
+  background: #FFF;
+  padding: 20px;
+  width: auto;
+  max-width: 500px;
+  margin: 20px auto;
+}
 .checked-resi-star {
 	color: orange;
 }
-
-input[type=number]::-webkit-inner-spin-button{
-	opacity:1;
-	height: 20px;
+.openscenter {
+	top: 70%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
-
 .nav-pills > li.active > a, 
 .nav-pills > li.active > a:focus,
-v-pills > li.active > a:hover {
+.nav-pills > li.active > a:hover {
 	border-bottom: 4px solid red;
 	background-color: #333;
 }
@@ -82,29 +88,29 @@ v-pills > li.active > a:hover {
 	color: #333;
 }
 /*Filp Animation*/
-.flip {
+.flipCard {
 	perspective: 800;
 	position: relative;
 }
-.flip .thumbnail.flipped {
+.flipCard .card.flipped {
 	transform: rotateY(-180deg);
 	background-color: rgba(255, 0, 0, 0.1);
 }
-.flip .thumbnail {
+.flipCard .card {
 	height: 100%;
 	transform-style: preserve-3d;
 	transition: 0.5s;
 }
-.flip .thumbnail .face {
+.flipCard .card .face {
 	backface-visibility: hidden ;
 	z-index: 2;   
 }
-.flip .thumbnail .front {
+.flipCard .card .front {
 	padding-right: 20px;
 	position: absolute;
 	z-index: 1;
 }
-.flip .thumbnail .back {
+.flipCard .card .back {
 	transform: rotateY(-180deg);
 }
 
