@@ -1,8 +1,36 @@
 //Common Tag for Dynamic
+var createFieldSet=()=>{
+	return '<h3>회원 추가</h3>' 
+	+ '<fieldset style="border:0;">'
+	+ '<ol>'
+	+ '<li><label for="name">ID : &nbsp;</label><input id="input-id" type="text" placeholder="아이디"></li>'
+	+ '<li><label for="name">Password : &nbsp;</label><input id="input-pw" type="password" placeholder="패스워드"></li>'
+	+ '<li><label for="name">이름 : &nbsp;</label><input id="input-name" type="text" placeholder="이름"></li>'
+	+ '<li><label for="name">E-mail : &nbsp;</label><input id="input-email" type="email" placeholder="이메일"></li>'
+	+ '<li><label for="name">핸드폰 : &nbsp;</label><input id="input-phone" type="text" placeholder="핸드폰"></li>'
+	+ '</ol>'
+	+ '</fieldset>'
+	+ '<button id="btn-add-submit">확인</button>';
+};
+
+var createFieldSet2=()=>{
+	return '<h3>회원 추가</h3>' 
+	+ '<fieldset style="border:0;">'
+	+ '<ol>'
+	+ '<li><label for="name">ID : &nbsp;</label><input id="modify-id" type="text" placeholder="아이디"></li>'
+	+ '<li><label for="name">Password : &nbsp;</label><input id="modify-pw" type="password" placeholder="패스워드"></li>'
+	+ '<li><label for="name">이름 : &nbsp;</label><input id="modify-name" type="text" placeholder="이름"></li>'
+	+ '<li><label for="name">E-mail : &nbsp;</label><input id="modify-email" type="email" placeholder="이메일"></li>'
+	+ '<li><label for="name">핸드폰 : &nbsp;</label><input id="modify-phone" type="text" placeholder="핸드폰"></li>'
+	+ '</ol>'
+	+ '</fieldset>'
+	+ '<button id="btn-modify-submit">확인</button>';
+};
+
 var test=()=>{
 	return '<div class="container">'
 	+'    <div class="row">    '
-	+'        <div class="col-xs-8 col-xs-offset-2">'
+	+'        <div class="col-xs-6 col-xs-offset-2">'
 	+'	        <div class="input-group">'
 	+'                <div class="input-group-btn search-panel">'
 	+'                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
@@ -22,7 +50,7 @@ var test=()=>{
 	+'            </div>'
 	+'        </div>'
 	+' 		  <div class="col-xs-2">'
-	+'			 <button id="btn-member-add" class="btn btn-primary">추가</button>'
+	+'			 <button id="btn-member-add" class="btn btn-primary" data-taget="#test-form">추가</button>'
 	+'		  </div>'
 	+'  </div>'
 	+'</div>';
@@ -73,7 +101,7 @@ var createTd2=x=>{
 			t += '<td>'+ j +'</td>';
 		}
 	});
-	t += '<td>'+ createBtn({id: 'admin-modify', clazz: 'btn btn-success btn-xs', val: '수정'}) + createBtn({id: 'admin-delete', clazz: 'btn btn-danger btn-xs', val: '삭제'}) + '</td>';
+	t += '<td>'+ createBtn({id: '', clazz: 'btn btn-success btn-xs', val: '수정'}) + createBtn({id: '', clazz: 'btn btn-danger btn-xs', val: '삭제'}) + '</td>';
 	return t;
 };
 var createUL=x=>{
@@ -96,27 +124,6 @@ var createForm=x=>{
 var createDiv=x=>{
 	return '<div id="'+ x.id +'" class="'+ x.clazz +'"></div>';
 }
-var createATag=x=>{
-	return '<a id="'+x.id+'" href="#">'+x.val+'</a>';
-};
-var createGlyphicon=x=>{
-	return '<span class="glyphicon ' +x.clazz+'" aria-hidden="true">&nbsp;'+x.val+'</span>'
-};
-var createText=x=>{
-	return '<span class="'+x.clazz+'">'+x.val+'</span>';
-};
-var createHTag=x=>{
-	return '<h'+x.num+'>'+x.val+'</h'+x.num+'>';
-};
-var createTab=x=>{
-	return '<table id="'+x.id+'" class="table table-'+x.clazz+'"></table>';
-};
-var createThead=x=>{
-	return '<thead>'+x+'</thead>';
-};
-var createTbody=x=>{
-	return '<tbody>'+x+'</tbody>';
-};
 var createTh=x=>{
 	var t = '<tr>';
 	$.each(x.list, (i, j)=>{
@@ -145,25 +152,6 @@ var createTd=x=>{
 		}
 	});
 	return t;
-};
-var createUL=x=>{
-	return '<ul id="'+x.id+'" class="'+x.clazz+'"></ul>';
-	}
-var createLI=x=>{
-	return '<li id="'+x.id+'" class="'+x.clazz+'"></li>';
-}
-var createInput=x=>{
-	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz
-      +' "value="'+x.placeholder+'">';
-}
-var createBtn=x=>{
-	return '<button type ="button" id="'+ x.id +'" class="'+ x.clazz +'">'+ x.val +'</button>';
-};
-var createForm=x=>{
-	return '<form id="'+ x.id +'" class="'+ x.clazz +'" action="'+ x.action +'" method="'+ x.method +'"></form>';
-};
-var createDiv=x=>{
-	return '<div id="'+ x.id +'" class="'+ x.clazz +'"></div>';
 };
 var createImg=x=>{
 	return '<img src="'+x.src+'" class="'+x.clazz+'">';

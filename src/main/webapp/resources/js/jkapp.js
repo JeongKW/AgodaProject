@@ -81,16 +81,73 @@ app.admin = (()=>{
 				$('#member-tab thead tr th').addClass('text-center');
 				$('#member-tab tbody tr td').addClass('text-center');
 				$(function(){
-					$('#member-tab tbody tr td button').on('click', function(){
-						var selected = $(this);
-						if(selected.text() === '수정'){
-							var id = selected.parent().siblings('td').eq(0).text();
-							alert(id + '수정');
-						} else {
-							var id = selected.parent().siblings('td').eq(0).text();
-							alert(id + '삭제');
+//					$('#member-tab tbody tr td .btn-success').on('click', e=>{
+//						e.preventDefault();
+//						alert('수정');
+//					});
+//					$('#member-tab tbody tr td .btn-danger').on('click', e=>{
+//						e.preventDefault();
+//						alert('삭제');
+//					});
+					$('#btn-member-add').magnificPopup({
+						items:{
+							src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+							.append($(createFieldSet()))
+							.appendTo('#accord-content'),
+							type: 'inline'
 						}
 					});
+					$('.btn-success').magnificPopup({
+						items:{
+							src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+							.append($(createFieldSet2()))
+							.appendTo('#accord-content'),
+							type: 'inline'
+						},
+						callbacks: {
+							beforeOpen: function(){
+								var id = $('.btn-success').parent().siblings('td').eq(0).text();
+								var name = $('.btn-success').parent().siblings('td').eq(1).text();
+								$('#modify-id')
+									.val(id)
+									.attr('disabled', true);
+								$('#modify-name')
+									.val(name)
+									.attr('disabled', true);
+							}
+						}
+					});
+					$('.btn-danger').magnificPopup({
+						items:{
+							src: '', 
+							type: 'inline'
+						},
+					});
+					$('#btn-add-submit').on('click', e=>{
+						e.preventDefault();
+						$.ajax({
+							url: context+'/adminjk/member/add',
+							method : 'POST',
+                            data : JSON.stringify({
+                            	id: $('#input-id').val(),
+                            	pw: $('#input-pw').val(),
+                            	name: $('#input-name').val(),
+                            	email: $('#input-email').val(),
+                            	phone: $('#input-phone').val()
+                            }),
+                            dataType : 'json',
+                            contentType : 'application/json',
+                            success : x=>{
+                                alert('추가 성공여부: '+x.success);
+                                $.magnificPopup.close();
+                                app.admin.member(1);
+                            },
+                            error : (x, h, m)=>{                            	
+                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+                            }
+						});
+					});
+
 				});
 			});
 		});
@@ -108,5 +165,8 @@ app.admin = (()=>{
 		});
 	};
 	
-	return {onCreate : onCreate};
+	return {
+		onCreate : onCreate,
+		member : member
+		};
 })();

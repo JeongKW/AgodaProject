@@ -13,10 +13,10 @@
 		SELECT * FROM ${table}
 	</select>
 	<update id="update">
-		
+		UPDATE ${table} SET 
 	</update>
-	<insert id="insert">
-		
+	<insert id="insert" parameterType="com.agoda.web.common.Command">
+		INSERT INTO ${table} VALUES (#{member.id}, #{member.pw}, #{member.name}, #{member.email}, #{member.phone})
 	</insert>
 	<delete id="delete">
 		
