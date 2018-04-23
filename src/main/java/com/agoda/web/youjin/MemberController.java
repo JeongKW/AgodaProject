@@ -48,4 +48,14 @@ public class MemberController {
 		}.excute(cmd));
 		return map;
 	}
+	 @RequestMapping(value="/member/join", 
+	    		method=RequestMethod.POST, consumes="application/json")
+	    public Map<?,?> join(
+	    		@RequestBody Member m
+	    		){
+		 logger.info("join  {}", "entered");
+		 Map<String, Object> map = new HashMap<>();
+	
+			return map;
+	 }
 }
