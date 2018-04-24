@@ -76,6 +76,7 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+/*nav-tab*/
 .nav-pills > li.active > a, 
 .nav-pills > li.active > a:focus,
 .nav-pills > li.active > a:hover {

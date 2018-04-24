@@ -12,6 +12,9 @@
 	<select id="selectAll" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
 		SELECT * FROM ${table}
 	</select>
+	<select id="selectResiList" resultType="com.agoda.web.common.City" parameterType="com.agoda.web.common.Command">
+		SELECT * FROM city WHERE city LIKE #{data1}
+	</select>
 	<update id="update">
 		UPDATE ${table} SET 
 	</update>

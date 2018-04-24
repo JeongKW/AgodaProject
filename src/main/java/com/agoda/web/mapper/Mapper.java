@@ -11,6 +11,7 @@ import com.agoda.web.youjin.Member;
 public interface Mapper {
 	public int exist(Command cmd);
 	public Object select(Command cmd);
+	public Object selectResiList(Command cmd);
 	public void insert(Command cmd);
 	public void delete(Command cmd);
 	public void update(Command cmd);
