@@ -1,4 +1,3 @@
-//그대로 잘 해주셈
 app.admin = (()=>{
 	var context, view;
 	var onCreate =()=>{

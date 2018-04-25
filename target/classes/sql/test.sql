@@ -89,6 +89,7 @@ drop table flight;
 insert into member values('test1234', '1234', '테스터', 'youjin813@naver.com', '010-1111-1234');
 
 select count(*) from member;
+select count(*) from residence;
 
 select * from member limit 12, 1;
 

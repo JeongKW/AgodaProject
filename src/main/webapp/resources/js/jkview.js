@@ -4,7 +4,7 @@ var deleteView=()=>{
 	+ '<button id="btn-delete-member">삭제</button><button id="btn-cancel-member">취소</button>';
 };
 
-var createFieldSet=()=>{
+var createFieldSet=()=>{//
 	return '<h3>회원 추가</h3>' 
 	+ '<fieldset style="border:0;">'
 	+ '<ol>'
