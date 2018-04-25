@@ -37,7 +37,7 @@ public class MemberController {
 		map.put("user", (Member) new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
-				return mapper.select(cmd);
+				return mapper.selectById(cmd);
 			}
 		}.excute(cmd));
 		map.put("success", new ICountService() {

@@ -37,17 +37,7 @@ var test=()=>{
 	+'    <div class="row">    '
 	+'        <div class="col-xs-6 col-xs-offset-2">'
 	+'	        <div class="input-group">'
-	+'                <div class="input-group-btn search-panel">'
-	+'                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
-	+'                      <span id="search_concept">검색필드</span> <span class="caret"></span>'
-	+'                    </button>'
-	+'                    <ul class="dropdown-menu" role="menu">'
-	+'                      <li><a id="search-id" href="#">아이디</a></li>'
-	+'                      <li><a id="search-name" href="#">이름</a></li>'
-	+'                      <li><a id="search-email" href="#">이메일</a></li>'
-	+'                      <li><a id="search-phone" href="#">핸드폰</a></li>'
-	+'                    </ul>'
-	+'                </div>'
+	+'                <div class="form-group"><select class="form-control" name="filter"><option value="i">아이디</option><option value="n">이름</option><option value="e">이메일</option><option value="p">핸드폰</option></select></div>'
 	+'                <input type="hidden" name="search_param" value="all" id="search_param">         '
 	+'                <input id="input-search" type="text" class="form-control" name="x" placeholder="검색할 내용 입력">'
 	+'                <span id="span-btn" class="input-group-btn">'
@@ -86,6 +76,9 @@ var createHTag=x=>{
 var createTab=x=>{
 	return '<table id="'+x.id+'" class="table table-'+x.clazz+'"></table>';
 };
+var createTab2=x=>{
+	return '<table id="'+x.id+'" class="table '+x.clazz+'"></table>';
+};
 var createThead=x=>{
 	return '<thead>'+x+'</thead>';
 };
@@ -102,10 +95,8 @@ var createTh=x=>{
 };
 var createTr2=x=>{
 	var t = '';
-	var seq = 1;
 	$.each(x.list, (i, j)=> {
-		t += '<tr id="a-'+ seq +'">' + createTd2({list : j})+'</tr>';
-		seq++;
+		t += '<tr>' + createTd2({list : j})+'</tr>';
 	});
 	return t;
 };
@@ -116,7 +107,7 @@ var createTd2=x=>{
 			t += '<td>'+ j +'</td>';
 		}
 	});
-	t += '<td>'+ createBtn({id: '', clazz: 'btn btn-success btn-xs', val: '수정'}) + createBtn({id: '', clazz: 'btn btn-danger btn-xs', val: '삭제'}) + '</td>';
+	t += '<td>'+ createBtn({id: '', clazz: 'btn btn-success btn-sm', val: '수정'}) + '&nbsp' + createBtn({id: '', clazz: 'btn btn-danger btn-sm', val: '삭제'}) + '</td>';
 	return t;
 };
 var createUL=x=>{

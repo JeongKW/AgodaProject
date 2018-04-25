@@ -25,10 +25,8 @@ import com.agoda.web.youjin.Member;
 @RequestMapping("/adminjk")
 public class AdminController {
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
-	@Autowired
-	MapperJK mapper;
-	@Autowired
-	Command cmd;
+	@Autowired MapperJK mapper;
+	@Autowired Command cmd;
 
 	@RequestMapping("/residence/{pageNum}")
 	public Map<?, ?> manageResidence(@PathVariable String pageNum) {
@@ -46,16 +44,20 @@ public class AdminController {
 	}
 
 	@RequestMapping("/member/{pageNum}")
-	public Map<?, ?> manageMember(@PathVariable String pageNum) {
+	public Map<?, ?> manageMember(
+			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageMember() is {}", "entered");
 		cmd.setTable("member");
+		cmd.setData1(pageNum);
 		map.put("users", (List<?>) new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
-				return mapper.selectAll(cmd);
+				return mapper.selectAllAdminMember(cmd);
 			}
 		}.excute(cmd));
+		
+		map.put("pageNum", Integer.parseInt(pageNum)+12);
 		return map;
 	}
 
@@ -70,7 +72,7 @@ public class AdminController {
 		new IPostService() {
 			@Override
 			public void excute(Command cmd) {
-				mapper.insert(cmd);
+				mapper.insertAdminMember(cmd);
 			}
 		}.excute(cmd);
 		map.put("success", new IGetService() {
@@ -89,14 +91,12 @@ public class AdminController {
 			@RequestBody Member m) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("updateMember() is {}", "entered");
-		logger.info("updateMember() attributes are {}, {}, {}, {}, {}", m.getId(), m.getPw(), m.getName(), m.getEmail(),
-				m.getPhone());
 		cmd.setTable("Member");
 		cmd.setMember(m);
 		new IUpdateService() {
 			@Override
 			public void excute(Command cmd) {
-				mapper.update(cmd);
+				mapper.updateAdminMember(cmd);
 			}
 		}.excute(cmd);
 		map.put("success", new IGetService() {
@@ -114,13 +114,12 @@ public class AdminController {
 			@PathVariable String id) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("deleteMember() is {}", "entered");
-		logger.info("deleteMember() id is {}", id);
 		cmd.setTable("Member");
 		cmd.setData1(id);
 		new IDeleteService() {
 			@Override
 			public void excute(Command cmd) {
-				mapper.delete(cmd);
+				mapper.deleteAdminMember(cmd);
 			}
 		}.excute(cmd);
 		map.put("success", new IGetService() {
@@ -133,20 +132,20 @@ public class AdminController {
 		return map;
 	}
 	
-	@RequestMapping(value = "/member/search/{data}", 
+	@RequestMapping(value = "/member/search/{filter}/{data}", 
 			method = {RequestMethod.GET, RequestMethod.POST}, consumes = "application/json")
 	public Map<?, ?> searchMember(
+			@PathVariable String filter,
 			@PathVariable String data) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("searchMember() is {}", "entered");
-		logger.info("searchMember() id is {}", data);
 		cmd.setTable("Member");
-		cmd.setData1("id");
+		cmd.setData1(filter);
 		cmd.setData2(data);
 		map.put("search", (List<?>) new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
-				return mapper.search(cmd);
+				return mapper.searchAdminMember(cmd);
 			}
 		}.excute(cmd));
 		return map;

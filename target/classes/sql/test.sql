@@ -90,6 +90,8 @@ insert into member values('test1234', '1234', '테스터', 'youjin813@naver.com'
 
 select count(*) from member;
 
+select * from member limit 12, 1;
+
 SELECT * FROM Member WHERE id like 'test1234' AND pw like '1234';
 
 

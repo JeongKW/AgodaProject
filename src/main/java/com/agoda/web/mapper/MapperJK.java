@@ -10,10 +10,10 @@ import com.agoda.web.youjin.Member;
 @Repository
 public interface MapperJK {
 	public int exist(Command cmd);
-	public Object select(Command cmd);
-	public void insert(Command cmd);
-	public void delete(Command cmd);
-	public void update(Command cmd);
-	public List<Member> search(Command cmd);
-	public List<Member> selectAll(Command cmd);
+	public Object selectById(Command cmd);
+	public void insertAdminMember(Command cmd);
+	public void deleteAdminMember(Command cmd);
+	public void updateAdminMember(Command cmd);
+	public List<Member> searchAdminMember(Command cmd);
+	public List<Member> selectAllAdminMember(Command cmd);
 }
