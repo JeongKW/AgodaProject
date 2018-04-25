@@ -78,7 +78,7 @@ app.admin = (()=>{
 	};
 	var member=x=>{
 		$.getJSON(context+'/adminjk/member/'+x, d=>{
-			$.getScript(view, ()=>{//
+			$.getScript(view, ()=>{
 				$content.empty();
 				$content.html(($(createDiv({id: 'div-header', clazz: 'container'})).append($(createHTag({num : '3', val: '회원 리스트'})).attr('class', 'page-header'))));
 				$(createForm({id: 'search-form', clazz: '', action: '', method: ''})).appendTo('#div-header');
@@ -104,6 +104,9 @@ app.admin = (()=>{
 	                                	$('#member-tab')
 	                                		.append($(createThead(createTh({list: ['아이디', '이름', '이메일', '핸드폰', '수정/삭제']}))))
 	                                		.append($(createTbody(createTr2({list : x.search}))));
+	                                	$(function(){
+	                                    	eventfunc();
+	                                    });
 	                                });
 	                            },
 	                            error : (x, h, m)=>{                            	
@@ -136,10 +139,11 @@ app.admin = (()=>{
                             		if(x.users.length < 12){
                             			$('#btn-detail').remove();
                             		}
-                            		$(function(){
-                                    	$(createTr2({list : x.users})).appendTo('#member-tab');
-                                    	$('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px')
-                                    	d.pageNum = x.pageNum;
+                                    $(createTr2({list : x.users})).appendTo('#member-tab');
+                                    $('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px')
+                                    d.pageNum = x.pageNum;
+                                    $(function(){
+                                    	eventfunc();
                                     });
                             	}
                             },
@@ -150,42 +154,45 @@ app.admin = (()=>{
 					});
 				$('#member-tab thead tr th').addClass('text-center').attr('style','font-size:15px');
 				$('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px');
-				$(function(){
-					$('#btn-member-add').magnificPopup({
-						items:{
-							src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-							.append($(createFieldSet()))
-							.appendTo('#accord-content'),
-							type: 'inline'
-						},
-						open: function(){
-							$('#btn-add-submit').on('click', e=>{
-								e.preventDefault();
-								$.ajax({
-									url: context+'/adminjk/member/add',
-									method : 'POST',
-		                            data : JSON.stringify({
-		                            	id: $('#input-id').val(),
-		                            	pw: $('#input-pw').val(),
-		                            	name: $('#input-name').val(),
-		                            	email: $('#input-email').val(),
-		                            	phone: $('#input-phone').val()
-		                            }),
-		                            dataType : 'json',
-		                            contentType : 'application/json',
-		                            success : x=>{
-		                                $.magnificPopup.close();
-		                                app.admin.member(1);
-		                            },
-		                            error : (x, h, m)=>{                            	
-		                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
-		                            }
+				
+				var eventfunc = function(){
+					$(function(){
+						$('#btn-member-add').magnificPopup({
+							items:{
+								src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+								.append($(createFieldSet()))
+								.appendTo($content),
+								type: 'inline'
+							},
+							open: function(){
+								$('#btn-add-submit').on('click', e=>{
+									e.preventDefault();
+									$.ajax({
+										url: context+'/adminjk/member/add',
+										method : 'POST',
+			                            data : JSON.stringify({
+			                            	id: $('#input-id').val(),
+			                            	pw: $('#input-pw').val(),
+			                            	name: $('#input-name').val(),
+			                            	email: $('#input-email').val(),
+			                            	phone: $('#input-phone').val()
+			                            }),
+			                            dataType : 'json',
+			                            contentType : 'application/json',
+			                            success : x=>{
+			                                $.magnificPopup.close();
+			                                member(1);
+			                            },
+			                            error : (x, h, m)=>{                            	
+			                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+			                            }
+									});
 								});
-							});
-						},
-						close: function(){
-							app.admin.member(1);
-						}
+							},
+							close: function(){
+								app.admin.member(1);
+							}
+						});
 					});
 					$('.btn-success').click(function(){
 						var selected = $(this);
@@ -195,7 +202,7 @@ app.admin = (()=>{
 							items:{
 								src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
 								.append($(createFieldSet2()))
-								.appendTo('#accord-content'),
+								.appendTo($content),
 								type: 'inline'
 							},
 							callbacks: {
@@ -218,7 +225,7 @@ app.admin = (()=>{
 				                            contentType : 'application/json',
 				                            success : x=>{
 				                                $.magnificPopup.close();
-				                                app.admin.member(1);
+				                                member(1);
 				                            },
 				                            error : (x, h, m)=>{                            	
 				                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -240,7 +247,7 @@ app.admin = (()=>{
 							items:{
 								src: $(createForm({id: 'delete-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
 								.append($(deleteView()))
-								.appendTo('#accord-content'),
+								.appendTo($content),
 								type: 'inline'
 							},
 							callbacks: {
@@ -257,7 +264,7 @@ app.admin = (()=>{
 											contentType : 'application/json',
 											success : x=>{
 												$.magnificPopup.close();
-												app.admin.member(1);
+												member(1);
 											},
 											error : (x, h, m)=>{                            	
 												alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -267,21 +274,29 @@ app.admin = (()=>{
 									$('#btn-cancel-member').on('click', e=>{
 										e.preventDefault();
 										$.magnificPopup.close();
-										app.admin.member(1);
+										member(1);
 									});
 								},
 								close: function(){
-									app.admin.member(1);
+									member(1);
 								}
 							}
 						});
 					});
-				});
+				};
+				$(function(){
+                	eventfunc();
+                });
 			});
 		});
 	};
 	
 	var board=x=>{
+		$(function(){
+			$(window).scroll(function(){
+				alert('움직이는 스크롤');
+			});
+		});
 		$.getJSON(context+'/adminjk/board/'+x, d=>{
 			$content.empty();
 			$content.html($(createHTag({num : '3', val: '게시판 리스트'})).attr('class', 'page-header'));
