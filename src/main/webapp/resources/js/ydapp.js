@@ -377,7 +377,7 @@ app.residence = (()=>{
 										})
 									)
 								)
-								.append($(createUL({id:'resi-search-list', clazz:'dropdown-menu'}))
+								.append($(createUL({id:'resi-search-list-ul', clazz:'dropdown-menu'}))
 									.attr('style', 'padding-left: 10px; width: 100%;')
 									.append($(createLI({id:'', clazz:''}))
 										.append($(createATag({id:'', clazz:'', link:'#', val:' HongKong'}))
@@ -506,10 +506,12 @@ app.residence = (()=>{
 			)
 			.appendTo('#div-resi-main-search');	
 			//이쪽 봐주셈
-			$('#resi-search-list li a').on('click', ()=>{
+			$('#resi-search-list-ul li a').on('click', ()=>{
+				alert($(this).childern('a').text())
 				$('#input-resi-date').trigger('click');
 			  	$('#resi-input-filter').val($('#resi-search-list li a').text());
 			  	$('#resi-input-filter').val($(this).attr('value'));
+			  	$('#resi-input-filter').val('');
 			})
 			
 			

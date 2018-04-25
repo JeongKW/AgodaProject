@@ -22,7 +22,6 @@ public class MemberController {
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	@Autowired Command cmd;
 	@Autowired MapperJK mapper;
-	
 	@RequestMapping(value = "/member/{id}/login", 
 			method = RequestMethod.POST, consumes="application/json")
 	public Map<?,?> getUserId(
