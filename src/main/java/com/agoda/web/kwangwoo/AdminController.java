@@ -51,7 +51,7 @@ public class AdminController {
 		map.put("users", (List<?>) new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
-				return mapper.selectAll(cmd);
+				return mapper.selectAllAdminMember(cmd);
 			}
 		}.excute(cmd));
 		return map;
@@ -67,7 +67,7 @@ public class AdminController {
 		new IPostService() {
 			@Override
 			public void excute(Command cmd) {
-				mapper.insert(cmd);
+				mapper.insertAdminMember(cmd);
 			}
 		}.excute(cmd);
 		map.put("success", new IGetService() {
@@ -94,7 +94,7 @@ public class AdminController {
 		new IPostService() {
 			@Override
 			public void excute(Command cmd) {
-				mapper.insert(cmd);
+				mapper.updateAdminMember(cmd);
 			}
 		}.excute(cmd);
 		map.put("success", new IGetService() {
