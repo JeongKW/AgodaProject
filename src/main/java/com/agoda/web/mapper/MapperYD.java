@@ -6,7 +6,7 @@ import com.agoda.web.common.Command;
 import com.agoda.web.yongdae.Residence;
 
 @Repository
-public interface ydMapper {
+public interface MapperYD {
 	public List<Residence> selectResiList(Command cmd);
 	public int exist(Command cmd);
 }

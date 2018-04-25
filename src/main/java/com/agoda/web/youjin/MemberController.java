@@ -21,7 +21,7 @@ import com.agoda.web.mapper.Mapper;
 public class MemberController {
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	@Autowired Command cmd;
-	@Autowired Mapper mapper;
+	@Autowired Mapper mapperJK;
 	@RequestMapping(value = "/member/{id}/login", 
 			method = RequestMethod.POST, consumes="application/json")
 	public Map<?,?> getUserId(

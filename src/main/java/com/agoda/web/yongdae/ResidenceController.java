@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agoda.web.common.Command;
 import com.agoda.web.common.IGetService;
-import com.agoda.web.mapper.ydMapper;
+import com.agoda.web.mapper.MapperYD;
 
 @RestController
 public class ResidenceController {
 	private static final Logger logger = LoggerFactory.getLogger(ResidenceController.class);
-	@Autowired ydMapper ydMapper;
+	@Autowired MapperYD ydMapper;
 	@Autowired Command cmd;
 	@Autowired ResiList resiList;
 	@RequestMapping(value="/resi/loadMore", method = RequestMethod.POST, consumes="application/json")

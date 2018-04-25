@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.agoda.web.common.Command;
 import com.agoda.web.common.IGetService;
 import com.agoda.web.common.IPostService;
-import com.agoda.web.mapper.Mapper;
+import com.agoda.web.mapper.MapperJK;
 import com.agoda.web.youjin.Member;
 
 @RestController
@@ -24,7 +24,7 @@ import com.agoda.web.youjin.Member;
 public class AdminController {
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	@Autowired
-	Mapper mapper;
+	MapperJK mapper;
 	@Autowired
 	Command cmd;
 

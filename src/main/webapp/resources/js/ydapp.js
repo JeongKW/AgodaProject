@@ -508,7 +508,7 @@ app.residence = (()=>{
 			
 			$('#resi-search-list li a').on('click', ()=>{
 				$('#input-resi-date').trigger('click');
-			  	$('#resi-input-filter').val($('#resi-search-list li a').text());
+			  	$('#resi-input-filter').val($(this).attr('value'));
 			})
 			
 			
