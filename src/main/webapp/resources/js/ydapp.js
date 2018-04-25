@@ -371,6 +371,10 @@ app.residence = (()=>{
 										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-search', val:''}))
 											.attr('style', 'font-size: 20px; color: #fff')
 										)
+										.attr('data-toggle', 'dropdown')
+										.on('click', ()=>{
+											$('#resi-input-filter').trigger('click');
+										})
 									)
 								)
 								.append($(createUL({id:'resi-search-list', clazz:'dropdown-menu'}))
@@ -381,10 +385,14 @@ app.residence = (()=>{
 										)
 									)
 									.append($(createLI({id:'', clazz:''}))
-											.append($(createATag({id:'', clazz:'', link:'#', val:'NewYork'})))
+											.append($(createATag({id:'', clazz:'', link:'#', val:'NewYork'}))
+												.attr('style', 'font-size: 20px; font-weight: bold')
+											)
 									)
 									.append($(createLI({id:'', clazz:''}))
-											.append($(createATag({id:'', clazz:'', link:'#', val:'Singapore'})))
+											.append($(createATag({id:'', clazz:'', link:'#', val:'Singapore'}))
+												.attr('style', 'font-size: 20px; font-weight: bold')		
+											)
 									)
 								)
 							)							
@@ -498,9 +506,9 @@ app.residence = (()=>{
 			)
 			.appendTo('#div-resi-main-search');	
 			
-			$('#resi-search-list > li > a').on('click', ()=>{
+			$('#resi-search-list li a').on('click', ()=>{
 				$('#input-resi-date').trigger('click');
-			  	$('#resi-input-filter').val('osaka');
+			  	$('#resi-input-filter').val($('#resi-search-list li a').text());
 			})
 			
 			
