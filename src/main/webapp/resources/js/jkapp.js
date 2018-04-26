@@ -10,6 +10,7 @@ app.admin = (()=>{
 		$.getScript(view, ()=>{
 			$content.empty();
 			$('.modal-backdrop').remove();
+			$('.modal-open').removeClass();
 			$('.navbar').empty();
 			$('.navbar-right').empty();
 			$('.navbar').append($(createLI({id: '', clazz: ''}))
@@ -266,7 +267,7 @@ app.admin = (()=>{
 												$.magnificPopup.close();
 												member(1);
 											},
-											error : (x, h, m)=>{                            	
+											error : (x, h, m)=>{
 												alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
 											}
 										});
@@ -292,14 +293,16 @@ app.admin = (()=>{
 	};
 	
 	var board=x=>{
-		$(function(){
-			$(window).scroll(function(){
-				alert('움직이는 스크롤');
-			});
-		});
 		$.getJSON(context+'/adminjk/board/'+x, d=>{
 			$content.empty();
-			$content.html($(createHTag({num : '3', val: '게시판 리스트'})).attr('class', 'page-header'));
+			$content.html();
+		});
+		$(window).scroll(function(){
+			if(($(window).scrollTop()+$(window).height()) > $(document).height() - 400){
+				for(var i = 0; i < 10; i++){
+					($(createDiv({id: '', clazz: ''})).append('ajax 요청')).appendTo('#content');
+				}
+			}
 		});
 	};
 	var statistics=x=>{
