@@ -1,8 +1,10 @@
 app.admin = (()=>{
-	var context, view;
+	var context, view, history, detailHistory;
 	var onCreate =()=>{
 		$content = $('#content');
 		context = $.context();
+		history = '';
+		detailHistory = '';
 		view = $.javascript() + '/jkview.js';
 		setContentView();
 	};
@@ -81,6 +83,7 @@ app.admin = (()=>{
 		$.getJSON(context+'/adminjk/member/'+x, d=>{
 			$.getScript(view, ()=>{
 				$content.empty();
+				sessionStorage.setItem('initHistory', JSON.stringify(d.users));
 				$content.html(($(createDiv({id: 'div-header', clazz: 'container'})).append($(createHTag({num : '3', val: '회원 리스트'})).attr('class', 'page-header'))));
 				$(createForm({id: 'search-form', clazz: '', action: '', method: ''})).appendTo('#div-header');
 				$(test()).appendTo('#search-form');
@@ -108,6 +111,7 @@ app.admin = (()=>{
 	                                	$(function(){
 	                                    	eventfunc();
 	                                    });
+	                                	sessionStorage.setItem('searchHistory', JSON.stringify(x.search));
 	                                });
 	                            },
 	                            error : (x, h, m)=>{                            	
@@ -140,12 +144,19 @@ app.admin = (()=>{
                             		if(x.users.length < 12){
                             			$('#btn-detail').remove();
                             		}
+                            		alert(d.pageNum);
                                     $(createTr2({list : x.users})).appendTo('#member-tab');
                                     $('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px')
-                                    d.pageNum = x.pageNum;
                                     $(function(){
                                     	eventfunc();
                                     });
+                                    if(d.pageNum === 13){
+                                    	detailHistory = sessionStorage.getItem('initHistory');
+                                    } else if(d.pageNum > 13){
+                                    	detailHistory += JSON.stringify(x.users);
+                                    }
+                                    sessionStorage.setItem('detailHistory', detailHistory);
+                                    d.pageNum = x.pageNum;
                             	}
                             },
                             error : (x, h, m)=>{                            	
@@ -158,47 +169,56 @@ app.admin = (()=>{
 				
 				var eventfunc = function(){
 					$(function(){
-						$('#btn-member-add').magnificPopup({
-							items:{
-								src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-								.append($(createFieldSet()))
-								.appendTo($content),
-								type: 'inline'
-							},
-							open: function(){
-								$('#btn-add-submit').on('click', e=>{
-									e.preventDefault();
-									$.ajax({
-										url: context+'/adminjk/member/add',
-										method : 'POST',
-			                            data : JSON.stringify({
-			                            	id: $('#input-id').val(),
-			                            	pw: $('#input-pw').val(),
-			                            	name: $('#input-name').val(),
-			                            	email: $('#input-email').val(),
-			                            	phone: $('#input-phone').val()
-			                            }),
-			                            dataType : 'json',
-			                            contentType : 'application/json',
-			                            success : x=>{
-			                                $.magnificPopup.close();
-			                                member(1);
-			                            },
-			                            error : (x, h, m)=>{                            	
-			                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
-			                            }
-									});
-								});
-							},
-							close: function(){
-								app.admin.member(1);
-							}
+						$('#btn-member-add').click(function(e){
+							e.preventDefault();
+							$.magnificPopup.open({
+								items:{
+									src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+									.append($(createFieldSet()))
+									.appendTo($content),
+									type: 'inline'
+								},
+								callbacks:{
+									beforeOpen: function(){
+										$('#btn-add-submit').on('click', e=>{
+											e.preventDefault();
+											$.ajax({
+												url: context+'/adminjk/member/add',
+												method : 'POST',
+					                            data : JSON.stringify({
+					                            	id: $('#input-id').val(),
+					                            	pw: $('#input-pw').val(),
+					                            	name: $('#input-name').val(),
+					                            	email: $('#input-email').val(),
+					                            	phone: $('#input-phone').val()
+					                            }),
+					                            dataType : 'json',
+					                            contentType : 'application/json',
+					                            success : x=>{
+					                                $.magnificPopup.close();
+					                                $('#add-form').remove();
+					                                member(1);
+					                            },
+					                            error : (x, h, m)=>{                            	
+					                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+					                            }
+											});
+										});
+									},
+									close: function(){
+										$('#add-form').remove();
+										member(1);
+									}
+								}
+							});
 						});
-					});
-					$('.btn-success').click(function(){
+						
+					$('.btn-success').click(function(e){
+						e.preventDefault();
 						var selected = $(this);
 						var id = selected.parent().siblings('td').eq(0).text();
 						var name = selected.parent().siblings('td').eq(1).text();
+						history = historyAdd();
 						$.magnificPopup.open({
 							items:{
 								src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
@@ -226,7 +246,11 @@ app.admin = (()=>{
 				                            contentType : 'application/json',
 				                            success : x=>{
 				                                $.magnificPopup.close();
-				                                member(1);
+				                                if(JSON.parse(history).length === 12){
+				                                	member(1);
+				                                } else {
+				                                	tableCreate(JSON.parse(history));
+				                                }
 				                            },
 				                            error : (x, h, m)=>{                            	
 				                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -235,13 +259,23 @@ app.admin = (()=>{
 									});
 								},
 								close: function(){
-									app.admin.member(1);
+									if(JSON.parse(history).length === 12){
+	                                	member(1);
+	                                } else {
+	                                	tableCreate(JSON.parse(history));
+	                                }
 								}
 							}
 						});
+						$('#modify-form').remove();
+						$(function(){
+                        	eventfunc();
+                        });
+						historyDelete();
 					});
 
-					$('.btn-danger').click(function(){
+					$('.btn-danger').click(function(e){
+						e.preventDefault();
 						var selected = $(this);
 						var id = selected.parent().siblings('td').eq(0).text();
 						$.magnificPopup.open({
@@ -258,13 +292,11 @@ app.admin = (()=>{
 										$.ajax({
 											url: context+'/adminjk/member/delete/'+id,
 											method : 'POST',
-											data : JSON.stringify({
-												id: $('#modify-id').val()
-											}),
 											dataType : 'json',
 											contentType : 'application/json',
 											success : x=>{
 												$.magnificPopup.close();
+												history = historyAdd();
 												member(1);
 											},
 											error : (x, h, m)=>{
@@ -275,27 +307,33 @@ app.admin = (()=>{
 									$('#btn-cancel-member').on('click', e=>{
 										e.preventDefault();
 										$.magnificPopup.close();
+										$('#delete-form').remove();
 										member(1);
 									});
 								},
 								close: function(){
 									member(1);
+									$('#delete-form').remove();
 								}
 							}
 						});
 					});
-				};
+				});
 				$(function(){
                 	eventfunc();
                 });
-			});
+			};
+		});
 		});
 	};
 	
 	var board=x=>{
 		$.getJSON(context+'/adminjk/board/'+x, d=>{
 			$content.empty();
-			$content.html();
+			$content.html($(createDiv({id: 'board-div', clazz: 'container'})).append($(createBtn({id: 'back-btn', clazz: '', val: '버튼'}))
+					.on('click', function(){
+						window.history.back();
+					})));
 		});
 		$(window).scroll(function(){
 			if(($(window).scrollTop()+$(window).height()) > $(document).height() - 400){
@@ -312,6 +350,26 @@ app.admin = (()=>{
 		});
 	};
 	
+	var historyAdd=()=>{
+		return !(sessionStorage.getItem('searchHistory') === null) ? 
+				sessionStorage.getItem('searchHistory')
+				: (!(sessionStorage.getItem('detailHistory') === null) ? 
+					sessionStorage.getItem('detailHistory') : sessionStorage.getItem('initHistory'));
+	};
+	
+	var historyDelete=()=>{
+		sessionStorage.removeItem('initHistory');
+		sessionStorage.removeItem('searchHistory');
+		sessionStorage.removeItem('detailHistory');
+	};
+	
+	var tableCreate=x=>{
+		$('#member-tab').empty();
+    	$('#btn-detail').remove();
+    	$('#member-tab')
+    		.append($(createThead(createTh({list: ['아이디', '이름', '이메일', '핸드폰', '수정/삭제']}))))
+    		.append($(createTbody(createTr2({list : x}))));
+	};
 	return {
 		onCreate : onCreate,
 		member : member

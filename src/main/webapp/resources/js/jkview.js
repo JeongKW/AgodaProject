@@ -35,7 +35,7 @@ var createFieldSet2=()=>{
 var test=()=>{
 	return '<div class="container">'
 	+'    <div class="row">    '
-	+'        <div class="col-xs-2"><select class="form-control" id="filter" name="filter"><option value="i">아이디</option><option value="n">이름</option><option value="e">이메일</option><option value="p">핸드폰</option></select></div>'
+	+'        <div class="col-xs-2"><select class="form-control" name="filter"><option value="i">아이디</option><option value="n">이름</option><option value="e">이메일</option><option value="p">핸드폰</option></select></div>'
 	+'        <div class="col-xs-4">'
 	+'	        <div class="input-group">'
 	+'                <input type="hidden" name="search_param" value="all" id="search_param">         '
