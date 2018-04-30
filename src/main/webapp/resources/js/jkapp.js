@@ -85,8 +85,9 @@ app.admin = (()=>{
 				$content.empty();
 				sessionStorage.setItem('initHistory', JSON.stringify(d.users));
 				$content.html(($(createDiv({id: 'div-header', clazz: 'container'})).append($(createHTag({num : '3', val: '회원 리스트'})).attr('class', 'page-header'))));
-				$(createForm({id: 'search-form', clazz: '', action: '', method: ''})).appendTo('#div-header');
-				$(test()).appendTo('#search-form');
+				$(test()).appendTo('#div-header');
+				$(createForm({id: 'search-form', clazz: '', action: '', method: ''})).prependTo('#div-row');
+				$(searchBox()).appendTo('#search-form');
 				$(createBtn({id: 'btn-search', clazz: 'btn btn-default', val: createGlyphicon({clazz: 'glyphicon-search', val: ''})}))
 					.on('click', e=>{
 						e.preventDefault();
@@ -112,6 +113,7 @@ app.admin = (()=>{
 	                                    	eventfunc();
 	                                    });
 	                                	sessionStorage.setItem('searchHistory', JSON.stringify(x.search));
+	                                	console.log(sessionStorage.getItem('searchHistory'));
 	                                });
 	                            },
 	                            error : (x, h, m)=>{                            	
@@ -144,7 +146,6 @@ app.admin = (()=>{
                             		if(x.users.length < 12){
                             			$('#btn-detail').remove();
                             		}
-                            		alert(d.pageNum);
                                     $(createTr2({list : x.users})).appendTo('#member-tab');
                                     $('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px')
                                     $(function(){
@@ -154,6 +155,8 @@ app.admin = (()=>{
                                     	detailHistory = sessionStorage.getItem('initHistory');
                                     } else if(d.pageNum > 13){
                                     	detailHistory += JSON.stringify(x.users);
+                                    	console.log(detailHistory);
+                                    	alert('히스토리 추가');
                                     }
                                     sessionStorage.setItem('detailHistory', detailHistory);
                                     d.pageNum = x.pageNum;
@@ -166,59 +169,52 @@ app.admin = (()=>{
 					});
 				$('#member-tab thead tr th').addClass('text-center').attr('style','font-size:15px');
 				$('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px');
+				$(function(){
+					$('#btn-member-add').magnificPopup({
+							items:{
+								src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+								.append($(createFieldSet()))
+								.appendTo($content),
+								type: 'inline'
+							},
+							open: function(){
+								$('#btn-add-submit').on('click', e=>{
+									e.preventDefault();
+									$.ajax({
+										url: context+'/adminjk/member/add',
+										method : 'POST',
+			                            data : JSON.stringify({
+			                            	id: $('#input-id').val(),
+			                            	pw: $('#input-pw').val(),
+			                            	name: $('#input-name').val(),
+			                            	email: $('#input-email').val(),
+			                            	phone: $('#input-phone').val()
+			                            }),
+			                            dataType : 'json',
+			                            contentType : 'application/json',
+			                            success : x=>{
+			                                $.magnificPopup.close();
+			                                app.admin.member(1);
+			                            },
+			                            error : (x, h, m)=>{                            	
+			                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+			                            }
+									});
+								});
+							},
+							close: function(){
+								app.admin.member(1);
+							}
+						});
+				});
 				
 				var eventfunc = function(){
 					$(function(){
-						$('#btn-member-add').click(function(e){
-							e.preventDefault();
-							$.magnificPopup.open({
-								items:{
-									src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-									.append($(createFieldSet()))
-									.appendTo($content),
-									type: 'inline'
-								},
-								callbacks:{
-									beforeOpen: function(){
-										$('#btn-add-submit').on('click', e=>{
-											e.preventDefault();
-											$.ajax({
-												url: context+'/adminjk/member/add',
-												method : 'POST',
-					                            data : JSON.stringify({
-					                            	id: $('#input-id').val(),
-					                            	pw: $('#input-pw').val(),
-					                            	name: $('#input-name').val(),
-					                            	email: $('#input-email').val(),
-					                            	phone: $('#input-phone').val()
-					                            }),
-					                            dataType : 'json',
-					                            contentType : 'application/json',
-					                            success : x=>{
-					                                $.magnificPopup.close();
-					                                $('#add-form').remove();
-					                                member(1);
-					                            },
-					                            error : (x, h, m)=>{                            	
-					                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
-					                            }
-											});
-										});
-									},
-									close: function(){
-										$('#add-form').remove();
-										member(1);
-									}
-								}
-							});
-						});
-						
-					$('.btn-success').click(function(e){
-						e.preventDefault();
+					$('.btn-success').click(function(){
 						var selected = $(this);
 						var id = selected.parent().siblings('td').eq(0).text();
 						var name = selected.parent().siblings('td').eq(1).text();
-						history = historyAdd();
+						
 						$.magnificPopup.open({
 							items:{
 								src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
@@ -251,6 +247,7 @@ app.admin = (()=>{
 				                                } else {
 				                                	tableCreate(JSON.parse(history));
 				                                }
+				                                eventfunc();
 				                            },
 				                            error : (x, h, m)=>{                            	
 				                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -259,23 +256,23 @@ app.admin = (()=>{
 									});
 								},
 								close: function(){
+									$('modify-form').remove();
+									history = sessionStorage.getItem('searchHistory');
 									if(JSON.parse(history).length === 12){
+										alert('디폴트');
 	                                	member(1);
 	                                } else {
+	                                	alert('히스토리');
 	                                	tableCreate(JSON.parse(history));
 	                                }
+									eventfunc();
 								}
 							}
 						});
-						$('#modify-form').remove();
-						$(function(){
-                        	eventfunc();
-                        });
-						historyDelete();
+						
 					});
 
-					$('.btn-danger').click(function(e){
-						e.preventDefault();
+					$('.btn-danger').click(function(){
 						var selected = $(this);
 						var id = selected.parent().siblings('td').eq(0).text();
 						$.magnificPopup.open({
@@ -319,14 +316,12 @@ app.admin = (()=>{
 						});
 					});
 				});
-				$(function(){
-                	eventfunc();
-                });
 			};
+			eventfunc();
 		});
 		});
 	};
-	
+
 	var board=x=>{
 		$.getJSON(context+'/adminjk/board/'+x, d=>{
 			$content.empty();
@@ -344,9 +339,18 @@ app.admin = (()=>{
 		});
 	};
 	var statistics=x=>{
-		$.getJSON(context+'/adminjk/statistics/'+x, d=>{
-			$content.empty();
-			$content.html($(createHTag({num : '3', val: '통계'})).attr('class', 'page-header'));
+		$content.empty();
+		$content.html($(createDiv({id: 'stat-body', clazz: 'container'})).attr('style', 'overflow: hidden'));
+		$('#stat-body').append($(createDiv({id: 'chart-div', clazz: 'container'})).attr('style', 'float: left; position: absolute'));
+		$('#stat-body').append($(createDiv({id: 'chart-div2', clazz: 'container'})).attr('style', 'float: left; position: absolute'));
+		$('#stat-body').append($(createDiv({id: 'chart-div3', clazz: 'container'})).attr('style', 'float: left; position: absolute'));
+		google.charts.load('current', {'packages':['corechart']});
+		donutChart();
+		barChart();
+		$(function(){
+			setInterval(function(){
+				donutChart();
+			}, 10000);
 		});
 	};
 	
@@ -370,8 +374,65 @@ app.admin = (()=>{
     		.append($(createThead(createTh({list: ['아이디', '이름', '이메일', '핸드폰', '수정/삭제']}))))
     		.append($(createTbody(createTr2({list : x}))));
 	};
+	var donutChart = function(){
+		$.ajax({
+	        url: context+'/adminjk/statistics/board',
+	        type: 'post',
+	        dataType: 'json',
+	        contentType: 'application/json',
+	        async: false,
+	        success: function(lists) {
+	            google.charts.setOnLoadCallback(drawChart);
+	            function drawChart() {
+	                var dataChart = [['id', 'Percentage']];
+	                if(lists.data.length != 0) {
+	                    $.each(lists.data, function(i, item){
+	                        dataChart.push([item.id, item.count*1.0]);
+	                    });
+	                }else {
+	                    dataChart.push(['입력해주세요', 1]);
+	                }
+	                var data = google.visualization.arrayToDataTable(dataChart);
+	                var view = new google.visualization.DataView(data);
+	                var options = {
+	                        title: "게시글이 5개 이상인 아이디",
+	                        is3D: true,
+	                        width: 1200,
+	                        height: 700
+	                };
+	                var chart = new google.visualization.PieChart(document.getElementById('chart-div'));
+	                chart.draw(view, options);
+	            }
+	        }
+	    });
+	};
+	
+	var barChart = function() {
+		google.charts.setOnLoadCallback(drawBarChart);
+        function drawBarChart(){
+        	var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Topping');
+            data.addColumn('number', 'Slices');
+            data.addRows([
+              ['Mushrooms', 3],
+              ['Onions', 1],
+              ['Olives', 1],
+              ['Zucchini', 1],
+              ['Pepperoni', 2]
+            ]);
+
+            var barchart_options = {title:'Barchart: How Much Pizza I Ate Last Night',
+                           width: 1200,
+                           height: 700,
+                           legend: 'none'};
+            var barchart = new google.visualization.BarChart(document.getElementById('chart-div2'));
+            barchart.draw(data, barchart_options);
+        }
+      };
+      
 	return {
 		onCreate : onCreate,
-		member : member
+		member : member,
+		donutChart : donutChart
 		};
 })();

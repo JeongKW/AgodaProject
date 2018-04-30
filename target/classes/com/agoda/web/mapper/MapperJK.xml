@@ -47,4 +47,7 @@
 			</if>
 		</if>
 	</select>
+	<select id="boardTest" resultType="com.agoda.web.kwangwoo.GoogleChart" parameterType="com.agoda.web.common.Command">
+		SELECT id, COUNT(*) as count FROM board GROUP BY id HAVING COUNT(*) >= 5;
+	</select>
 </mapper>

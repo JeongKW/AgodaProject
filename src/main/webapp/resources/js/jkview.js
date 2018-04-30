@@ -1,10 +1,14 @@
 //Common Tag for Dynamic
+var googlechar=()=>{
+	
+};
+
 var deleteView=()=>{
 	return '<h4>삭제하시겠습니까?</h4>'
 	+ '<button id="btn-delete-member">삭제</button><button id="btn-cancel-member">취소</button>';
 };
 
-var createFieldSet=()=>{//
+var createFieldSet=()=>{
 	return '<h3>회원 추가</h3>' 
 	+ '<fieldset style="border:0;">'
 	+ '<ol>'
@@ -34,21 +38,24 @@ var createFieldSet2=()=>{
 
 var test=()=>{
 	return '<div class="container">'
-	+'    <div class="row">    '
-	+'        <div class="col-xs-2"><select class="form-control" name="filter"><option value="i">아이디</option><option value="n">이름</option><option value="e">이메일</option><option value="p">핸드폰</option></select></div>'
-	+'        <div class="col-xs-4">'
-	+'	        <div class="input-group">'
-	+'                <input type="hidden" name="search_param" value="all" id="search_param">         '
-	+'                <input id="input-search" type="text" class="form-control" name="x" placeholder="검색할 내용 입력">'
-	+'                <span id="span-btn" class="input-group-btn">'
-	+'                </span>'
-	+'            </div>'
-	+'        </div>'
+	+'    <div id="div-row" class="row">'
 	+' 		  <div class="col-xs-2">'
 	+'			 <button id="btn-member-add" class="btn btn-primary">추가</button>'
 	+'		  </div>'
 	+'  </div>'
 	+'</div>';
+};
+
+var searchBox=()=>{
+	return '<div class="col-xs-2"><select class="form-control" name="filter"><option value="i">아이디</option><option value="n">이름</option><option value="e">이메일</option><option value="p">핸드폰</option></select></div>'
+	+'        <div class="col-xs-4">'
+	+'	        <div class="input-group">'
+	+'                <input type="hidden" name="search_param" value="all" id="search_param">         '
+	+'                <input id="input-search" type="text" class="form-control" placeholder="검색할 내용 입력">'
+	+'                <span id="span-btn" class="input-group-btn">'
+	+'                </span>'
+	+'            </div>'
+	+'        </div>';
 };
 
 var createSelect =x=>{

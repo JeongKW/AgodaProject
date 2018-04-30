@@ -155,6 +155,21 @@ public class AdminController {
 	public Map<?, ?> manageStatistics(@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageStatistics() is {}", "entered");
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/statistics/board", 
+			method = RequestMethod.POST, consumes = "application/json")
+	public Map<?, ?> boardStatistics() {
+		Map<String, Object> map = new HashMap<>();
+		logger.info("boardStatistics() is {}", "entered");
+		map.put("data", (List<?>) new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.boardTest(cmd);
+			}
+		}.excute(cmd));
 		return map;
 	}
 
