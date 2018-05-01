@@ -107,6 +107,22 @@ var createTr2=x=>{
 	});
 	return t;
 };
+var createTr3=x=>{
+	var t = '';
+	$.each(x.list, (i, j)=> {
+		t += '<tr>' + createTd3({list : j})+'</tr>';
+	});
+	return t;
+};
+var createTd3=x=>{
+	var t = '';
+	$.each(x.list, (i, j)=>{
+		if(i !== 'content'){
+			t += '<td>'+ j +'</td>';
+		}
+	});
+	return t;
+};
 var createTd2=x=>{
 	var t = '';
 	$.each(x.list, (i, j)=>{

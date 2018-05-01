@@ -80,7 +80,7 @@ app.admin = (()=>{
 		});
 	};
 	var member=x=>{
-		$.getJSON(context+'/adminjk/member/'+x, d=>{
+		$.post(context+'/adminjk/member/'+x, d=>{
 			$.getScript(view, ()=>{
 				$content.empty();
 				sessionStorage.setItem('initHistory', JSON.stringify(d.users));
@@ -325,28 +325,37 @@ app.admin = (()=>{
 	var board=x=>{
 		$.getJSON(context+'/adminjk/board/'+x, d=>{
 			$content.empty();
-			$content.html($(createDiv({id: 'board-div', clazz: 'container'})).append($(createBtn({id: 'back-btn', clazz: '', val: '버튼'}))
-					.on('click', function(){
-						window.history.back();
-					})));
+			$content.html($(createDiv({id: 'board-div', clazz: 'container'}))
+					.append($(createTab({id: 'board-tab', clazz: 'hover'}))));
+			$('#board-tab')
+    		.append($(createThead(createTh({list: ['글번호', '글제목', '작성일', '작성자', '조회수']}))))
+    		.append($(createTbody(createTr3({list : d.board}))));
 		});
-		$(window).scroll(function(){
-			if(($(window).scrollTop()+$(window).height()) > $(document).height() - 400){
-				for(var i = 0; i < 10; i++){
-					($(createDiv({id: '', clazz: ''})).append('ajax 요청')).appendTo('#content');
-				}
+		$(function(){
+			if($('#board-div')){
+				var docuHeight = $('#board-div').height();
+				var scrollHeight = '';
+				alert(docuHeight);
+				$(window).scroll(function(){
+					scrollHeight = $(window).scrollTop() + 809;
+					if(docuHeight - 10 < scrollHeight && scrollHeight < docuHeight ){
+						alert('끝');
+					}
+				});
 			}
 		});
 	};
 	var statistics=x=>{
 		$content.empty();
-		$content.html($(createDiv({id: 'stat-body', clazz: 'container'})).attr('style', 'overflow: hidden'));
-		$('#stat-body').append($(createDiv({id: 'chart-div', clazz: 'container'})).attr('style', 'float: left; position: absolute'));
-		$('#stat-body').append($(createDiv({id: 'chart-div2', clazz: 'container'})).attr('style', 'float: left; position: absolute'));
-		$('#stat-body').append($(createDiv({id: 'chart-div3', clazz: 'container'})).attr('style', 'float: left; position: absolute'));
-		google.charts.load('current', {'packages':['corechart']});
+		$content.html($(createDiv({id: 'stat-body', clazz: 'container'})));
+		$('#stat-body').append($(createDiv({id: 'chart-div', clazz: 'container'})));
+		$('#stat-body').append($(createBtn({id: 'edit', clazz: 'btn btn-default', val: 'Edit Chart'})));
+		$('#stat-body').append($(createDiv({id: 'dashboard', clazz: 'container'})));
+		$('#dashboard').append($(createDiv({id: 'chart-div2', clazz: 'container'})));
+		$('#dashboard').append($(createDiv({id: 'control-div', clazz: 'container'})));
+		google.charts.load('current', {'packages':['corechart', 'controls', 'charteditor']});
 		donutChart();
-		barChart();
+		googleChart();
 		$(function(){
 			setInterval(function(){
 				donutChart();
@@ -407,29 +416,71 @@ app.admin = (()=>{
 	    });
 	};
 	
-	var barChart = function() {
-		google.charts.setOnLoadCallback(drawBarChart);
-        function drawBarChart(){
-        	var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Topping');
-            data.addColumn('number', 'Slices');
-            data.addRows([
-              ['Mushrooms', 3],
-              ['Onions', 1],
-              ['Olives', 1],
-              ['Zucchini', 1],
-              ['Pepperoni', 2]
-            ]);
+     var googleChart = function(){
+    	 google.charts.setOnLoadCallback(drawChart2);
+         function drawChart2() {
+             var data = new google.visualization.DataTable();
+             data.addColumn('number', 'X');
+             data.addColumn('number', 'Y1');
+             data.addColumn('number', 'Y2');
 
-            var barchart_options = {title:'Barchart: How Much Pizza I Ate Last Night',
-                           width: 1200,
-                           height: 700,
-                           legend: 'none'};
-            var barchart = new google.visualization.BarChart(document.getElementById('chart-div2'));
-            barchart.draw(data, barchart_options);
-        }
-      };
-      
+             for (var i = 0; i < 100; i++) {
+                 data.addRow([i, Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)]);
+             }
+             
+             var dash = new google.visualization.Dashboard(document.getElementById('dashboard'));
+
+             var control = new google.visualization.ControlWrapper({
+                 controlType: 'ChartRangeFilter',
+                 containerId: 'control-div',
+                 options: {
+                     filterColumnIndex: 0,
+                     ui: {
+                         chartOptions: {
+                             height: 50,
+                             width: 1000,
+                             chartArea: {
+                                 width: '80%'
+                             }
+                         },
+                         chartView: {
+                             columns: [0, 1]
+                         }
+                     }
+                 }
+             });
+
+             var chart = new google.visualization.ChartWrapper({
+                 chartType: 'LineChart',
+                 containerId: 'chart-div2'
+             });
+
+             function setOptions (wrapper) {
+                 // sets the options on the chart wrapper so that it draws correctly
+                 wrapper.setOption('height', 700);
+                 wrapper.setOption('width', 1000);
+                 wrapper.setOption('chartArea.width', '80%');
+                 // the chart editor automatically enables animations, which doesn't look right with the ChartRangeFilter
+                 wrapper.setOption('animation.duration', 0);
+             }
+             
+             setOptions(chart);
+             
+             document.getElementById('edit').onclick = function () {
+                 var editor = new google.visualization.ChartEditor();
+                 google.visualization.events.addListener(editor, 'ok', function () {
+                     chart = editor.getChartWrapper();
+                     setOptions(chart);
+                     dash.bind([control], [chart]);
+                     dash.draw(data);
+                 });
+                 editor.openDialog(chart);
+             };
+             
+             dash.bind([control], [chart]);
+             dash.draw(data);
+         }
+     };
 	return {
 		onCreate : onCreate,
 		member : member,

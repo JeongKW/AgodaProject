@@ -43,7 +43,7 @@ public class AdminController {
 		return map;
 	}
 
-	@RequestMapping("/member/{pageNum}")
+	@RequestMapping(value = "/member/{pageNum}", method = RequestMethod.POST)
 	public Map<?, ?> manageMember(
 			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
@@ -177,7 +177,12 @@ public class AdminController {
 	public Map<?, ?> manageBoard(@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageBoard() is {}", "entered");
-		map.put("success", "1");
+		map.put("board", new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.boardList(cmd);
+			}
+		}.excute(cmd));
 		return map;
 	}
 }

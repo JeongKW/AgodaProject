@@ -50,4 +50,7 @@
 	<select id="boardTest" resultType="com.agoda.web.kwangwoo.GoogleChart" parameterType="com.agoda.web.common.Command">
 		SELECT id, COUNT(*) as count FROM board GROUP BY id HAVING COUNT(*) >= 5;
 	</select>
+	<select id="boardList" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		SELECT bbs_seq AS bbsSeq, title, content, regdate, id, view_count AS viewCount FROM Board
+	</select>
 </mapper>
