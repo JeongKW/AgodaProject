@@ -1,16 +1,15 @@
-app.residenceSpec =(()=>{
+app.residenceSpec =(()=>{	
 	var context, view, image;
-	var onCreate =()=>{
+	var onCreate =x=>{
 		$content = $('#content');
 		context = $.context();
 		view = $.javascript() + '/ydview.js';
 		image = $.image();
-		setContentView();
+		setContentView(x);
 	}
-	var setContentView =()=>{
+	var setContentView =x=>{
 		$.getScript(view, ()=>{
-			$content.html($(createDiv({id : 'resi-div-filter', clazz : 'container filter'})));
-			
+			$content.html($(createDiv({id : 'resi-div-filter', clazz : 'container filter'})));	
 			$(createDiv({id:'', clazz:'col-sm-3'})).attr('style', 'border: 1px solid gray; min-height: 130px; padding: 10px')
 			.appendTo('#resi-div-filter').append($(createSpan({clazz:'', val:'요금 범위'})));				
 			$(createDiv({id:'', clazz:'col-sm-3'})).attr('style', 'border: 1px solid gray; min-height: 130px; padding: 10px')
@@ -240,8 +239,7 @@ app.residenceSpec =(()=>{
 					$(createDiv({id: '', clazz: ''}))
 					.attr('style', 'display: inline-block; float: right; padding: 10px')
 					.append($(createSpan({id:'', clazz:'', val: '정렬기준'})))
-					.appendTo('.resi-header-sort-section')
-			
+					.appendTo('.resi-header-sort-section')			
 				
 				$(createDiv({id:'', clazz:'avilability-message'}))
 				.attr('style', 'background-color: #e9e9e9')
@@ -256,44 +254,41 @@ app.residenceSpec =(()=>{
 							.append($(createSpan({id:'', clazz:'', val: '객실의 63% 이상 이미 예약 완료!'})).attr('style', 'font-weight: bold')))
 					.append($(createPTag({id:'', clazz:'', val: '가격이 오르기 전에 지금 바로 예약하세요.'})))
 					.appendTo('.avilability-message');
-					
-			$(createUL({id:'', clazz:''}))
-			.attr('style', 'list-style-type: none; margin-top: 40px; padding-left: 0px')
-			.append($(createLI({id:'', clazz:''}))
-				.attr('style', 'margin-top: 20px; border: 1px solid gray')
-				.append($(createATag({id:'', clazz:'', link:'#', val:''}))
-					.append($(createDiv({id:'', clazz:''}))
-						.attr('style', 'min-height: 200px')
-						.append($(createDiv({id:'', clazz:'col-sm-4'}))
-							.attr('style', 'padding-left: 0px')
-							.append($(createImg({id:'', clazz:'', src:'https://goo.gl/rvz1Vu', alt:''}))
-								.attr('style', 'max-width: 100%')))
-						.append($(createDiv({id:'', clazz:'col-sm-5'}))
-							.append($(createUL({id:'', clazz:''}))
-								.attr('style', 'list-style-type: none; padding-left: 0px')
-								.append($(createLI({id:'',clazz:''}))
-									.attr('style', 'font-size: 20px')
-									.append($(createHTag({num:'5', val:'베스트웨스턴 호텔 하버뷰 (Best Western Hotel Harbour View)'}))))
-								.append($(createLI({id:'',clazz:''}))
-										.attr('style', 'font-size: 20px')
-										.append($(createSpan({id:'', clazz:'fa fa-star checked-resi-star', val:''})))
-										.append($(createSpan({id:'', clazz:'fa fa-star checked-resi-star', val:''})))
-										.append($(createSpan({id:'', clazz:'fa fa-star checked-resi-star', val:''})))
-										.append($(createSpan({id:'', clazz:'fa fa-star checked-resi-star', val:''})))
-										.append($(createSpan({id:'', clazz:'fa fa-star', val:''})))										
-								)
-								.append($(createLI({id:'',clazz:''}))
-									.append($(createPTag({id:'', clazz:'', val:'12시간 전 예약됨'}))
-										.attr('style', 'color: red')
-									)
-								)	
-							))
-						.append($(createDiv({id:'', clazz:'col-sm-3'}))
-							.attr('style', 'background-color: #e9e9e9; min-height: 200px;')
-						)
-			)))
-			.appendTo('#resi-main-col')
-					
+
+				$(createDiv({id:'', clazz:''}))
+				.append(
+					$(createUL({id:'resi-lists', clazz:''}))
+					.attr('style', 'list-style-type: none; margin-top: 40px; padding-left: 0px')
+					.append($(createAutoLI({list: x.list})))
+				)
+				.append($(createDiv({id:'', clazz:'text-center'}))
+					.append($(createBtn({id:'resi-loadMore-btn', clazz:'btn btn-primary', val:'+더보기'}))
+					.attr('style', 'font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 50px')
+					.on('click', e=>{
+						e.preventDefault();
+						var json = {};
+						$.ajax({
+							url : context+'/resi/loadMore',
+							method : 'POST',
+							data : JSON.stringify(json),
+							dataType : 'json',
+							contentType : 'application/json',
+							success : x=> {
+								var list = x.success;
+								var endRow = x.endRow;
+								var totalCount = x.totalCount;
+								if(endRow == totalCount) {
+									$('#resi-loadMore-btn').hide();
+								}
+								$(createAutoLI({list: list})).appendTo('#resi-lists')
+							}, error : (x, h, m)=>{
+								alert('컨트롤러 에러 발생 x='+x+', h='+h+', m='+m);
+							}
+						})
+					})
+					)
+				)
+				.appendTo('#resi-main-col')
 		});
 	};
 	return {onCreate : onCreate};
@@ -310,8 +305,9 @@ app.residence = (()=>{
 	};
 	var setContentView =()=>{
 		$.getScript(view, ()=>{
-			var checkIn;
-			var checkOut;
+			var checkIn = moment().format("YYYY-MM-DD");
+			var checkOut = moment().add(6, 'days').format("YYYY-MM-DD");
+			
 			$content.html($(createDiv({id : 'div-resi-main-search', clazz : 'container-fluid'}))
 				.attr('style', 'height: 450px; padding: 0px; position: relative;'));		
 
@@ -360,8 +356,9 @@ app.residence = (()=>{
 					.attr('style', 'background: white; height: 100px; padding: 20px; background-color: #fff')
 					.append($(createDiv({id:'', clazz:'row'}))
 						.append($(createDiv({id:'', clazz:'col-sm-4'}))
-							.append($(createDiv({id:'', clazz:'input-group'}))
+							.append($(createDiv({id:'', clazz:'input-group dropdown'}))
 								.append($(createInput({id:'resi-input-filter', clazz:'form-control input-lg', type:'text', placeholder:'Search...'}))
+									.attr('data-toggle', 'dropdown')
 									.attr('style', 'height: 60px; border-radius: 0px; border: 2px solid #333')
 									.focus(()=>{
 										$('#resi-input-filter').val('');
@@ -374,6 +371,28 @@ app.residence = (()=>{
 										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-search', val:''}))
 											.attr('style', 'font-size: 20px; color: #fff')
 										)
+										.attr('data-toggle', 'dropdown')
+										.on('click', ()=>{
+											$('#resi-input-filter').trigger('click');
+										})
+									)
+								)
+								.append($(createUL({id:'resi-search-list-ul', clazz:'dropdown-menu'}))
+									.attr('style', 'padding-left: 10px; width: 100%;')
+									.append($(createLI({id:'', clazz:''}))
+										.append($(createATag({id:'', clazz:'', link:'#', val:' HongKong'}))
+											.attr('style', 'font-size: 20px; font-weight: bold')
+										)
+									)
+									.append($(createLI({id:'', clazz:''}))
+											.append($(createATag({id:'', clazz:'', link:'#', val:'NewYork'}))
+												.attr('style', 'font-size: 20px; font-weight: bold')
+											)
+									)
+									.append($(createLI({id:'', clazz:''}))
+											.append($(createATag({id:'', clazz:'', link:'#', val:'Singapore'}))
+												.attr('style', 'font-size: 20px; font-weight: bold')		
+											)
 									)
 								)
 							)							
@@ -398,6 +417,8 @@ app.residence = (()=>{
 									        "monthNames": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
 									        "firstDay": 1
 									    },
+									    minDate : new Date(),
+									    endDate : moment().add(6, 'days'),
 									    "opens": "center",
 									    "timePicker": true
 									}, function(start, end, label){
@@ -455,12 +476,11 @@ app.residence = (()=>{
 								.attr('style', 'background-color: #333; color: #fff; height:60px; border-radius: 0px; width: 100%; font-size: 18px; font-weight: bold')
 								.on('click', (e)=>{
 									e.preventDefault();
-									console.log('search click!')
 									var json = {
-										id: $('#resi-input-filter').val(),
+										searchWord: $('#resi-input-filter').val(),
 										headCount: $('#resi-count').text(),
 										checkIn : checkIn,
-										checkOut : checkOut										
+										checkOut : checkOut
 									}
 									$.ajax({
 										url: context+'/resi/search/filter',
@@ -469,71 +489,30 @@ app.residence = (()=>{
 										dataType : 'json',
 										contentType : 'application/json',
 										success : x=> {
-											alert('성공');
+											var json = {
+												count : x.count,
+												list : x.success
+											}
+											app.residenceSpec.onCreate(json);
 										}, error : (x, h, m)=>{
 											alert('컨트롤러 에러 발생 x='+x+', h='+h+', m='+m);
 										}
-									})
-									app.residenceSpec.onCreate();
-								})
-							)
-						)
-					)
-				)
-				.append($(createDiv({id:'privateHouse', clazz:'tab-pane fade'}))
-					.attr('style', 'background: white; height: 100px; padding: 20px')
-					.append($(createDiv({id:'', clazz:'row'}))
-						.append($(createDiv({id:'', clazz:'col-sm-4'}))
-							.append($(createDiv({id:'', clazz:'input-group'}))
-								.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:'Search...'})))
-								.append($(createDiv({id:'', clazz:'input-group-btn'}))
-									.append($(createBtn({id:'', clazz:'btn btn-default input-lg', val:''}))
-										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-search', val:''})))
-									)
-								)
-							)							
-						)
-						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createDiv({id:'fromDate', clazz:'input-group date'}))
-									.attr('data-data-format', '"mm-dd-yyyy"')
-									.append($(createInput({id:'input-resi-date', clazz:'form-control input-lg', type:'text', placeholder:''}))
-									.attr('name', 'daterange')
-								)
-								.append($(createSpan({id:'', clazz:'input-group-addon input-lg', val:''}))
-										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-calendar', val:''}))
-											.on('click', ()=>{
-												
-											})
-										)
-								)
-							)
-						)
-						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createDiv({id:'toDate', clazz:'input-group date'}))
-								.attr('data-data-format', '"mm-dd-yyyy"')
-								.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:''}))
-									.attr('name', 'daterange')
-								)
-								.append($(createSpan({id:'', clazz:'input-group-addon input-lg', val:''}))
-									.append($(createSpan({id:'', clazz:'glyphicon glyphicon-calendar', val:''})))
-								)
-							)
-						)
-						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createInput({id:'', clazz:'form-control input-lg', type:'text', placeholder:'인원수'})))
-						)
-						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createBtn({id:'btn-move-resi-spec', clazz:'btn input-lg', val:'요금 검색하기'}))
-								.attr('style', 'background-color: #333; color: #fff; float: right')
-								.on('click', x=>{			
-									app.residenceSpec.onCreate();
+									})									
 								})
 							)
 						)
 					)
 				)
 			)
-			.appendTo('#div-resi-main-search');
+			.appendTo('#div-resi-main-search');	
+			//이쪽 봐주셈
+			$('#resi-search-list-ul li a').on('click', ()=>{
+				alert($(this).childern('a').text())
+				$('#input-resi-date').trigger('click');
+			  	$('#resi-input-filter').val($('#resi-search-list li a').text());
+			  	$('#resi-input-filter').val($(this).attr('value'));
+			  	$('#resi-input-filter').val('');
+			})
 			
 			
 			$(createDiv({id:'', clazz:'container-fluid'}))
@@ -545,7 +524,7 @@ app.residence = (()=>{
 								.append($(createDiv({id:'', clazz:'face front'}))
 									.append($(createDiv({id:'', clazz:'div-resi-card-photo'}))
 										.attr('style', 'border: 1px solid gray; padding: 5px; min-height: 350px;')
-										.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
+										.append($(createImg({id:'', clazz:'resi-card-img', src:'https://goo.gl/uP8GfV', alt:''}))
 											.attr('style', 'max-width: 100%; max-height: 250px')
 										)
 										.append($(createDiv({id:'', clazz:'card-body'}))
@@ -639,125 +618,57 @@ app.residence = (()=>{
 				.append($(createDiv({id:'', clazz:'container'}))
 					.append($(createDiv({id:'', clazz:'row'}))
 						.append($(createDiv({id:'', clazz:'col-sm-3 col-sm-offset-1'}))
-							.append($(createDiv({id:'', clazz:'flip'}))
-								.append($(createDiv({id:'resi-card-1', clazz:'thumbnail'}))
-									.attr('style', 'min-height: 400px; padding: 20px; margin-top: 50px')
-									.append($(createDiv({id:'', clazz:'face front'}))
-										.append($(createDiv({id:'', clazz:'resi-card-img'}))
-											.attr('style', 'position: relative; display: inline-block; overflow: hidden; padding: 1px')
-											.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
-												.attr('style', 'max-width: 100%; max-height: 250px')
-											)
-										)
-										.append($(createHTag({num:'4', val:'150만건 이상의 이용후기'}))
-											.attr('style', 'font-weight: bold')
-										)
-										.append($(createPTag({id:'', clazz:'', val:'아고다 여행 커뮤니티의 솔직한 이용후기를 참고해 완벽한 여행을 위한 최적의 숙소를 찾아 보세요.'}))
+							.append($(createDiv({id:'resi-card-1', clazz:'thumbnail'}))
+								.attr('style', 'min-height: 400px; padding: 20px; margin-top: 50px')
+								.append($(createDiv({id:'', clazz:'face front'}))
+									.append($(createDiv({id:'', clazz:'resi-card-img'}))
+										.attr('style', 'position: relative; display: inline-block; overflow: hidden; padding: 1px')
+										.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
+											.attr('style', 'max-width: 100%; max-height: 250px')
 										)
 									)
-									.append($(createDiv({id:'', clazz:'face back'}))
-										.append($(createInput({id:'', clazz:'form-control', type:'text', placeholder:''}))
-											.attr('value', 'ADKGDUI294')
-										)
-										.append($(createBtn({id:'', clazz:'form-control', val:'복사하기'}))
-											.attr('style', 'margin-top: 20px')
-										)
-										.append($(createPTag({id:'', clazz:'', val:'예약 시 할인 코드를 입력할 수 있는 숙소 예약(예약일 기준: 2018년 4월 3일~2018년 5월 31일)에 한해 유효함.'}))
-												.attr('style', 'margin-top: 20px; font-size: 12px')
-										)
-										.append($(createHr())
-											.attr('style', 'border: 2px solid gray')
-										)
-										.append($(createBtn({id:'', clazz:'btn btn-primary form-control', val:'숙소 검색하기'}))
-										)
+									.append($(createHTag({num:'4', val:'150만건 이상의 이용후기'}))
+										.attr('style', 'font-weight: bold')
+									)
+									.append($(createPTag({id:'', clazz:'', val:'아고다 여행 커뮤니티의 솔직한 이용후기를 참고해 완벽한 여행을 위한 최적의 숙소를 찾아 보세요.'}))
 									)
 								)
-								.on('click', x=>{
-									console.log('resi-card-1 click');
-									$('#resi-card-1').toggleClass('flipped')
-								})
 							)
 						)
-						/*두번째 카드*/
 						.append($(createDiv({id:'', clazz:'col-sm-4'}))
-							.append($(createDiv({id:'', clazz:'flip'}))
-								.append($(createDiv({id:'resi-card-2', clazz:'thumbnail'}))
-									.attr('style', 'min-height: 400px; padding: 20px;')
-									.append($(createDiv({id:'', clazz:'face front'}))
-										.append($(createDiv({id:'', clazz:'resi-card-img'}))
-											.attr('style', 'position: relative; display: inline-block; overflow: hidden; padding: 1px')
-											.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
-												.attr('style', 'max-width: 100%; max-height: 250px')
-											)
-										)
-										.append($(createHTag({num:'4', val:'아고다 보장제'}))
-											.attr('style', 'font-weight: bold')
-										)
-										.append($(createPTag({id:'', clazz:'', val:'아고다는 베스트 가격 제공을 위해 열심히 노력하고 있습니다. 더 낮은 가격을 발견한 경우 차액을 되돌려 드립니다.'}))
+							.append($(createDiv({id:'resi-card-2', clazz:'thumbnail'}))
+								.attr('style', 'min-height: 400px; padding: 20px;')
+								.append($(createDiv({id:'', clazz:'face front'}))
+									.append($(createDiv({id:'', clazz:'resi-card-img'}))
+										.attr('style', 'position: relative; display: inline-block; overflow: hidden; padding: 1px')
+										.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
+											.attr('style', 'max-width: 100%; max-height: 250px')
 										)
 									)
-									.append($(createDiv({id:'', clazz:'face back'}))
-										.append($(createInput({id:'', clazz:'form-control', type:'text', placeholder:''}))
-											.attr('value', 'ADKGDUI294')
-										)
-										.append($(createBtn({id:'', clazz:'form-control', val:'복사하기'}))
-											.attr('style', 'margin-top: 20px')
-										)
-										.append($(createPTag({id:'', clazz:'', val:'예약 시 할인 코드를 입력할 수 있는 숙소 예약(예약일 기준: 2018년 4월 3일~2018년 5월 31일)에 한해 유효함.'}))
-											.attr('style', 'margin-top: 20px; font-size: 12px')
-										)
-										.append($(createHr())
-											.attr('style', 'border: 2px solid gray')
-										)
-										.append($(createBtn({id:'', clazz:'btn btn-primary form-control', val:'숙소 검색하기'}))
-										)
+									.append($(createHTag({num:'4', val:'아고다 보장제'}))
+										.attr('style', 'font-weight: bold')
+									)
+									.append($(createPTag({id:'', clazz:'', val:'아고다는 베스트 가격 제공을 위해 열심히 노력하고 있습니다. 더 낮은 가격을 발견한 경우 차액을 되돌려 드립니다.'}))
 									)
 								)
-								.on('click', x=>{
-									console.log('resi-card-2 click');
-									$('#resi-card-2').toggleClass('flipped')
-								})
-							)
+							)							
 						)
-						/*세번째 카드*/
 						.append($(createDiv({id:'', clazz:'col-sm-3'}))
-							.append($(createDiv({id:'', clazz:'flip'}))
-								.append($(createDiv({id:'resi-card-3', clazz:'thumbnail'}))
-									.attr('style', 'min-height: 400px; padding: 20px; margin-top: 50px')
-									.append($(createDiv({id:'', clazz:'face front'}))
-										.append($(createDiv({id:'', clazz:'resi-card-img'}))
-											.attr('style', 'position: relative; display: inline-block; overflow: hidden; padding: 1px')
-											.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
-												.attr('style', 'max-width: 100%; max-height: 250px')
-											)
-										)
-										.append($(createHTag({num:'4', val:'연중무휴 24시간 고객센터'}))
-											.attr('style', 'font-weight: bold')
-										)
-										.append($(createPTag({id:'', clazz:'', val:'연중무휴 24시간 고객 지원 서비스를 17개 언어로 이용할 수 있습니다.'}))
+							.append($(createDiv({id:'resi-card-3', clazz:'thumbnail'}))
+								.attr('style', 'min-height: 400px; padding: 20px; margin-top: 50px')
+								.append($(createDiv({id:'', clazz:'face front'}))
+									.append($(createDiv({id:'', clazz:'resi-card-img'}))
+										.attr('style', 'position: relative; display: inline-block; overflow: hidden; padding: 1px')
+										.append($(createImg({id:'', clazz:'resi-card-img-top', src:'https://goo.gl/uP8GfV', alt:''}))
+											.attr('style', 'max-width: 100%; max-height: 250px')
 										)
 									)
-									.append($(createDiv({id:'', clazz:'face back'}))
-										.append($(createInput({id:'', clazz:'form-control', type:'text', placeholder:''}))
-											.attr('value', 'ADKGDUI294')
-										)
-										.append($(createBtn({id:'', clazz:'form-control', val:'복사하기'}))
-											.attr('style', 'margin-top: 20px')
-										)
-										.append($(createPTag({id:'', clazz:'', val:'예약 시 할인 코드를 입력할 수 있는 숙소 예약(예약일 기준: 2018년 4월 3일~2018년 5월 31일)에 한해 유효함.'}))
-											.attr('style', 'margin-top: 20px; font-size: 12px')
-										)
-										.append($(createHr())
-											.attr('style', 'border: 2px solid gray')
-										)
-										.append($(createBtn({id:'', clazz:'btn btn-primary form-control', val:'숙소 검색하기'}))
-										)
+									.append($(createHTag({num:'4', val:'연중무휴 24시간 고객센터'}))
+										.attr('style', 'font-weight: bold')
+									)
+									.append($(createPTag({id:'', clazz:'', val:'연중무휴 24시간 고객 지원 서비스를 17개 언어로 이용할 수 있습니다.'}))
 									)
 								)
-								.on('click', x=>{
-									console.log('resi-card-3 click');
-									$('#resi-card-3').toggleClass('flipped')
-								})
 							)
 						)
 					)
@@ -1082,9 +993,7 @@ app.residence = (()=>{
 					$(this).parent('div').siblings('img')
 					.attr('style', 'max-width:100%; min-height:100%; cursor:pointer; filter:brightness(70%)');
 				});
-				
-
-				
+								
 				$('div.card .div-card-photo').hover(function(){
 					$(this).css('box-shadow', '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)');
 				}, function(){

@@ -11,54 +11,6 @@
 	margin: 20px auto;
 }
 
-##accordian ul li a {
-	background-color: #333;
-	box-shadow: 0 5px 15px 1px rgba(0, 0, 0, .6), 0 0 200px 1px
-		rgba(255, 255, 255, .5);
-	color: white;
-}
-
-##accordian ul li {
-	background: #003040;
-	background: linear-gradient(#080808, #555);
-	cursor: pointer;
-	font-size: 12px;
-	line-height: 34px;
-	padding: 0 10px;
-	margin: inherit;
-}
-
-#accordian h3:hover {
-	text-shadow: 0 0 1px rgba(255, 255, 255, .7);
-}
-
-#accordian h3 span {
-	font-size: 16px;
-	margin-right: 10px;
-}
-
-#accordian li {
-	list-style-type: none;
-}
-
-#accordian ul ul li a {
-	color: white;
-	display: block;
-	font-size: 15px;
-	line-height: 27px;
-	padding: 0 15px;
-	text-decoration: none;
-	transition: all 0.15s;
-}
-
-#accordian ul ul {
-	display: none;
-}
-
-#accordian li.active ul {
-	display: block;
-}
-
 /* YDKIM */
 .white-popup {
   position: relative;
@@ -76,6 +28,7 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+/*nav-tab*/
 .nav-pills > li.active > a, 
 .nav-pills > li.active > a:focus,
 .nav-pills > li.active > a:hover {

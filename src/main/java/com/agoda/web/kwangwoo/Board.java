@@ -8,5 +8,5 @@ import lombok.Data;
 @Component
 @Data @Lazy
 public class Board {
-	private String bbsSeq, title, content, regdate, id;
+	private String bbsSeq, title, content, regdate, id, viewCount;
 }

@@ -8,5 +8,5 @@ import lombok.Data;
 @Component
 @Data @Lazy
 public class Residence {
-	private String resCode, starRating, name, zipcode, facCode;
+	private String Row, resCode, starRating, name, zipcode, facCode;
 }
