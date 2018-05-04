@@ -92,7 +92,26 @@ app.admin = (()=>{
 	var flight=x=>{
 		$.getJSON(context+'/adminjk/flight/'+x, d=>{
 			$content.empty();
-			$content.html($(createHTag({num : '3', val: '항공 리스트'})).attr('class', 'page-header'));
+			$content.html($(createDiv({id: 'map', clazz: 'container'})).attr('style', 'width: 70%; height: 70%'));
+			var body = document.body;
+			var script = document.createElement('script');
+			script.async = true;
+			script.defer = true;
+			script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5I2PmoL-T1gNpexmVWmMX7yv-80dxDNE";
+			body.appendChild(script);
+			$(function(){
+				$('#map').googleMap({
+					zoom: 13,
+				    coords: [22.3177343, 114.1697933],
+				    type: 'ROADMAP',
+				    mapTypeId: google.maps.MapTypeId.TERRAIN
+				});
+				$('#map').addMaker({
+					coords: [22.31944, 114.17778],
+	//			    url: 'http://www.tiloweb.com',
+				    id: 'juloongMaker'
+				});
+			});
 		});
 	};
 	var member=x=>{
@@ -528,9 +547,6 @@ app.admin = (()=>{
          }
      };
 	return {
-		onCreate : onCreate,
-		member : member,
-		donutChart : donutChart,
-		historyAdd : historyAdd
+		onCreate : onCreate
 		};
 })();
