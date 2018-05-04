@@ -76,7 +76,7 @@ app.login = (()=>{
                                     }
                                     if(x.success === 1){
                                     	if(x.user.id === "admin"){
-                                    		app.admin.onCreate(); // admin일 경우 관리자 페이지로
+                                    		app.admin.onCreate(x); // admin일 경우 관리자 페이지로
                                     	} else {
                                     		//mypage로 가게 해주세요
                                     	}

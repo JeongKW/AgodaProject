@@ -48,6 +48,7 @@ public class AdminController {
 			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageMember() is {}", "entered");
+		logger.info("manageMember() pageNum {}", pageNum);
 		cmd.setTable("member");
 		cmd.setData1(pageNum);
 		map.put("users", (List<?>) new IGetService() {
@@ -63,7 +64,8 @@ public class AdminController {
 
 	@RequestMapping(value = "/member/add", 
 			method = RequestMethod.POST, consumes = "application/json")
-	public Map<?, ?> addMember(@RequestBody Member m) {
+	public Map<?, ?> addMember(
+			@RequestBody Member m) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("addMember() is {}", "entered");
 		cmd.setTable("Member");
@@ -173,16 +175,20 @@ public class AdminController {
 		return map;
 	}
 
-	@RequestMapping("/board/{pageNum}")
-	public Map<?, ?> manageBoard(@PathVariable String pageNum) {
+	@RequestMapping(value = "/board/{pageNum}",
+			method = RequestMethod.GET, consumes = "application/json")
+	public Map<?, ?> manageBoard(
+			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageBoard() is {}", "entered");
+		cmd.setData1(pageNum);
 		map.put("board", new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
 				return mapper.boardList(cmd);
 			}
 		}.excute(cmd));
+		map.put("pageNum", Integer.parseInt(pageNum)+15);
 		return map;
 	}
 }
