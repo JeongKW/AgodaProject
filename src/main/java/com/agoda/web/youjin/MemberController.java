@@ -228,14 +228,14 @@ public class MemberController {
 			
 			return map;
 		}
-		/*@RequestMapping(value="/board/update/article/{bbsSeq}", method=RequestMethod.POST, consumes="application/json")
+		@RequestMapping(value="/board/update/article/{bbsSeq}", method=RequestMethod.POST, consumes="application/json")
 		public Map<?,?> updateArticle(@RequestBody Board b,@PathVariable String bbsSeq){
 			Map<String, Object> map = new HashMap<>();
 			logger.info("board updateArticle {}.", "entered");
 			cmd.setTable("board");
 			cmd.setData1(b.getTitle());
 			cmd.setData2(b.getContent());
-			cmd.setData3(bbsSeq);
+			/*cmd.setData3(bbsSeq);*/
 			logger.info("업데이트 내용 들어왔나{}.",b.getContent());
 			new IUpdateService() {
 				@Override
@@ -244,7 +244,7 @@ public class MemberController {
 				}
 			}.excute(cmd);
 			return map;
-		}*/
+		}
 		@RequestMapping(value="/board/post/article", method=RequestMethod.POST, consumes="application/json")
 		public Map<?,?> postArticle(@RequestBody Board b){
 			Map<String, Object> map = new HashMap<>();

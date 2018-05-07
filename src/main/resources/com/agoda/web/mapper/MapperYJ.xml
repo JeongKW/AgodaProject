@@ -47,4 +47,10 @@
 	 <delete id="deleteArticle" parameterType="com.agoda.web.common.Command">
  	  	delete from ${table} where bbs_seq like #{data1}
 	 </delete> 
+	 <update id="updateArticle" parameterType="com.agoda.web.common.Command">
+	  	UPDATE ${table}
+		SET title = #{data1},
+			content = #{data2}
+		WHERE bbs_seq LIKE ${board.bbsSeq}
+	  </update>
 </mapper>
