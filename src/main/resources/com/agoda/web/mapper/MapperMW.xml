@@ -44,7 +44,7 @@
 		 from flight_schedule
 		 where (from_location like 'osaka' and to_location like 'seoul' and departure_time like '%2018-05-10%')) A2) A
 		 , (SELECT @ROWNUM := 0) R) A2
-				WHERE Row BETWEEN '1' and '16'; -->
+				WHERE Row BETWEEN '1' and '16'; ;-->
 				
 	SELECT
 		 flight_schedule_seq AS flightScheduleSeq,

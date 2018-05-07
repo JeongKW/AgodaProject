@@ -8,7 +8,7 @@ import com.agoda.web.common.Command;
 import com.agoda.web.minwoo.FlightSchedule;
 
 @Repository
-public interface MapperMW {
+public interface MapperMW {//
 	public List<FlightSchedule> selectFlightList(Command cmd);
 	public List<FlightSchedule> selectBackFlightList(Command cmd);
 	public int departureCount(Command cmd);

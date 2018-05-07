@@ -3,7 +3,7 @@ package com.agoda.web.minwoo;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FlightList {
+public class FlightList {//
 	int totalCount, departureSize, arrivalSize, startRow, endRow, blockSize, listBlock;
 
 	public int getTotalCount() {
