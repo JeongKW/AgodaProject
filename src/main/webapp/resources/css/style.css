@@ -71,17 +71,14 @@
 .checked-resi-star {
 	color: orange;
 }
-.openscenter {
-	top: 70%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
+
 .nav-pills > li.active > a, 
 .nav-pills > li.active > a:focus,
 .nav-pills > li.active > a:hover {
 	border-bottom: 4px solid red;
 	background-color: #333;
 }
+/* picker.openscenter  */
 .nav-pills > li > a {
 	border-bottom: 4px solid #fff;
 	background-color: rgba(255,255,255, .7);

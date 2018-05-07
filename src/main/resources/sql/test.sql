@@ -78,6 +78,15 @@ create table reservation(
 	foreign key(`res_schedule_seq`) references reservation_schedule(`res_schedule_seq`) on delete cascade
 );
 
+SELECT
+ flight_schedule_seq AS flightScheduleSeq,
+ from_location AS fromLocation, 
+ to_location AS toLocation,
+ departure_time AS departureTime,
+ arrival_time AS arrivalTime,
+ price, code, iatacode 
+ FROM flight_schedule where from_location like 'seoul' 
+and to_location like 'osaka' and departure_time like '2018-05-03';
 show tables;
 
 drop table member;

@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.agoda.web.common.Command;
 import com.agoda.web.common.ICountService;
 import com.agoda.web.common.IGetService;
-import com.agoda.web.mapper.Mapper;
+import com.agoda.web.mapper.MapperJK;
 
 @RestController
 public class MemberController {
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	@Autowired Command cmd;
-	@Autowired Mapper mapper;
+	@Autowired MapperJK mapper;
 	@RequestMapping(value = "/member/{id}/login", 
 			method = RequestMethod.POST, consumes="application/json")
 	public Map<?,?> getUserId(
