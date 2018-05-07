@@ -89,6 +89,9 @@ drop table flight;
 insert into member values('test1234', '1234', '테스터', 'youjin813@naver.com', '010-1111-1234');
 
 select count(*) from member;
+select count(*) from residence;
+
+select * from member limit 12, 1;
 
 SELECT * FROM Member WHERE id like 'test1234' AND pw like '1234';
 
@@ -101,4 +104,5 @@ INSERT INTO Member VALUES ('lionisking', 'ehdanfdmldhkd', '사자', 'kyaowang@na
 INSERT INTO Member VALUES ('test1', 'test1', '김아무개', 'tester1@naver.com', '010-5752-3725');
 INSERT INTO Member VALUES ('test2', 'test2', '하아무개', 'tester2@hanmail.com', '010-7231-5892');
 INSERT INTO Member VALUES ('test3', 'test3', '차아무개', 'jku0150@nate.com', '010-3572-8297');
+INSERT INTO Member VALUES ('admin', '1234', 'admin', 'jku0150@nate.com', '010-9740-1123');
 

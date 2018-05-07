@@ -268,3 +268,6 @@ var createPTag=x=>{
 var createSpan2=x=>{
 	return '<span id="'+x.id+'" class="'+x.clazz+'">'+x.val+'</span>';
 };
+var createITag=x=>{
+	return '<i id="'+x.id+'", class="'+x.clazz+'">'+x.val+'</i>'
+}

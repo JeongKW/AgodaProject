@@ -12,6 +12,33 @@
 }
 
 /* YDKIM */
+/* .ui-state-default, .ui-widget-content .ui-state-default{
+	border-radius: 50%;
+	border: 3px solid lightblue;
+	font-size: 20px;
+	background: #fff;
+}	
+.ui-widget.ui-widget-content {
+  		border: 0px;
+}
+.ui-slider-horizontal {
+    height: 5px;
+}
+.ui-slider .ui-slider-range {
+	margin-top: 4px;
+	background: lightblue;
+} */
+
+.ui-widget-content{
+    border: 5px solid black;
+    color: #333;
+    width: 100%
+}
+.ui-widget{
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .white-popup {
   position: relative;
   background: #FFF;
@@ -22,11 +49,6 @@
 }
 .checked-resi-star {
 	color: orange;
-}
-.openscenter {
-	top: 70%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
 /*nav-tab*/
 .nav-pills > li.active > a, 

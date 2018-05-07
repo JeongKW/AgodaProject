@@ -3,7 +3,7 @@ var app = app || {};
 app = {
 	init : x=>{
 		$.getScript(x+'/resources/js/router.js',()=>{
-			$.extend(new router(x));
+			$.extend(new Router(x));
 			app.nav.onCreate();
 			app.residence.onCreate();
 		})
