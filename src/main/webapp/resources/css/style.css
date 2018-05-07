@@ -182,3 +182,10 @@
     width: 100%;
     padding: 20px;
 }
+/* yj board */
+.grid-list {
+   margin: 0px 100px 50px 100px;
+   display: grid;
+   grid-template-columns: auto auto auto auto auto;
+   border-bottom : 1px solid #e9e9e9;
+}
