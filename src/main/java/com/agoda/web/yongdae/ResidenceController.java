@@ -386,6 +386,7 @@ public class ResidenceController {
 				}
 			}.excute(cmd));
 			logger.info("success is {}", map.get("success"));
+			logger.info("success is {}", map.get("success"));
 			logger.info("sortCount is {}", map.get("sortCount"));
 			logger.info("starRatingList is {}", map.get("starRatingList"));
 		break;
