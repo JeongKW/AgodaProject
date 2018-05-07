@@ -51,6 +51,6 @@
 	  	UPDATE ${table}
 		SET title = #{data1},
 			content = #{data2}
-		WHERE bbs_seq LIKE ${board.bbsSeq}
+		<!-- WHERE bbs_seq LIKE ${board.bbsSeq} -->
 	  </update>
 </mapper>
