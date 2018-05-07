@@ -1,3 +1,244 @@
+app.flight=(()=>{
+	var context, view;
+	var onCreate=()=>{
+		$content = $('#content');
+		context =$.context();
+		view = $.javascript()+'/mwview.js';
+		setContentView();
+	};
+	var setContentView=()=>{//
+		$.getScript(view, ()=>{
+			var  departureTime;
+			var arrivalTime;
+			/*메인 페이지 중단 (항공권, 숙소 탭)*/
+			$content.html(createDiv({id : 'div-flight' , clazz : ''}));
+			$(createDiv({id:'div-background',clazz:''})).appendTo('#div-flight')
+			.attr('style', 'position : relative')
+			$('#div-background').append(createImg({id : 'flight-img', 
+				src : 'https://a1.r9cdn.net/dimg/phoenix-images/v3/agoda-flights-fd.jpg', clazz : '', alt : 'agoda'}));
+			//$(createNav({id : 'nav-option', clazz : 'navbar navbar-default'})).appendTo('#div-background');
+			$('#flight-img').attr('style', 'width : 100%; z-index : -1; height : auto; min-height : 557px; object-fit : cover;')
+			
+			$(createDiv({id : 'nav-option-div', clazz : ''})).appendTo('#div-background');
+			$('#nav-option-div')
+			.attr('style', 'width : 100%; margin-bottom : 0; position : absolute; top : 30%; left : 10%;')
+			.append(createUL({id : 'nav-option-ul', clazz : 'nav nav-tabs'}))
+			.append(createDiv({id : 'tab-contents-div', clazz : 'tab-content'}));
+			
+			$('#nav-option-ul')
+			.attr('style', 'text-align:center; border-bottom: 0px;')
+			.append(createLI({ id : 'hotels-li', clazz : ''}))
+			.append(createLI({ id : 'tikets-li', clazz : 'active'}));
+			$(createATag({id : 'a-hotels', link : '#hetels' , clazz : '', val : '숙소'}))
+			.attr('data-toggle', 'tab')
+			.attr('style', 'background-color : #252222; color : #fff;')
+			.appendTo('#hotels-li');
+			$(createATag({id : 'a-tikets', link : '#tikets' , clazz : '', val : '항공권'}))
+			.attr('data-toggle', 'tab').appendTo('#tikets-li');
+			
+			$('#nav-option-div').append(createDiv({id : 'nav-menu-div', clazz : 'tab-content'}));
+			
+			$('#nav-menu-div')
+			.attr('style', 'text-align : center; min-height : 150px; position : relative; background-color : white; opacity : 0.8; margin-right : 20%;')
+			.append(createDiv({id : 'home', clazz : 'tab-pane-fade'}))
+			.append(createDiv({id : 'menu1', clazz : 'tab-pane fade in active'}));
+			$('#menu1')
+			.append(createDiv({id : 'button-wrapper-div', clazz : ''}))
+			.append(createDiv({id : 'input-wrapper-div', clazz : ''}))
+			$('#button-wrapper-div').attr('style', 'width : 100%; height : 45px;')
+			$(createDiv({id : 'button-div', clazz : ''})).appendTo('#button-wrapper-div')
+			$(createDiv({id : 'wrapper-div', clazz : ''})).appendTo('#input-wrapper-div');
+			$('#input-wrapper-div').attr('style', 'width : 100%; height : 45px;')
+			
+			$('#button-div').attr('style', 'float : left;')
+			.append(createBtn({id : 'round-trip-btn', clazz : 'btn btn-sm', val : '왕복', type : ''}))
+			.append(createBtn({id : 'one-way-btn', clazz : 'btn btn-sm', val : '편도', type : ''}))
+			.append(createBtn({id : 'many-ways-btn', clazz : 'btn btn-sm', val : '다구간', type : ''}));
+			$('#round-trip-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
+			$('#one-way-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
+			$('#many-ways-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
+			
+			$('#wrapper-div').append(createDiv({id : 'wrapper-row-div', clazz : 'row-fixed'}));
+			$('#wrapper-div').attr('style', 'width : 100%; height : 45px;')
+			$('#wrapper-row-div').attr('style', 'position : absolute; padding: 15px;')
+			.append(createDiv({id : 'wrapper-col1-div', clazz : 'col-sm-2'}))
+			.append(createDiv({id : 'wrapper-col2-div', clazz : 'col-sm-2'}))
+			.append($(createDiv({id : 'wrapper-col3-div', clazz : 'col-sm-3'})))
+			.append(createDiv({id : 'wrapper-col4-div', clazz : 'col-sm-3'}))
+			.append(createDiv({id : 'wrapper-col5-div', clazz : 'col-sm-1'}));
+			
+/*			$('#wrapper-div').append(createDiv({id : 'wrapper-container-div', clazz : ''}));
+			$('#wrapper-div').attr('style', 'width : 100%; height : 45px;')
+			$('#wrapper-container-div').append(createDiv({id : 'wrapper-row-div', clazz : 'row-fixed'}));
+			$('#wrapper-row-div').attr('style', 'position : absolute; padding: 15px;')
+			
+*/		
+			
+			$('#wrapper-col1-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append(createDiv({id : 'wrapper-fromCity-div', clazz : 'input-group'}));
+			$('#wrapper-fromCity-div')
+			.append(createInput({id : 'input-find-fromcity', clazz : 'form-control', type : 'text', value : '', placeholder:'출발 도시'}))
+			.append(createDiv({id : 'wrapper-fromcity-btn-div', clazz : 'input-group-btn'}));
+			$(createBtn({id : 'changecity-btn', clazz : 'btn btn-default', type : 'submit', val : ''})).appendTo('#wrapper-fromcity-btn-div');
+			$(createITag({id : '', clazz : 'glyphicon glyphicon-transfer', val : ''})).appendTo('#changecity-btn');
+			$('#changecity-btn').on('click', ()=>{
+				var fromcity = $('#input-find-fromcity').val();
+				var tocity = $('#input-find-tocity').val();
+				$('#input-find-fromcity').val(tocity);
+				$('#input-find-tocity').val(fromcity);
+			});
+			
+			
+			$('#wrapper-col2-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append(createDiv({id : 'wrapper-toCity-div', clazz : 'form-group'}));
+			$('#wrapper-toCity-div')
+			.append(createInput({id : 'input-find-tocity', clazz : 'form-control', type : 'text', value : ''}))
+			.append(createDiv({id : 'wrapper-tocity-btn-div', clazz : 'input-group-btn'}));
+			$('#input-find-fromcity').attr('placeholde0r','출발 도시').attr('value', '서울');
+			$('#input-find-tocity').attr('placeholder','도착 도시').attr('value', '부산');
+			
+			$('#wrapper-col3-div')
+			.attr('style', 'padding-right : 0px; width : 20%')
+			.append($(createDiv({id : 'air-fromDate-div', clazz : 'input-group date'})));
+			
+			$('#air-fromDate-div').append($(createInput({id : 'fromDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''})))
+			.append(createSpan2({ id : 'fromDate-addon-span', clazz : 'input-group-addon',
+				val : createSpan2({id : '', clazz : 'glyphicon glyphicon-calendar', val : ''})}))
+				.on('click', ()=>{
+				});
+			
+			$('#fromDate-input').daterangepicker({
+				"locale": {
+	                          "format": "YY-MM-DD",
+	                          "separator": " - ",
+	                          "applyLabel": "적용",
+	                          "cancelLabel": "취소",
+	                          "fromLabel": "From",
+	                          "toLabel": "To",
+	                          "customRangeLabel": "Custom",
+	                          "weekLabel": "W",
+	                          "daysOfWeek": ["일", "월", "화", "수", "목", "금", "토"],
+	                          "monthNames": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+	                          "firstDay": 1
+	                      },
+	                      minDate: new Date(),
+	                      "opens": "center",
+	                      "dateLimit":{
+                        	  "days" : 365
+                          },
+	                      "timePicker": true
+			}, 
+			function(start, end, label) {
+			  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+			  departureTime =  start.format('YYYY-MM-DD');
+			  arrivalTime = end.format('YYYY-MM-DD');
+			});
+			$('.daterangepicker').attr('style', 'top : 49%; left : 43%;')
+			
+		
+//			$(createDiv({id : 'toDate', clazz : 'input-group date'})).attr('data-data-format','mm-dd-yyyy')
+//			.appendTo('#wrapper-col4-div');
+//			$('#toDate').append(createInput({id : 'toDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''}))
+//			.append(createSpan({clazz : 'input-group-addon',
+//				val : createSpan({clazz : 'glyphicon glyphicon-calendar', val : ''})}));
+			
+			
+			
+			$('#wrapper-col4-div')
+			.attr('style', 'padding-right : 0px;')
+			.append($(createDiv({id : '', clazz : 'input-group spinner'}))
+					.attr('style', '')
+					.append($(createSpan({id : '', clazz : 'input-group-btn span-minus', val : ''}))
+							.append($(createBtn({id : '', clazz : 'btn btn-default', val : ''}))
+									.append($(createITag({id : '', clazz : 'fa fa-minus', val : ''})))
+									.attr('style', '')
+									.on('click', ()=>{
+										if(parseInt($('.spinner #air-rbooking-count').text(),10)!=1){
+										     $('.spinner #air-rbooking-count').text(parseInt($('.spinner #air-rbooking-count').text(), 10)-1);
+						                        $('#air-rbooking-count').text($('.spinner #air-rbooking-count').text())                        
+										}
+									})
+									)
+							)
+							.append($(createSpan({id:'', clazz : 'input-group-addon', val : '성인'}))
+									.attr('style','width : 0;background-color:#fff; border-right:0px; border-left: 0px; font-size: 16px; font-weight: bold')
+									)
+									.append($(createSpan({id : 'air-rbooking-count', clazz : 'input-group-addon', val : '1'}))
+											.attr('style','width : 0; background-color: #fff; border-left: 0px; padding-left: 0px; font-size: 16px; font-weight: bold; min-width: 32px')
+											)
+											/*.append($(createSpan({id : '', clazz : 'input-group-addon', val : '명'}))
+													.attr('style','width : 0; background-color: #fff; border-left: 0px; padding-left: 0px; font-size: 16px; font-weight: bold; min-width: 32px')
+													)*/
+													.append($(createSpan({ id : '', clazz :'input-group-btn span-plus', val : ''}))
+															.append($(createBtn({id : '', clazz : 'btn btn-default', val : ''}))
+																.attr('style','width : ')
+																.append($(createITag({id: '', clazz : 'fa fa-plus', val:''})))
+																.attr('style', '')
+																.on('click', ()=>{
+																	   $('.spinner #air-rbooking-count').text(parseInt($('.spinner #air-rbooking-count').text(), 10)+1);
+												                        $('#air-rbooking-count').text($('.spinner #air-rbooking-count').text())
+																	})
+																)
+														)
+					);
+			//input-group-btn span-minus
+				
+			$('#class-btn').attr('style', 'width : 100%; height : 34px;');
+			
+			$('#test-div').append(createDiv({id : 'test2-div', clazz : ''})).append(createDiv({id : 'test3-div', clazz : ''}))
+			
+			
+			
+			$('#wrapper-col5-div')
+			.attr('style', 'padding-right : 0px; width : 10%')
+			.append(createBtn({id : 'flight-search-btn', clazz : 'btn btn-primary', val : '검색'}));
+			$('#flight-search-btn')
+			.attr('style', 'width : 100%;')
+			.on('click', e=>{
+				e.preventDefault();
+				alert('sss');
+				var id = $('#input-find-fromcity').val() +'to'+ $('#input-find-tocity').val()
+				var json ={
+					 id : id,
+					 arrival : $('#input-find-tocity').val(),
+					 bookcount : $('#air-rbooking-count').text(),
+					 departureTime : departureTime,
+					 arrivalTime : arrivalTime 
+				}
+				$.ajax({
+					url : context+'/flight/'+id+'/search',
+					method : 'POST',
+					data : JSON.stringify(json),
+					dataType : 'json',
+					contentType : 'application/json',
+					success : x =>{
+						if(x.success == '1'){
+							
+						}else{
+							alert('로그인 실패') 	
+						}
+						
+					},
+					error : (x, h, m) =>{
+						alert('망함 x='+x+', h='+h+', m='+m);
+					}
+					});
+				app.flightDtail.onCreate();
+			});
+			
+			
+			
+			$(createDiv({id : 'footer-flight', clazz : ''})).appendTo($content);
+			
+			
+		});
+	}
+
+	
+	return {onCreate:onCreate};
+})();
 app.flightDtail=(()=>{
 	var context, view;
 	var onCreate=()=>{
@@ -31,7 +272,8 @@ app.flightDtail=(()=>{
 			.append(createDiv({id : 'air-aroundtime-div', clazz : ''}));
 			
 			$('#air-aroundtime-div').attr('style', 'margin-top : 20px;')
-			.append(createSpan({id : 'air-span', clazz : ''}))
+			.append(createSpan({id : 'air-span', clazz : '', val : '시간대'}))
+			$('#air-span').attr('style', 'font-weight : 900;')
 			
 			$('#air-leftcontainer-div')
 			.attr('style', 'width : 100%; margin-bottom : 20px;')
@@ -42,7 +284,7 @@ app.flightDtail=(()=>{
 			.append('<span id = "air-oderby-pt">정렬</span>')
 			.append(createDiv({id : 'air-leftorderby-div', clazz : 'dropdown'}));
 			
-			$('#air-oderby-pt').attr('style', 'font-weight: 900;')
+			$('#air-oderby-pt').attr('style', 'font-weight: 900;');
 			
 			$('#air-leftorderby-div')
 			.attr('style', 'width : 100%; text-align : center;')
@@ -124,7 +366,7 @@ app.flightDtail=(()=>{
 			
 			$('#air-midcolumn-section').on('click', e=>{
 				e.preventDefault();
-				$('#air-schedule-detail-div').slideToggle("slow");
+				$('#air-schedule-detail-div').slideToggle();
 			});
 			$('#air-midcolumn-section')
 			.attr('style', 'min-height : 200px;')
@@ -197,158 +439,5 @@ app.flightDtail=(()=>{
 			.append(createPTag({val : '2시간 10분'}));
 		})
 	}
-	return {onCreate:onCreate};
-})();
-app.flight=(()=>{
-	var context, view;
-	var onCreate=()=>{
-		$content = $('#content');
-		context =$.context();
-		view = $.javascript()+'/mwview.js';
-		setContentView();
-	};
-	var setContentView=()=>{//
-		$.getScript(view, ()=>{
-			/*메인 페이지 중단 (항공권, 숙소 탭)*/
-			$content.html(createDiv({id : 'div-flight' , clazz : ''}));
-			$(createDiv({id:'div-background',clazz:''})).appendTo('#div-flight')
-			.attr('style', 'position : relative')
-			$('#div-background').append(createImg({id : 'flight-img', 
-				src : 'https://a1.r9cdn.net/dimg/phoenix-images/v3/agoda-flights-fd.jpg', clazz : '', alt : 'agoda'}));
-			//$(createNav({id : 'nav-option', clazz : 'navbar navbar-default'})).appendTo('#div-background');
-			$('#flight-img').attr('style', 'width : 100%; z-index : -1; height : auto; min-height : 557px; object-fit : cover;')
-			
-			$(createDiv({id : 'nav-option-div', clazz : ''})).appendTo('#div-background');
-			$('#nav-option-div')
-			.attr('style', 'width : 100%; margin-bottom : 0; position : absolute; top : 30%; left : 10%;')
-			.append(createUL({id : 'nav-option-ul', clazz : 'nav nav-tabs'}))
-			.append(createDiv({id : 'tab-contents-div', clazz : 'tab-content'}));
-			
-			$('#nav-option-ul')
-			.attr('style', 'text-align:center; border-bottom: 0px;')
-			.append(createLI({ id : 'hotels-li', clazz : ''}))
-			.append(createLI({ id : 'tikets-li', clazz : 'active'}));
-			$(createATag({id : 'a-hotels', link : '#hetels' , clazz : '', val : '숙소'}))
-			.attr('data-toggle', 'tab')
-			.attr('style', 'background-color : #252222; color : #fff;')
-			.appendTo('#hotels-li');
-			$(createATag({id : 'a-tikets', link : '#tikets' , clazz : '', val : '항공권'}))
-			.attr('data-toggle', 'tab').appendTo('#tikets-li');
-			
-			$('#nav-option-div').append(createDiv({id : 'nav-menu-div', clazz : 'tab-content'}));
-			
-			$('#nav-menu-div')
-			.attr('style', 'text-align : center; min-height : 150px; position : relative; background-color : white; opacity : 0.8; margin-right : 20%;')
-			.append(createDiv({id : 'home', clazz : 'tab-pane-fade'}))
-			.append(createDiv({id : 'menu1', clazz : 'tab-pane fade in active'}));
-			$('#menu1')
-			.append(createDiv({id : 'button-wrapper-div', clazz : ''}))
-			.append(createDiv({id : 'input-wrapper-div', clazz : ''}))
-			$('#button-wrapper-div').attr('style', 'width : 100%; height : 45px;')
-			$(createDiv({id : 'button-div', clazz : ''})).appendTo('#button-wrapper-div')
-			$(createDiv({id : 'wrapper-div', clazz : ''})).appendTo('#input-wrapper-div');
-			$('#input-wrapper-div').attr('style', 'width : 100%; height : 45px;')
-			
-			$('#button-div').attr('style', 'float : left;')
-			.append(createBtn({id : 'round-trip-btn', clazz : 'btn btn-sm', val : '왕복', type : ''}))
-			.append(createBtn({id : 'one-way-btn', clazz : 'btn btn-sm', val : '편도', type : ''}))
-			.append(createBtn({id : 'many-ways-btn', clazz : 'btn btn-sm', val : '다구간', type : ''}));
-			$('#round-trip-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
-			$('#one-way-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
-			$('#many-ways-btn').attr('style', 'margin : 5px; display: inline-block; vertical-align: middle;')
-			
-			$('#wrapper-div').append(createDiv({id : 'wrapper-container-div', clazz : ''}));
-			$('#wrapper-div').attr('style', 'width : 100%; height : 45px;')
-			
-			
-			$('#wrapper-container-div').append(createDiv({id : 'wrapper-row-div', clazz : 'row-fixed'}));
-			$('#wrapper-row-div').attr('style', 'position : absolute; padding: 15px;')
-			.append(createDiv({id : 'wrapper-col1-div', clazz : 'col-sm-2'}))
-			.append(createDiv({id : 'wrapper-col2-div', clazz : 'col-sm-2'}))
-			.append(createDiv({id : 'wrapper-col3-div', clazz : 'col-sm-3'}))
-			.append(createDiv({id : 'wrapper-col4-div', clazz : 'col-sm-2'}))
-			.append(createDiv({id : 'wrapper-col5-div', clazz : 'col-sm-1'}));
-			
-			$('#wrapper-col1-div')
-			.attr('style', 'padding-right : 0px; width : 20%')
-			.append(createDiv({id : 'wrapper-fromCity-div', clazz : 'input-group'}));
-			$('#wrapper-fromCity-div')
-			.append(createInput({id : 'input-find-fromcity', clazz : 'form-control', type : 'text', value : '', placeholder:'출발 도시'}))
-			.append(createDiv({id : 'wrapper-fromcity-btn-div', clazz : 'input-group-btn'}));
-			$(createBtn({id : 'changecity-btn', clazz : 'btn btn-default', type : 'submit', val : ''})).appendTo('#wrapper-fromcity-btn-div');
-			$(createITag({id : '', clazz : 'glyphicon glyphicon-transfer', val : ''})).appendTo('#changecity-btn');
-			$('#changecity-btn').on('click', ()=>{
-				var fromcity = $('#input-find-fromcity').val();
-				var tocity = $('#input-find-tocity').val();
-				$('#input-find-fromcity').val(tocity);
-				$('#input-find-tocity').val(fromcity);
-			});
-			
-			
-			$('#wrapper-col2-div')
-			.attr('style', 'padding-right : 0px; width : 20%')
-			.append(createDiv({id : 'wrapper-toCity-div', clazz : 'form-group'}));
-			$('#wrapper-toCity-div')
-			.append(createInput({id : 'input-find-tocity', clazz : 'form-control', type : 'text', value : ''}))
-			.append(createDiv({id : 'wrapper-tocity-btn-div', clazz : 'input-group-btn'}));
-			$('#input-find-fromcity').attr('placeholder','출발 도시');
-			$('#input-find-tocity').attr('placeholder','도착 도시');
-			
-			$('#wrapper-col3-div')
-			.attr('style', 'padding-right : 0px; width : 20%')
-			.append($(createDiv({id : 'air-fromDate-div', clazz : 'input-group date'})));
-			
-			$('#air-fromDate-div').append($(createInput({id : 'fromDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''})))
-			.append(createSpan2({ id : 'fromDate-addon-span', clazz : 'input-group-addon',
-				val : createSpan2({id : '', clazz : 'glyphicon glyphicon-calendar', val : ''})}));
-		
-			$('#air-fromDate-div').daterangepicker({
-			    "startDate": "04/12/2018",
-			    "endDate": "04/18/2018"
-			}, function(start, end, label) {
-			  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-			});
-		
-//			$(createDiv({id : 'toDate', clazz : 'input-group date'})).attr('data-data-format','mm-dd-yyyy')
-//			.appendTo('#wrapper-col4-div');
-//			$('#toDate').append(createInput({id : 'toDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''}))
-//			.append(createSpan({clazz : 'input-group-addon',
-//				val : createSpan({clazz : 'glyphicon glyphicon-calendar', val : ''})}));
-			
-			
-			
-			$('#wrapper-col4-div')
-			.attr('style', 'padding-right : 0px; width : 20%')
-			.append(createBtn({id : 'class-btn', clazz : 'btn btn-default dropdown-toggle',
-				val : '' + createSpan({clazz : 'caret',  
-					val : createDiv({id : 'test-div', clazz : 'dropdown-content'})
-					})
-				}));
-			
-				
-			$('#class-btn').attr('style', 'width : 100%; height : 34px;');
-			
-			$('#test-div').append(createDiv({id : 'test2-div', clazz : ''})).append(createDiv({id : 'test3-div', clazz : ''}))
-			
-			
-			
-			$('#wrapper-col5-div')
-			.attr('style', 'padding-right : 0px; width : 10%')
-			.append(createBtn({id : 'flight-search-btn', clazz : 'btn btn-primary', val : '검색'}));
-			$('#flight-search-btn')
-			.attr('style', 'width : 100%;')
-			.on('click', ()=>{
-				app.flightDtail.onCreate();
-			});
-			
-			
-			
-			$(createDiv({id : 'footer-flight', clazz : ''})).appendTo($content);
-			
-			
-		});
-	}
-
-	
 	return {onCreate:onCreate};
 })();

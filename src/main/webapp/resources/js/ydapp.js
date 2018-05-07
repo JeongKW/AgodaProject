@@ -1,3 +1,71 @@
+app.cookie = {setCookie: x=>{
+		console.log(x);
+		document.cookie = x.key + "=" + x.val
+	},
+	getCookie: x=>{
+		var name = x.key + "=";
+		var res = document.cookie.split(';');
+		for(var i=0; i<res.length; i++) {
+			var t = res[i];
+			while(t.charAt(0)=='') {
+				t = t.substring(1, t.length);
+				if(t.indexOf(name) == 0) {
+					return t.substring(name.length, t.length);
+				}
+			}
+		}
+	},
+	removeCookie: x=>{
+		createCookie(name, "", -1);
+	}
+};
+
+app.residenceReservation =(()=>{
+	var context, view, image;
+	var onCreate =x=>{
+		$content = $('#content');
+		context = $.context();
+		view = $.javascript() + '/ydview.js';
+		image = $.image();
+		setContentView(x);
+	};
+	var setContentView =x=>{
+			$.getScript(view, ()=>{
+				console.log(x.headCount);
+				$content.html($(createResiReserPage(x)));
+				/*display 설정: 예약자와 투숙자가 다를 경우 클릭해서 투숙객 정보를 입력해 주세요.*/
+				$('#resi-reser-info-confirm').on('click', ()=>{
+					$('input[id=resi-reser-info-confirm]').each(function(){
+						if($(this).is(':checked')){
+							$('#resi-reser-info-confirm-result').attr('style', 
+							'background: #e9e9e9; padding: 20px; margin-top: 10px; display: block;');					
+						} else {
+							console.log('false');
+							$('#resi-reser-info-confirm-result').attr('style', 'display: none;');											
+						}
+					})									
+				})
+				/*display 설정: 특별 요청 사항 입력하기*/
+				$('#resi-reser-add-other-info').on('click', (e)=>{
+					e.preventDefault()
+					if($('#resi-reser-add-other-info-span').attr('class')==="fa fa-plus-circle") {						
+						$('#resi-reser-add-other-info-span').attr('class', 'fa fa-minus-circle')
+						$('#resi-reser-add-other-info-result')
+						.attr('style', 'margin-top: 10px; background: #e9e9e9; width:100%; padding: 10px; display: block;')						
+					} else {
+						$('#resi-reser-add-other-info-span').attr('class', 'fa fa-plus-circle')
+						$('#resi-reser-add-other-info-result')
+						.attr('style', 'display: none;')
+					}
+				})
+				
+				
+				
+			})
+	};
+	return {onCreate : onCreate}
+})();
+
 app.residenceSpec =(()=>{	
 	var context, view, image;
 	var onCreate =x=>{
@@ -9,63 +77,356 @@ app.residenceSpec =(()=>{
 	}
 	var setContentView =x=>{
 		$.getScript(view, ()=>{
-			$content.html($(createDiv({id : 'resi-div-filter', clazz : 'container filter'})));	
-			$(createDiv({id:'', clazz:'col-sm-3'})).attr('style', 'border: 1px solid gray; min-height: 130px; padding: 10px')
-			.appendTo('#resi-div-filter').append($(createSpan({clazz:'', val:'요금 범위'})));				
-			$(createDiv({id:'', clazz:'col-sm-3'})).attr('style', 'border: 1px solid gray; min-height: 130px; padding: 10px')
-			.appendTo('#resi-div-filter').append($(createSpan({clazz:'', val:'요금 범위'})));
-			$(createDiv({id:'', clazz:'col-sm-3'})).attr('style', 'border: 1px solid gray; min-height: 130px; padding: 10px')
-			.appendTo('#resi-div-filter').append($(createSpan({clazz:'', val:'요금 범위'})));
-			$(createDiv({id:'', clazz:'col-sm-3'})).attr('style', 'border: 1px solid gray; min-height: 130px; padding: 10px')
-			.appendTo('#resi-div-filter').append($(createSpan({clazz:'', val:'요금 범위'})));
+			$content.html($(createDiv({id:'resi-sticky-search-nav', clazz:'container-fluid'}))
+				.attr('style', 'background: #e9e9e9; height: 60px; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.19);')				
+			)
+			$("body").scrollTop(0);			
+			$(createDiv({id:'', clazz:'container'}))
+			.attr('style', 'padding: 0px; padding-top:13px')			
+			.append($(createSerahNav(x)))
+			.appendTo('#resi-sticky-search-nav')
 			
-			$(createDiv({id:'', clazz:'container'})).attr('style', 'margin-top: 30px')
-			.append($(createUL({id:'', clazz: 'nav nav-pills'}))
-				.append($(createLI({id:'', clazz:'active'}))
-					.append($(createATag({id:'', clazz:'', link:'#resi-tab-content-total', val:'전체숙소'}))
-						.attr('data-toggle', 'tab')
-						.attr('style', 'border-radius: 0px;')
-					)
-				)
-				.append($(createLI({id:'', clazz:''}))
-					.append($(createATag({id:'', clazz:'', link:'#resi-tab-content-hotel', val:'호텔'}))
-						.attr('data-toggle', 'tab')
-						.attr('style', 'border-radius: 0px;')
-					)
-				)
-				.append($(createLI({id:'', clazz:''}))
-					.append($(createATag({id:'', clazz:'', link:'#resi-tab-content-privateHouse', val:'프라이빗 하우스'}))
-						.attr('data-toggle', 'tab')
-						.attr('style', 'border-radius: 0px;')
-					)
-				)
+			$('#resi-search-nav-daterange').daterangepicker();
+			
+			
+			
+			$('#resi-search-nav-minus').on('click', ()=>{
+				console.log('minus click!');
+				if(parseInt($('#resi-spec-count').text(), 10)!=1){
+					$('#resi-spec-count').text(parseInt($('#resi-spec-count').text(), 10)-1);
+					$('#resi-spec-count').text($('#resi-spec-count').text())												
+				}
+			})
+			$('#resi-search-nav-plus').on('click', ()=>{
+				console.log('plus click!');
+				$('#resi-spec-count').text(parseInt($('#resi-spec-count').text(), 10)+1);
+				$('#resi-spec-count').text($('#resi-spec-count').text());
+			})
+			
+			$(createDiv({id:'resi-div-filter', clazz:'container filter'}))
+			.attr('style', 'padding: 0px;'
+				+'box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
+			.appendTo($content)
+					
+			$(createDiv({id:'', clazz:'col-sm-3'}))
+			.attr('style', 'border-right: 1px solid gray; height: 140px; padding: 10px')
+			.append($(createSpan({id:'', clazz:'', val:'요금 범위'}))
+				.attr('style', 'font-size: 15px; font-weight: bold; padding-left: 10px')		
 			)
-			.append($(createDiv({id:'#resi-tab-content', clazz: 'tab-content'}))
-				.append($(createDiv({id: 'resi-tab-content-total', clazz: 'tab-pane in active'}))
+			.append($(createDiv({id:'', clazz:''}))
+				.attr('style', 'margin-top: 10px; padding-left: 10px')		
+				.append($(createSpan({id:'resi-price-range-output', clazz:'', val:''}))
+					.attr('style', 'font-size: 15px')	
 				)
-				.append($(createDiv({id: 'resi-tab-content-hotel', clazz: 'tab-pane'}))
-				)
-				.append($(createDiv({id: 'resi-tab-content-privateHouse', clazz: 'tab-pane'}))
-				)
+				.append('<br/><br/><br/>')
+				.append($(createDiv({id:'resi-slider', clazz:''})))
 			)
-			.appendTo($content);
+			.appendTo('#resi-div-filter');				
+			var price1;
+			var price2;
+			$(function(){
+				var resultSpan = $('#resi-price-range-output');
+				var divSlider = $('#resi-slider');
+				$('#resi-slider').slider({
+					range : true,
+					min: 0,
+					max:  320000,
+					step: 10000,
+					values: [0,  320000],
+					slide : function(e, ui){
+						resultSpan.html(''
+								+ui.values[0]
+								+' ~ '
+								+ui.values[1]);						
+					},
+					change: function(e, ui){
+						console.log(ui.values[0]);
+						console.log(ui.values[1]);
+						price1 = ui.values[0];
+						price2 = ui.values[1];
+						var json = {
+								price1 : price1,
+								price2 : price2,
+								WhereKeyword : 'price',
+								Table1 : 'residence',
+								Table2 : 'facility',
+								Orderby : 'price',
+								headCount: x.headCount,
+								listCount : $('#resi-loadMore-btn').attr('value')
+						}
+						$.ajax({
+							url: context+'/resi/search/filter',
+							method: 'POST',
+							data: JSON.stringify(json),
+							datatype: 'json',
+							contentType: 'application/json',
+							success: x=>{
+								console.log('정렬된 결과 수: '+x.sortCount)
+								console.log('넘어온 인원 수: '+x.headCount)
+								$('#resi-loadMore-btn').attr('name', 'price');											
+								if(x.sortCount > $('#resi-loadMore-btn').attr('value')){
+									$('#resi-loadMore-btn').show();											
+								} else {
+									$('#resi-loadMore-btn').hide();		
+								}
+								var list = x.success;
+								var headCount = x.headCount;
+								$('#resi-lists').empty();
+								$('#resi-lists').append($(createAutoLI({list: list, headCount: headCount})))
+							}, error: x=>{
+								alert('에러');
+							}
+						})
+					}
+				});
+				resultSpan.html(''+divSlider.slider('values', 0) + ' ~ ' + divSlider.slider('values', 1));
+			})
+
+			$(createDiv({id:'resi-starRating-div', clazz:'col-sm-3'}))
+			.attr('style', 'border-right: 1px solid gray; height: 140px; padding: 10px 0px;')
+			.append($(createSpan({id:'', clazz:'', val:'숙소 성급'}))
+				.attr('style', 'font-size: 15px; font-weight: bold; padding-left: 10px')
+			)
+			.append($(createATag({id:'resi-starRating-option-cancel', clazz:'', link:'', val:'선택해제'}))
+					.attr('style', 'font-size: 12px; float: right; padding-right: 10px; color: blue')
+					.on('click', function(e){
+						e.preventDefault();
+						/*스타레이팅 체크박스 선택해제*/
+						$('input[name=starRating_checkbox]:checked').each(function(){
+							$(this).trigger('click');
+						})
+						$(this).hide();
+					})					
+			)
+			.append($(createDiv({id:'', clazz:''}))
+					.attr('style', 'margin-top: 10px')
+					.append($(createDiv({id:'', clazz:''}))
+							.attr('style', 'padding-left: 10px')
+							.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'starRating5'}))
+								.attr('name', 'starRating_checkbox')
+							)
+							.append('&nbsp;&nbsp<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;&nbsp;('+x.starRatingList[4].count+')')
+					)							
+					.append($(createDiv({id:'', clazz:''}))
+							.attr('style', 'padding-left: 10px')
+							.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'starRating4'}))
+								.attr('name', 'starRating_checkbox')		
+							)
+							.append('&nbsp;&nbsp<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;&nbsp;('+x.starRatingList[3].count+')')
+					)
+					.append($(createDiv({id:'', clazz:''}))
+							.attr('style', 'padding-left: 10px')
+							.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'starRating3'}))
+								.attr('name', 'starRating_checkbox')			
+							)
+							.append('&nbsp;&nbsp<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+									+'&nbsp;&nbsp;('+x.starRatingList[2].count+')')
+					)
+					.append($(createDiv({id:'resi-star-dropdown', clazz:''}))
+						.attr('style', 'display: none')
+						.append($(createDiv({id:'', clazz:''}))
+								.attr('style', 'padding-left: 10px')
+								.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'starRating2'}))
+									.attr('name', 'starRating_checkbox')			
+								)
+								.append('&nbsp;&nbsp<span class="fa fa-star checked-resi-star"></span>'
+										+'&nbsp;<span class="fa fa-star checked-resi-star"></span>'
+										+'&nbsp;&nbsp;('+x.starRatingList[1].count+')')
+						)
+						.append($(createDiv({id:'', clazz:''}))
+								.attr('style', 'padding-left: 10px')
+								.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'starRating1'}))
+									.attr('name', 'starRating_checkbox')			
+								)
+								.append('&nbsp;&nbsp<span class="fa fa-star checked-resi-star"></span>'
+										+'&nbsp;&nbsp;('+x.starRatingList[0].count+')')
+						)
+						.append($(createDiv({id:'', clazz:''}))
+								.attr('style', 'padding-left: 10px')
+								.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'starRating0'}))
+									.attr('name', 'starRating_checkbox')			
+								)
+								.append('&nbsp;&nbsp<span>성급 없음</span>')
+						)		
+					)
+					.append($(createDiv({id:'resi-star-dropdown-arrow', clazz:''}))
+						.append($(createDiv({id:'', clazz:'text-center'}))
+							.append($(createSpan({id:'', clazz:'fa fa-sort-down', val:''})))
+						)
+					)				
+			)
+			.hover(function(){
+				$(this).attr('style', 'border-right: 1px solid red; height: 140px; padding: 10px 0px;')
+				$('#resi-star-dropdown-arrow').attr('style', 'display: none;')
+				$('#resi-star-dropdown').attr('style', 'background: #fff; display: block;')
+				$('#resi-starRating-div').attr('style', 'border-right: 1px solid gray; height: 140px; padding: 10px 0px;')
+			}, function(){
+				$(this).attr('style', 'border-right: 1px solid gray; height: 140px; padding: 10px 0px; overflow: hidden;')
+				$('#resi-star-dropdown-arrow').attr('style', 'display: block;')
+				$('#resi-star-dropdown').attr('style', 'display: none;')
+
+			})			
+			.appendTo('#resi-div-filter');
+			
+			
+			$(createDiv({id:'', clazz:'col-sm-3'}))
+			.attr('style', 'border-right: 1px solid gray; height: 140px; padding: 10px')
+			.append($(createSpan({clazz:'', val:'숙소 위치 평가 점수'}))
+				.attr('style', 'font-size: 15px; font-weight: bold')	
+			)
+			.append($(createATag({id:'resi-ratingScore-option-cancel', clazz:'', link:'', val:'선택해제'}))
+				.attr('style', 'font-size: 12px; float: right; padding-right: 10px; color: blue')
+				.on('click', function(e){
+					e.preventDefault();
+					/*평점 라디오 버튼 선택해제*/
+					if($('input[name=ratingScore_radio]:checked')) {
+						console.log('true!!!!')
+						$($('input[name=ratingScore_radio]:checked')).prop('checked', false);
+					}					
+					$(this).hide();
+				})					
+			)
+			.append($(createDiv({id:'', clazz:''}))
+				.attr('style', 'margin-top: 10px')
+				.append($(createDiv({id:'', clazz:''}))					
+					.attr('style', 'padding-left: 10px')
+					.append($(createInput({id:'', clazz:'', type:'radio', placeholder:'9'}))
+					.attr('name', 'ratingScore_radio')		
+					)
+					.append('<span><strong>  9+</strong>  최고의 위치</span>')
+				)			
+				.append($(createDiv({id:'', clazz:''}))
+					.attr('style', 'padding-left: 10px')
+					.append($(createInput({id:'', clazz:'', type:'radio', placeholder:'8'}))
+						.attr('name', 'ratingScore_radio')		
+					)
+					.append('<span><strong>  8+</strong>  우수한 위치</span>')
+				)			
+				.append($(createDiv({id:'', clazz:''}))
+					.attr('style', 'padding-left: 10px')
+					.append($(createInput({id:'', clazz:'', type:'radio', placeholder:'7'}))
+						.attr('name', 'ratingScore_radio')		
+					)
+					.append('<span><strong>  7+</strong>  아주 좋은 위치</span>')
+				)			
+			)
+			.appendTo('#resi-div-filter');
+			
+			$(document).ready(function(){
+				$('#resi-starRating-option-cancel').hide();
+				$('#resi-ratingScore-option-cancel').hide();
+			})
+			
+			$(createDiv({id:'', clazz:'col-sm-3'}))
+			.attr('style', 'height: 140px; padding: 10px')
+			.append($(createSpan({clazz:'', val:'《딱! 맞춤》 검색 조건 입력'}))
+				.attr('style', 'font-size: 15px; font-weight: bold')
+			)
+			.append($(createInput({id:'', clazz:'form-control', type:'', placeholder:'숙소명/숙소/종류/지역/편의시설'}))
+				.attr('style', 'margin-top: 10px')
+			)
+			.appendTo('#resi-div-filter');
+
 			
 			$(createDiv({id:'', clazz:'container resi-spec-total'}))
-			.attr('style', 'margin-top: 30px')
-			.appendTo('#resi-tab-content-total');
-			$(createDiv({id:'', clazz:'container resi-spec-hotel'}))
-			.attr('style', 'margin-top: 30px')
-			.appendTo('#resi-tab-content-hotel');
-			$(createDiv({id:'', clazz:'container resi-spec-privateHouse'}))
-			.attr('style', 'margin-top: 30px')
-			.appendTo('#resi-tab-content-privateHouse');
+			.attr('style', 'margin-top: 70px; padding: 0px;')
+			.appendTo($content);
 
 			/*사이드바 구현*/
-			$(createDiv({id:'resi-sidebar-col', clazz:'col-sm-3'})).attr('style', 'min-height: 500px; padding: 0px')
+			$(createDiv({id:'resi-sidebar-col', clazz:'col-sm-3'}))
+			.attr('style', 'min-height: 500px; padding: 0px; padding-right: 20px;')
 			.appendTo('.resi-spec-total');
-				$(createDiv({id:'', clazz:'resi-searchLocation'})).appendTo('#resi-sidebar-col');
+				
+				$(createDiv({id:'resi-sidebar-col-div', clazz:''}))
+				.attr('style', 'padding: 10px;'
+					+'box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
+				.appendTo('#resi-sidebar-col');
+				
+				$(createDiv({id:'', clazz:'resi-searchLocation'}))
+				.attr('data-toggle', 'modal')
+				.attr('data-target', '#resiMapModal')
+				.attr('style', 'cursor: pointer')
+				.on('click', ()=>{
+					$(createDiv({id:'resi-map-div',clazz:''})).appendTo($content);
+					$('#resi-map-div').html(
+						$(createDiv({id:'resiMapModal', clazz:'modal fade'}))
+						.attr('role', 'dialog')
+						.append($(createDiv({id:'', clazz:'modal-dialog modal-lg'}))
+							.append($(createDiv({id:'', clazz:'modal-content'}))
+								.append($(createDiv({id:'', clazz:'modal-header'}))
+									.attr('style', '')
+									.append($(createBtn({id:'', clazz:'close', val:'&times;'}))
+										.attr('data-dismiss', 'modal')
+										.attr('style', 'font-size: 50px; font-weight: bold;')
+										.hover(function(){
+											$(this).attr('style', 'font-size: 50px; font-weight: bold; color: red;')
+										}, function(){
+											$(this).attr('style', 'font-size: 50px; font-weight: bold;')
+										})
+									)
+									.append($(createHTag({num:'4', val:'오시는 길'}))
+										.attr('style', 'font-size: 30px; font-weight: bold;')
+									)
+								)
+								.append($(createDiv({id:'', clazz:'modal-body'}))
+									.append($(createDiv({id:'map', clazz:''}))
+										.attr('style', 'width: 100%; height: 400px;')											
+									)	
+								)	
+								.append($(createDiv({id:'', clazz:'modal-footer'}))
+									.append($(createPTag({id:'', clazz:'', val:'감사합니다. 빨리오셔요~!'}))
+										.attr('style', 'font-size: 20px; font-weight: bold;')
+									)	
+								)	
+							)
+						)	
+						.on('show.bs.modal', function(event){
+							initialize()
+						})
+					)
+				})
+				.appendTo('#resi-sidebar-col-div');
+				
+				function initialize(){
+					var chicago = {lat: 41.85, lng: -87.65};
+			        var indianapolis = {lat: 39.79, lng: -86.14};
+					
+					var map = new google.maps.Map(document.getElementById('map'), {
+						zoom: 20,
+						center: chicago
+					});
+					
+					var directionsDisplay = new google.maps.DirectionsRenderer({
+						map: map
+					});
+			
+					var request = {
+						destination: indianapolis,
+						origin: chicago,
+						travelMode: 'DRIVING'
+					}
+					var directionsService = new google.maps.DirectionsService();
+					directionsService.route(request, function(response, status){
+						if(status == 'OK'){
+							directionsDisplay.setDirections(response);
+						}
+					})
+				}
+				/*google.maps.event.addDomListener(window, "load", initialize);*/
+
 					$(createImg({id:'', clazz:'', src: 'https://goo.gl/P9XPJj', alt: ''}))
-					.attr('style', 'max-width: 100%; max-height: 100%; position: relative')
+					.attr('style', 'max-width: 100%; max-height: 100%; position: relative; border: 1px solid gray')
 					.appendTo('.resi-searchLocation');
 						$(createPTag({id: '', clazz: '', val: '숙소 위치 확인'}))	
 						.attr('style', 'position: absolute; top: 15%; left: 50%; transform: translate(-65%, -70%); font-weight: bold;')
@@ -78,10 +439,9 @@ app.residenceSpec =(()=>{
 						},
 						type:'inline'
 					});
-					
 					$(createDiv({id: '', clazz: 'resi-filters-list'}))
 					.attr('style', 'margin-top: 20px')
-					.appendTo('#resi-sidebar-col');
+					.appendTo('#resi-sidebar-col-div');
 						$(createUL({id:'', clazz: 'ul-resi-sidebar-type'}))
 						.attr('style', 'padding-left: 10px; margin-bottom: 0px')
 						.appendTo('.resi-filters-list');
@@ -183,28 +543,122 @@ app.residenceSpec =(()=>{
 										$(createLI({id:'', clazz: 'li-resi-filter-item-service-1'}))
 											.attr('style', 'list-style-type: none')
 											.appendTo('.ul-resi-filter-item-service');
-											$(createInput({type: 'radio', id:'', clazz: '', placeholder: ''}))
-												.attr('name', 'type')
+											$(createInput({type: 'checkbox', id:'', clazz: 'resi-option', placeholder: ''}))
+												.attr('value', 'breakfast')
 												.appendTo('.li-resi-filter-item-service-1');
-											$(createSpan({id: '', clazz: '', val: '조식포함'}))
+											$(createSpan({id: '', clazz: '', val: '조식 포함'}))
 												.appendTo('.li-resi-filter-item-service-1');
 										$(createLI({id:'', clazz: 'li-resi-filter-item-service-2'}))
 											.attr('style', 'list-style-type: none')
 											.appendTo('.ul-resi-filter-item-service');
-											$(createInput({type: 'radio', id:'', clazz: '', placeholder: ''}))
-												.attr('name', 'type')
+											$(createInput({type: 'checkbox', id:'', clazz: '', placeholder: ''}))
+												.attr('value', 'late-checkOut')
 												.appendTo('.li-resi-filter-item-service-2');
 											$(createSpan({id: '', clazz: '', val: '레이트 체크아웃'}))
 												.appendTo('.li-resi-filter-item-service-2');		
+													
 											
+						$('input[type=checkbox], input[type=radio]').on('click', ()=>{
+							if($('input[name=starRating_checkbox]').is(':checked')){
+								$('#resi-starRating-option-cancel').show();					
+							} else {
+								$('#resi-starRating-option-cancel').hide();								
+							}							
+							
+							if($('input[name=ratingScore_radio]').is(':checked')){
+								$('#resi-ratingScore-option-cancel').show();			
+							} else {
+								$('#resi-ratingScore-option-cancel').hide();								
+							}														
+							
+							var DATA = "";
+							var value;
+							var multiData;
+							var WhereKeyword, data4, data5;
+							/* 체크박스 값 가져오기 */
+							$('input[type=checkbox]:checked').each(function(){
+								console.log('입력된 값: '+$(this).val());	
+								if($(this).is(':checked')) {
+									DATA += $(this).val()+"/";									
+								}
+							})							
+							var splitDATA = DATA.split("/");
+							console.log(splitDATA.length);
+							console.log('radio 값 : '+$('input[type=radio]:checked').val());
+							var ratingScore = $('input[type=radio]:checked').val();
+							/* 체크박스 값 1 or N 으로 value값 구분 */
+							if(splitDATA.length==1 || splitDATA.length==2){
+								value = splitDATA[0];
+								if(value==="breakfast"){
+									data4 = 'breakfast';
+									data5 = 'true';
+									WhereKeyword = value;
+								} else if(value==="starRating5" || value==="starRating4" || value==="starRating3" ||
+										value==="starRating2" || value==="starRating1" || value==="starRating0"){
+									var str = value;
+									var str1 = str.substring(0, 10);
+									var str2 = str.substring(10, 11);
+									data4 = str1;
+									data5 = str2;
+									WhereKeyword = str1;
+								} else if(ratingScore == 9 || ratingScore == 8 || ratingScore == 7) {
+									console.log('들어옴')
+									WhereKeyword = 'ratingScore';
+									data4 = ratingScore;
+								} else {
+									WhereKeyword = 'null';									
+								}
+							} else {
+								WhereKeyword = 'multiOption';
+								multiData = DATA;
+							}								
+							console.log('WhereKeyword: '+WhereKeyword);
+							var json = {
+									WhereKeyword : WhereKeyword,
+									Table1 : 'residence',
+									Table2 : 'facility',
+									Orderby : 'starRating DESC',
+									data4 : data4,
+									data5 : data5,
+									multiData: multiData,
+									headCount : x.headCount,
+									listCount : $('#resi-loadMore-btn').attr('value')
+							};
+							
+							$.ajax({
+								url: context+'/resi/search/filter',
+								method : 'POST',
+								data : JSON.stringify(json),
+								datatype : 'json',
+								contentType : 'application/json',
+								success : x=>{
+									console.log('정렬된 결과 수: '+x.sortCount)
+									if(x.sortCount > $('#resi-loadMore-btn').attr('value')){
+										$('#resi-loadMore-btn').show();											
+									} else {
+										$('#resi-loadMore-btn').hide();		
+									}
+									var list = x.success;
+									var headCount = x.headCount;
+									$('#resi-lists').empty();
+									$('#resi-lists').append($(createAutoLI({list: list, headCount: headCount})))
+								}, error : x=>{
+									alert('에러');
+								}
+							})
+
+						})
+					
+																	
 						$(createHr())
 						.attr('style', 'margin-top: 5px; margin-right: 20px; margin-bottom: 5px')
 						.appendTo('.resi-filters-list');			
 						
-			$(createDiv({id:'resi-main-col', clazz:'col-sm-9'})).attr('style', 'min-height: 500px')
+			$(createDiv({id:'resi-main-col', clazz:'col-sm-9'})).attr('style', 'min-height: 500px; padding-right: 0px')
 			.appendTo('.resi-spec-total');
 				$(createDiv({id: '', clazz: 'resi-header-sort-section'}))
-				.attr('style', 'height: 50px')
+				.attr('style', 'height: 70px; padding: 10px; border-left: 7px solid red;'
+					+'box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
 				.appendTo('#resi-main-col');
 					$(createDiv({id: '', clazz: 'resi-header-sort-section_left-col'}))
 					.attr('style', 'display: inline-block')
@@ -226,23 +680,105 @@ app.residenceSpec =(()=>{
 						.attr('data-toggle', 'dropdown').attr('aria-haspopup', 'true').attr('aria-expanded', 'false')
 						.append($(createSpan({id:'', clazz:'caret', val:''})))
 						.appendTo('#resi-dropdown');
-							$(createUL({id:'', clazz:'dropdown-menu dropdown-menu-right'}))
+							$(createUL({id:'resi-sort-ul', clazz:'dropdown-menu dropdown-menu-right'}))
 							.attr('aria-labelledby', 'resiMenu').attr('style', 'width: 300px')
-							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'아고다 추천'}))))
+							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'아고다 추천'}))
+								.attr('value', 'starRating DESC')))
 							.append($(createLI({id:'', clazz:'divider'})))
-							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'요금(낮은 가격 순)'}))))
+							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'요금(낮은 가격 순)'}))
+								.attr('value', 'price')))
 							.append($(createLI({id:'', clazz:'divider'})))
-							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'요금(높은 가격 순)'}))))
+							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'요금(높은 가격 순)'}))
+								.attr('value', 'price DESC')))
 							.append($(createLI({id:'', clazz:'divider'})))
-							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'투숙객 평가'}))))
+							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'투숙객 평가(높은 평가 순)'}))
+								.attr('value', 'ratingScore DESC')))
+							.append($(createLI({id:'', clazz:'divider'})))
+							.append($(createLI({id:'', clazz:''})).append($(createATag({id:'', clazz:'dropdown-item', link:'#', val:'투숙객 평가(낮은 평가 순)'}))
+								.attr('value', 'ratingScore')))
 							.appendTo('#resi-dropdown');
+					
+					$('#resi-sort-ul li a').on('click', function(e){
+						e.preventDefault();
+						var DATA = "";
+						var value;
+						var multiData;
+						var WhereKeyword, data4, data5;
+						/* 체크박스 값 가져오기 */
+						$('input[type=checkbox]:checked').each(function(){
+							console.log('입력된 값: '+$(this).val());	
+							if($(this).is(':checked')) {
+								DATA += $(this).val()+"/";									
+							}
+						})
+						var splitDATA = DATA.split("/");
+						console.log(splitDATA.length);
+						/* 체크박스 값 1 or N 으로 value값 구분 */
+						if(splitDATA.length==1 || splitDATA.length==2){
+							value = splitDATA[0];
+							if(value==="breakfast"){
+								data4 = 'breakfast';
+								data5 = 'true';
+								WhereKeyword = value;
+							} else if(value==="starRating5" || value==="starRating4" || value==="starRating3" ||
+									value==="starRating2" || value==="starRating1" || value==="starRating0"){
+								var str = value;
+								var str1 = str.substring(0, 10);
+								var str2 = str.substring(10, 11);
+								data4 = str1;
+								data5 = str2;
+								WhereKeyword = str1;
+							} else {
+								WhereKeyword = 'null';									
+							}
+						} else {
+							console.log('else');
+							WhereKeyword = 'multiOption';
+							multiData = DATA;
+						}	
+						console.log(WhereKeyword);
+						console.log($(this).attr('value'));
+						var json = {
+								Orderby: $(this).attr('value'),
+								headCount : x.headCount,
+								Table1 : 'residence',
+								Table2 : 'facility',
+								WhereKeyword : WhereKeyword,
+								data4 : data4,
+								data5 : data5,
+								multiData : multiData,
+								listCount : $('#resi-loadMore-btn').attr('value')
+						};
+						$.ajax({
+							url : context+'/resi/search/filter',
+							method: 'POST',
+							data: JSON.stringify(json),
+							datatype: 'json',
+							contentType : 'application/json',
+							success: x=>{
+								if(x.sortCount > $('#resi-loadMore-btn').attr('value')){
+									$('#resi-loadMore-btn').show();											
+								} else {
+									$('#resi-loadMore-btn').hide();		
+								}
+								var list = x.success;
+								var headCount = x.headCount;
+								$('#resi-lists').empty();
+								$('#resi-lists').append($(createAutoLI({list: list, headCount: headCount})))
+							}, error: x=>{
+									alert('에러');
+							}
+						});
+					})
+					
 					$(createDiv({id: '', clazz: ''}))
 					.attr('style', 'display: inline-block; float: right; padding: 10px')
 					.append($(createSpan({id:'', clazz:'', val: '정렬기준'})))
 					.appendTo('.resi-header-sort-section')			
 				
 				$(createDiv({id:'', clazz:'avilability-message'}))
-				.attr('style', 'background-color: #e9e9e9')
+				.attr('style', 'margin-top: 20px; background-color: #e9e9e9; border-left: 7px solid green;'
+					+'box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
 				.appendTo('#resi-main-col');
 					$(createDiv({id:'', clazz:'avilability-message-gauge'}))
 					.attr('style', 'display: inline-block; padding: 10px 30px')
@@ -254,45 +790,266 @@ app.residenceSpec =(()=>{
 							.append($(createSpan({id:'', clazz:'', val: '객실의 63% 이상 이미 예약 완료!'})).attr('style', 'font-weight: bold')))
 					.append($(createPTag({id:'', clazz:'', val: '가격이 오르기 전에 지금 바로 예약하세요.'})))
 					.appendTo('.avilability-message');
-
-				$(createDiv({id:'', clazz:''}))
-				.append(
-					$(createUL({id:'resi-lists', clazz:''}))
-					.attr('style', 'list-style-type: none; margin-top: 40px; padding-left: 0px')
-					.append($(createAutoLI({list: x.list})))
+				
+				$(createDiv({id:'', clazz:'row'}))
+				.attr('style', 'margin-top: 20px')
+				.append($(createDiv({id:'', clazz:'col-sm-3 col-sm-offset-9'}))
+					.attr('style', 'padding-right: 15px')
+					.append($(createSelect({id:'resi-loadMore-count-select', clazz:'form-control'}))
+						.append($(createOption({id:'', clazz:'', val:'3', txt: '3개 더보기'})))
+						.append($(createOption({id:'', clazz:'', val:'4', txt: '4개 더보기'})))
+						.append($(createOption({id:'', clazz:'', val:'5', txt: '5개 더보기'})))
+					)					
 				)
-				.append($(createDiv({id:'', clazz:'text-center'}))
-					.append($(createBtn({id:'resi-loadMore-btn', clazz:'btn btn-primary', val:'+더보기'}))
-					.attr('style', 'font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 50px')
-					.on('click', e=>{
-						e.preventDefault();
-						var json = {};
-						$.ajax({
-							url : context+'/resi/loadMore',
-							method : 'POST',
-							data : JSON.stringify(json),
-							dataType : 'json',
-							contentType : 'application/json',
-							success : x=> {
-								var list = x.success;
-								var endRow = x.endRow;
-								var totalCount = x.totalCount;
-								if(endRow == totalCount) {
-									$('#resi-loadMore-btn').hide();
-								}
-								$(createAutoLI({list: list})).appendTo('#resi-lists')
-							}, error : (x, h, m)=>{
-								alert('컨트롤러 에러 발생 x='+x+', h='+h+', m='+m);
-							}
-						})
+				.appendTo('#resi-main-col');
+				
+				$('#resi-loadMore-count-select').change(function(){
+					$('#resi-loadMore-btn').attr('value', $(this).val());
+					var DATA = "";
+					var value;
+					var multiData;
+					var WhereKeyword, data4, data5;
+					/* 체크박스 값 가져오기 */
+					$('input[type=checkbox]:checked').each(function(){
+						console.log('입력된 값: '+$(this).val());	
+						if($(this).is(':checked')) {
+							DATA += $(this).val()+"/";									
+						}
 					})
+					var splitDATA = DATA.split("/");
+					console.log(splitDATA.length);
+					/* 체크박스 값 1 or N 으로 value값 구분 */
+					if(splitDATA.length==1 || splitDATA.length==2){
+						value = splitDATA[0];
+						if(value==="breakfast"){
+							data4 = 'breakfast';
+							data5 = 'true';
+							WhereKeyword = value;
+						} else if(value==="starRating5" || value==="starRating4" || value==="starRating3" ||
+								value==="starRating2" || value==="starRating1" || value==="starRating0"){
+							var str = value;
+							var str1 = str.substring(0, 10);
+							var str2 = str.substring(10, 11);
+							data4 = str1;
+							data5 = str2;
+							WhereKeyword = str1;
+						} else {
+							WhereKeyword = 'null';									
+						}
+					} else {
+						console.log('else');
+						WhereKeyword = 'multiOption';
+						multiData = DATA;
+					}	
+					console.log(WhereKeyword);
+					var json = {
+							headCount : x.headCount,
+							listCount : $(this).val(),
+							Table1 : 'residence',
+							Table2 : 'facility',
+							Orderby : 'starRating DESC',
+							WhereKeyword : WhereKeyword,
+							data4 : data4,
+							data5 : data5,
+							multiData : multiData
+					}
+					$.ajax({
+						url : context+'/resi/search/filter',
+						method: 'POST',
+						data: JSON.stringify(json),
+						datatype: 'json',
+						contentType : 'application/json',
+						success: x=>{
+							console.log(x.sortCount)
+							if(x.sortCount > $('#resi-loadMore-btn').attr('value')){
+								$('#resi-loadMore-btn').show();											
+							} else {
+								$('#resi-loadMore-btn').hide();		
+							}
+							var list = x.success;
+							var headCount = x.headCount;
+							$('#resi-lists').empty();
+							$('#resi-lists').append($(createAutoLI({list: list, headCount: headCount})));
+						}, error: x=>{
+								alert('에러');
+						}
+					})					
+				})
+
+				$(createDiv({id:'resi-lists-div', clazz:''}))
+				.append($(createUL({id:'resi-lists', clazz:''}))
+					.attr('style', 'list-style-type: none; margin-top: 20px; padding-left: 0px')
+					.append($(createAutoLI({list: x.list, headCount: x.headCount})))
+				)
+				.append($(createDiv({id:'resi-loadMore-div', clazz:'text-center'}))
+					.append($(createBtn({id:'resi-loadMore-btn', clazz:'btn btn-primary', val:'Load More'}))
+						.attr('value', '3')
+						.attr('style', 'font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 50px')
+						.on('click', e=>{							
+							e.preventDefault();
+							var DATA = "";
+							var value;
+							var multiData;
+							var WhereKeyword, data4, data5;
+							
+							/* 버튼 값 저장*/
+							value = $('#resi-loadMore-btn').attr('name');
+							console.log('name: '+value);
+							/* 체크박스 값 가져오기 */
+							$('input[type=checkbox]:checked').each(function(){
+								console.log('입력된 값: '+$(this).val());	
+								if($(this).is(':checked')) {
+									DATA += $(this).val()+"/";									
+								} 
+							})
+							var splitDATA = DATA.split("/");
+							console.log(splitDATA.length);
+							console.log(splitDATA);
+							if(splitDATA.length==1) {
+								if(value === "price"){
+									WhereKeyword = value;
+									data4 = price1;
+									data5 = price2;
+								} else {
+									WhereKeyword = 'null';									
+								}
+							} else if(splitDATA.length==2){
+								value = splitDATA[0];
+								if(value==="breakfast"){
+									data4 = 'breakfast';
+									data5 = 'true';
+									WhereKeyword = value;
+								} else if(value==="starRating5" || value==="starRating4" || value==="starRating3" ||
+										value==="starRating2" || value==="starRating1" || value==="starRating0"){
+									var str = value;
+									var str1 = str.substring(0, 10);
+									var str2 = str.substring(10, 11);
+									data4 = str1;
+									data5 = str2;
+									WhereKeyword = str1;
+								}
+							} else {
+								WhereKeyword = 'multiOption';
+								multiData = DATA;									
+							}								
+							console.log(WhereKeyword);
+							var json = {
+								headCount : x.headCount,
+								listCount : $('#resi-loadMore-btn').attr('value'),
+								Wherekeyword : WhereKeyword,
+								multiData : multiData,
+								data4: data4,
+								data5: data5
+							};
+							$.ajax({
+								url : context+'/resi/loadMore',
+								method : 'POST',
+								data : JSON.stringify(json),
+								dataType : 'json',
+								contentType : 'application/json',
+								success : x=> {
+									console.log(x.totalCount)
+									console.log($('#resi-loadMore-btn').attr('value'))
+									if(x.totalCount > $('#resi-loadMore-btn').attr('value')){
+										$('#resi-loadMore-btn').show();											
+									} else {
+										$('#resi-loadMore-btn').hide();		
+									}
+									var list = x.success;
+									var endRow = x.endRow;
+									var headCount = x.headCount;
+									var totalCount = x.totalCount;
+									$('#resi-lists').empty();
+									$(createAutoLI({list: list, headCount: headCount})).appendTo('#resi-lists')						
+									if(endRow == totalCount) {
+										$('#resi-loadMore-btn').hide();
+									};
+									var listName = $('#resi-loadMore-btn').attr('value');
+									console.log(listName);
+									$("#resi-lists-li-"+listName).before(											
+										$(createLI({id:'', clazz:'', val:''}))
+										.attr('style', 'margin-top: 20px; border-left: 7px solid green;')
+										.append($(createDiv({id:'', clazz:''}))
+											.attr('style', 'min-height: 100px; padding: 10px; margin-top: 10px; background: rgba(255, 255, 0, 0.2)')
+											.append('<h3>[최대 30% OFF] 회원 특가 상품을 만나 보세요!</h3>'
+												+'<p>로그인하는 순간, 가격이 내려갑니다.</p>')
+										)				
+									);
+								}, error : (x, h, m)=>{
+									alert('컨트롤러 에러 발생 x='+x+', h='+h+', m='+m);
+								}
+							})
+						})
+					)
+					.append($(createBtn({id:'resi-toTheTop-btn', clazz:'btn btn-default', val:''}))
+						.attr('style', 'font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 50px;'
+								+'border-radius: 50%; float: right')
+						.append($(createITag({id:'', clazz:'fa fa-arrow-up', val:''})))
+						.on('click', ()=>{
+							$('html').stop().animate({scrollTop: 0}, 200)
+						})
+						.hover(function(){
+							$(this).attr('style', 'font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 50px;'
+								+'border-radius: 50%; float: right; background: #EE595D; color: #fff; border-color: #EE595D')
+						},function(){
+							$(this).attr('style', 'font-size: 20px; font-weight: bold; margin-top: 20px; margin-bottom: 50px;'
+								+'border-radius: 50%; float: right')
+						})
 					)
 				)
-				.appendTo('#resi-main-col')
+				.appendTo('#resi-main-col');				
+
+				$(document).on('click', '#resi-move-reservation-btn', function (e){
+					e.preventDefault();					
+					$(document).scrollTop(0);
+					var json = {
+							checkIn: x.checkIn,
+							checkOut: x.checkOut,
+							headCount: x.headCount,
+							resCode: $(this).parents("li").attr('name')
+					}
+					$.ajax({
+						url: context+'/resi/reser/'+$(this).parents("li").attr('name'),
+						method: 'POST',
+						data: JSON.stringify(json),
+						datatype: 'json',
+						contentType: 'application/json',
+						success: x=>{
+							var json = {
+									checkIn: x.checkIn,
+									checkOut: x.checkOut,
+									headCount: x.headCount,
+									list: x.success
+							}
+							app.residenceReservation.onCreate(json)
+						}, error: x=>{
+							alert('에러')
+						}
+					});	
+				});	
+				
+				$(document).on('click', '.resi-lists-li-div', function (e){
+					e.preventDefault();
+					$.post(context+'/resi/viewNum/'+$(this).parents("li").attr('name'), ()=>{						
+					})	
+				});	
+				
+				$(window).scroll(function(){
+					if($(this).scrollTop()>100){
+						$('#resi-sticky-search-nav').attr('style', 'background: #333; height: 60px; opcacity: 1; position: fixed; top:0; left:0; width:100%; z-index: 1000; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.19);')
+						$('#resi-sidebar-col-div').attr('style', 'position: fixed; top: 15%; padding:10px; box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
+					} else {						
+						$('#resi-sticky-search-nav').attr('style', 'background: #e9e9e9; height: 60px; box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.19);')
+						$('#resi-sidebar-col-div').attr('style', 'padding:10px; box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
+					}
+				})
+								
 		});
 	};
 	return {onCreate : onCreate};
 })();
+
+
 
 app.residence = (()=>{
 	var context, view, image;
@@ -308,21 +1065,21 @@ app.residence = (()=>{
 			var checkIn = moment().format("YYYY-MM-DD");
 			var checkOut = moment().add(6, 'days').format("YYYY-MM-DD");
 			
-			$content.html($(createDiv({id : 'div-resi-main-search', clazz : 'container-fluid'}))
-				.attr('style', 'height: 450px; padding: 0px; position: relative;'));		
-
-			$(createImg({id:'img-resi-main', clazz:'', src:'https://goo.gl/XRqXDA', alt:''}))
-			.attr('style', 'width: 100%; max-height: 100%; position: relative; z-index: -1')
-			.appendTo('#div-resi-main-search');
+			$content.html($(createDiv({id : 'div-resi-main-search', clazz : 'container-fluid text-center'}))
+				.attr('style', 'height: 450px; padding: 0px; position: relative;'));
 			
+			$(createImg({id:'resi-main-img1', clazz:'', src:'https://goo.gl/XRqXDA', alt:''}))
+			.attr('style', 'width: 100%; max-height: 100%; position: relative;')
+			.appendTo('#div-resi-main-search');
+						
 			$(createHTag({num:'2', val:'내 여행의 베이스캠프, [ 호텔 ] 예약'}))
 			.attr('id', 'resi-main-hotel-htag')
-			.attr('style', 'position: absolute; top: 15%; left: 50%; transform: translate(-50%, -15%); color: white; font-weight: bold;')
+			.attr('style', 'position: absolute; top: 10%; left: 50%; transform: translate(-50%, -15%); color: white; font-weight: bold; width: 100%')
 			.appendTo('#div-resi-main-search');
 			$(createPTag({id:'resi-main-hotel-ptag', clazz:'', val:'전 세계 1,950,000개 이상의 다양한 숙소 특가 할인'}))
-			.attr('style', 'position: absolute; top: 30%; left: 50%; transform: translate(-50%, -30%); color: white; font-size: 18px')
+			.attr('style', 'position: absolute; top: 25%; left: 50%; transform: translate(-50%, -30%); color: white; font-size: 18px; width: 100%')
 			.appendTo('#div-resi-main-search');
-			$(createDiv({id:'', clazz:'container'}))
+			$(createDiv({id:'', clazz:'container text-center'}))
 			.attr('style', 'position: absolute; top: 70%; left: 50%; transform: translate(-50%, -70%);')
 			.append($(createUL({id:'', clazz:'nav nav-pills'}))
 				.append($(createLI({id:'li-resi-main-1',clazz:'active'}))
@@ -331,7 +1088,7 @@ app.residence = (()=>{
 						.attr('data-toggle', 'tab')
 						.attr('style', 'border-radius: 0px; text-align: center; font-size: 20px; font-weight: bold')
 						.on('click', ()=>{
-							$('#img-resi-main').attr('src', 'https://goo.gl/XRqXDA');
+							$('#resi-main-img1').attr('src', 'https://goo.gl/XRqXDA');
 							$('#resi-main-hotel-htag').text('내 여행의 베이스캠프, [ 호텔 ] 예약');
 							$('#resi-main-hotel-ptag').text('전 세계 1,950,000개 이상의 다양한 숙소 특가 할인');
 						})
@@ -343,7 +1100,8 @@ app.residence = (()=>{
 						.attr('data-toggle', 'tab')
 						.attr('style', 'border-radius: 0px; text-align: center; font-size: 20px; font-weight: bold')
 						.on('click', ()=>{
-							$('#img-resi-main').attr('src', 'https://goo.gl/RXVz3g');
+							console.log('entry!!')
+							$('#resi-main-img1').attr('src', 'https://goo.gl/RXVz3g');
 							$('#resi-main-hotel-htag').text('내 여행의 베이스캠프, [ 프라이빗 하우스 ] 예약');
 							$('#resi-main-hotel-ptag').text('프라이빗 하우스나 아파트먼트에서 더 넓은 공간, 가치 및 현지 분위기를 즐겨보세요!');
 						})
@@ -353,43 +1111,52 @@ app.residence = (()=>{
 			.append($(createDiv({id:'', clazz:'tab-content'}))
 				.attr('style', 'border: 20px solid rgba(255,255,255,.5)')
 				.append($(createDiv({id:'hotel', clazz:'tab-pane in active'}))
-					.attr('style', 'background: white; height: 100px; padding: 20px; background-color: #fff')
+					.attr('style', 'background: white; height: 100px; padding: 20px; background-color: #fff; padding-left: 35px')
 					.append($(createDiv({id:'', clazz:'row'}))
 						.append($(createDiv({id:'', clazz:'col-sm-4'}))
+							.attr('style', 'padding-left: 0px')
 							.append($(createDiv({id:'', clazz:'input-group dropdown'}))
-								.append($(createInput({id:'resi-input-filter', clazz:'form-control input-lg', type:'text', placeholder:'Search...'}))
+								.append($(createInput({id:'resi-input-filter', clazz:'form-control input-lg', type:'text', placeholder:''}))
 									.attr('data-toggle', 'dropdown')
+									.attr('placeholder', 'Search...')
 									.attr('style', 'height: 60px; border-radius: 0px; border: 2px solid #333')
-									.focus(()=>{
-										$('#resi-input-filter').val('');
+									.focus(function(){
+										console.log($(this).val());
+										if($(this).val() === '') {
+											$('.resi-search-list-li')
+											.attr('style', 'font-size: 20px; font-weight: bold; display: block');
+										}								
+									})
+									.blur(function(){
+										if($(this).val() === '') {
+											$(this).val('');
+										}
 									})
 								)
+								.append($(createDiv({id:'resi-input-result', clazz:''})))
 								.append($(createDiv({id:'', clazz:'input-group-btn'}))
 									.append($(createBtn({id:'resi-filter-btn', clazz:'btn btn-default input-lg', val:''}))
 										.attr('style', 'height: 60px; background-color: #333; border-radius: 0px; border: 2px solid #333')
 										.attr('type', 'submit')
+										.attr('data-toggle', 'dropdown')
 										.append($(createSpan({id:'', clazz:'glyphicon glyphicon-search', val:''}))
 											.attr('style', 'font-size: 20px; color: #fff')
 										)
-										.attr('data-toggle', 'dropdown')
-										.on('click', ()=>{
-											$('#resi-input-filter').trigger('click');
-										})
 									)
 								)
 								.append($(createUL({id:'resi-search-list-ul', clazz:'dropdown-menu'}))
-									.attr('style', 'padding-left: 10px; width: 100%;')
-									.append($(createLI({id:'', clazz:''}))
-										.append($(createATag({id:'', clazz:'', link:'#', val:' HongKong'}))
+									.attr('style', 'padding: 0px; width: 100%; border; 0px')
+									.append($(createLI({id:'', clazz:'resi-search-list-li'}))
+										.append($(createATag({id:'', clazz:'', link:'#', val:'HongKong'}))
 											.attr('style', 'font-size: 20px; font-weight: bold')
 										)
 									)
 									.append($(createLI({id:'', clazz:''}))
-											.append($(createATag({id:'', clazz:'', link:'#', val:'NewYork'}))
+											.append($(createATag({id:'', clazz:'resi-search-list-li', link:'#', val:'NewYork'}))
 												.attr('style', 'font-size: 20px; font-weight: bold')
 											)
 									)
-									.append($(createLI({id:'', clazz:''}))
+									.append($(createLI({id:'', clazz:'resi-search-list-li'}))
 											.append($(createATag({id:'', clazz:'', link:'#', val:'Singapore'}))
 												.attr('style', 'font-size: 20px; font-weight: bold')		
 											)
@@ -398,6 +1165,7 @@ app.residence = (()=>{
 							)							
 						)
 						.append($(createDiv({id:'', clazz:'col-sm-4'}))
+							.attr('style', 'padding-left: 0px')
 							.append($(createDiv({id:'', clazz:'input-group'}))
 								.attr('data-data-format', '"mm-dd-yyyy"')
 								.append($(createInput({id:'input-resi-date', clazz:'form-control input-lg', type:'text', placeholder:''}))
@@ -420,9 +1188,8 @@ app.residence = (()=>{
 									    minDate : new Date(),
 									    endDate : moment().add(6, 'days'),
 									    "opens": "center",
-									    "timePicker": true
+									    "timePicker": true,
 									}, function(start, end, label){
-										console.log("A new date range was chosen: "+start.format('YYYY-MM-DD')+' to '+end.format('YYYY-MM-DD'));
 										checkIn = start.format('YYYY-MM-DD');
 										checkOut = end.format('YYYY-MM-DD');										
 									})
@@ -439,65 +1206,78 @@ app.residence = (()=>{
 							)
 						)
 						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createDiv({id:'', clazz:'input-group spinner'}))
-								.attr('style', 'height: 60px; border-radius: 0px')
-								.append($(createSpan({id:'', clazz:'input-group-btn span-minus', val:''}))
-									.append($(createBtn({id:'', clazz:'btn btn-default', val : ''}))
-										.append($(createITag({id:'', clazz:'fa fa-minus', val:''})).attr('style', 'color: #fff'))
-										.attr('style', 'height: 60px; background-color: #333; border-radius: 0px; border: 2px solid #333')
-										.on('click', ()=>{
-											if(parseInt($('.spinner #resi-count').text(), 10)!=1){
-												$('.spinner #resi-count').text(parseInt($('.spinner #resi-count').text(), 10)-1);
-												$('#resi-count').text($('.spinner #resi-count').text())												
-											}
-										})
-									)									
+							.attr('style', 'padding-left: 0px')
+							.append($(createDiv({id:'', clazz:'input-group'}))
+								.attr('style', 'height: 60px; border-radius: 0px; border: 2px solid #333')	
+								.append($(createSpan({id:'', clazz:'input-group-addon', val:''}))
+									.attr('style', 'cursor: pointer; border-radius: 0px; background-color: #333; color: #fff')
+									.append($(createSpan({id:'', clazz:'glyphicon glyphicon-minus', val:''})))
+									.on('click', ()=>{
+										if(parseInt($('#resi-count').text(), 10)!=1){
+											$('#resi-count').text(parseInt($('#resi-count').text(), 10)-1);
+											$('#resi-count').text($('#resi-count').text())												
+										}
+									})
 								)
-								.append($(createSpan({id:'', clazz:'input-group-addon', val:'성인: '}))
-									.attr('style', 'background-color: #fff; border: 2px solid #333; border-right: 0px; border-left: 0px; font-size: 16px; font-weight: bold')
+								.append($(createSpan({id:'', clazz:'input-group-addon', val:''}))
+									.attr('style', 'background: #fff')
+									.append($(createSpan({id:'', clazz:'', val:'성인: '})).attr('style', 'font-size: 15px; font-weight:bold; color: #333'))
+									.append($(createSpan({id:'resi-count', clazz:'', val:'1'})).attr('style', 'font-size: 15px; font-weight:bold; color: #333'))										
 								)
-								.append($(createSpan({id:'resi-count', clazz:'input-group-addon', val:'1'}))
-									.attr('style', 'background-color: #fff; border: 2px solid #333; border-left: 0px; padding-left: 0px; font-size: 16px; font-weight: bold; min-width: 32px')
+								.append($(createSpan({id:'', clazz:'input-group-addon', val:''}))
+									.attr('style', 'cursor: pointer; border-radius: 0px; background-color: #333; color: #fff')
+									.append($(createSpan({id:'', clazz:'glyphicon glyphicon-plus', val:''})))
+									.on('click', ()=>{
+										$('#resi-count').text(parseInt($('#resi-count').text(), 10)+1);
+										$('#resi-count').text($('#resi-count').text());
+									})
 								)
-								.append($(createSpan({id:'', clazz:'input-group-btn span-plus', val:''}))
-									.append($(createBtn({id:'', clazz:'btn btn-default', val : ''}))
-										.append($(createITag({id:'', clazz:'fa fa-plus', val:''})).attr('style', 'color: #fff'))
-										.attr('style', 'height: 60px; background-color: #333; border-radius: 0px; border: 2px solid #333')
-										.on('click', ()=>{
-											$('.spinner #resi-count').text(parseInt($('.spinner #resi-count').text(), 10)+1);
-												$('#resi-count').text($('.spinner #resi-count').text())
-										})
-									)								
-								)
-							)							
+							)				
 						)
 						.append($(createDiv({id:'', clazz:'col-sm-2'}))
-							.append($(createBtn({id:'btn-move-resi-spec', clazz:'btn input-lg', val:'요금 검색하기'}))
-								.attr('style', 'background-color: #333; color: #fff; height:60px; border-radius: 0px; width: 100%; font-size: 18px; font-weight: bold')
+							.attr('style', 'padding-left: 0px')
+							.append($(createBtn({id:'btn-move-resi-spec', clazz:'form-control', val:'요금 검색하기'}))
+								.attr('style', 'background-color: #333; color: #fff; height:60px; border-radius: 0px; font-size: 15px; font-weight: bold')
 								.on('click', (e)=>{
 									e.preventDefault();
-									var json = {
-										searchWord: $('#resi-input-filter').val(),
-										headCount: $('#resi-count').text(),
-										checkIn : checkIn,
-										checkOut : checkOut
-									}
-									$.ajax({
-										url: context+'/resi/search/filter',
-										method: 'POST',
-										data : JSON.stringify(json),
-										dataType : 'json',
-										contentType : 'application/json',
-										success : x=> {
-											var json = {
-												count : x.count,
-												list : x.success
-											}
-											app.residenceSpec.onCreate(json);
-										}, error : (x, h, m)=>{
-											alert('컨트롤러 에러 발생 x='+x+', h='+h+', m='+m);
+									console.log($('#resi-input-filter').val());
+									app.cookie.setCookie($('#resi-input-filter').val());
+									if($('#resi-input-filter').val() === '') {
+										alert("검색어를 입력해 주세요.");
+									} else {
+										var json = {
+												searchWord: $('#resi-input-filter').val(),
+												headCount: $('#resi-count').text(),
+												checkIn : checkIn,
+												checkOut : checkOut,
+												Table1 : 'residence',
+												Table2 : 'facility',
+												Orderby : 'starRating DESC',
+												WhereKeyword : 'null',
+												listCount : 3
 										}
-									})									
+										$.ajax({
+											url: context+'/resi/search/filter',
+											method: 'POST',
+											data : JSON.stringify(json),
+											dataType : 'json',
+											contentType : 'application/json',
+											success : x=> {
+												var json = {
+														checkIn : checkIn,
+														checkOut : checkOut,
+														count : x.count,
+														list : x.success,
+														headCount : x.headCount,
+														searchWord : x.searchWord,
+														starRatingList: x.starRatingList
+												}
+												app.residenceSpec.onCreate(json);
+											}, error : (x, h, m)=>{
+												alert('컨트롤러 에러 발생 x='+x+', h='+h+', m='+m);
+											}
+										})																			
+									}									
 								})
 							)
 						)
@@ -505,15 +1285,60 @@ app.residence = (()=>{
 				)
 			)
 			.appendTo('#div-resi-main-search');	
-			//이쪽 봐주셈
-			$('#resi-search-list-ul li a').on('click', ()=>{
-				alert($(this).childern('a').text())
-				$('#input-resi-date').trigger('click');
-			  	$('#resi-input-filter').val($('#resi-search-list li a').text());
-			  	$('#resi-input-filter').val($(this).attr('value'));
-			  	$('#resi-input-filter').val('');
+			
+			/* Auto Complete 구현*/
+			$('#resi-input-filter').autocomplete({
+				source: function(request, response) {
+					$.ajax({
+						url: context+'/resi/searchKeyword',
+						method: 'GET',
+						data: {keyword: request.term},
+						dataType: 'json',
+						success: x=>{
+							var data = x.success;
+							response(
+								$.map(data, function(item){
+									console.log(item.name);
+									return{
+										value: item.name
+									}
+								})
+							)
+						}, error: x=>{
+							alert('에러');
+						}
+					})
+				},
+				minLength: 1,
+				select: function(event, ui) {						
+					$('#resi-input-filter').val($(this).val());
+					$('#input-resi-date').trigger('click');	
+		        },
+				appendTo: $('#resi-search-list-ul')
 			})
 			
+			/*드랍다운 선택시 값 넣기*/
+			$('.resi-search-list-li, #resi-filter-btn').on('click', function(e){
+				e.preventDefault();
+				$('#resi-input-filter').val($(this).text());
+				$('#input-resi-date').trigger('click');	
+			})
+			
+			/* 검색시 드랍다운 제거 구현*/
+			$('#resi-input-filter').keydown(function(){
+				$('.resi-search-list-li').attr('style', 'display: none;');
+			})
+			
+			/* daterangepicker 위치 구현*/
+			$('.openscenter').attr('style', 'top: 53%; left: 50%; transform: translate(-50%, 0%)');
+
+			/*서치 드랍다운 메뉴 Hover 적용*/
+			$('#resi-search-list-ul li a').hover(function(){
+				$(this).attr('style', 'font-size: 20px; font-weight: bold; background: #0283DF; color: #fff;')
+			}, function(){
+				$(this).attr('style', 'font-size: 20px; font-weight: bold;')
+			})
+									
 			
 			$(createDiv({id:'', clazz:'container-fluid'}))
 			.append($(createDiv({id:'', clazz:'container'})).attr('style', 'margin-top: 50px; margin-bottom: 50px')
@@ -735,7 +1560,7 @@ app.residence = (()=>{
 				)
 			)
 			.appendTo($content)
-			
+
 			$(createDiv({id:'', clazz:'container text-center'}))
 			.attr('style', 'margin-top: 50px; margin-bottom: 50px; position: relative')
 			.append($(createImg({id:'', clazz:'', src:'https://goo.gl/pMKvTN', alt:''}))
@@ -909,7 +1734,8 @@ app.residence = (()=>{
 				)
 			)
 			.appendTo($content)
-					
+				
+			/*footer 구현*/
 			$(createDiv({id:'', clazz:'container-fluid'}))
 			.attr('style', 'margin-top: 50px; background-color: #333; padding-top: 40px; padding-bottom: 10px;')
 			.append($(createDiv({id:'', clazz:'container text-center'}))
@@ -979,17 +1805,17 @@ app.residence = (()=>{
 					$(this).parent('div').parent('div').parent('div').toggleClass('flipped');
 				})
 				
-				$('#resi-content div img').hover(()=>{
+				$('#resi-content div img').hover(function(){
 					$(this).attr('style', 'max-width:100%; min-height:100%; display: block; cursor:pointer; filter:brightness(40%)');
-				},()=>{
+				}, function(){
 					$(this).attr('style', 'max-width:100%; min-height:100%; display: block; cursor:pointer; filter:brightness(70%)');
 				})
 				
 				
-				$('#resi-content div div p').hover(()=>{
+				$('#resi-content div div p').hover(function(){
 					$(this).parent('div').siblings('img')
 					.attr('style', 'max-width:100%; min-height:100%; cursor:pointer; filter:brightness(40%)');
-				}, ()=>{
+				}, function(){
 					$(this).parent('div').siblings('img')
 					.attr('style', 'max-width:100%; min-height:100%; cursor:pointer; filter:brightness(70%)');
 				});
