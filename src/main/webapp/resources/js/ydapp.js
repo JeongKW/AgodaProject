@@ -74,7 +74,7 @@ app.residenceSpec =(()=>{
 						items: {src: $(createDiv({id:'resi-map', clazz:'white-popup container'}))
 							.append($(createATag({id:'', clazz:'', link:'#', val:'MAP MAP MAP MAP MAP'}))
 								.attr('style', 'font-size: 100px')
-							)						
+							)
 						},
 						type:'inline'
 					});

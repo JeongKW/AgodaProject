@@ -23,9 +23,6 @@
 <script src="${context}/resources/js/jkapp.js"></script>
 <script src="${context}/resources/js/yjapp.js"></script>
 <script src="${context}/resources/js/jquery.cookie.js"></script>
-<script type="text/javascript" src="${context}/resources/js/jquery.googlemap.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker@2.1.30/moment.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker@2.1.30/daterangepicker.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>

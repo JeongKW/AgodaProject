@@ -90,28 +90,28 @@ app.admin = (()=>{
 		});
 	};
 	var flight=x=>{
-		$.getJSON(context+'/adminjk/flight/'+x, d=>{
-			$content.empty();
-			$content.html($(createDiv({id: 'map', clazz: 'container'})).attr('style', 'width: 70%; height: 70%'));
-			var body = document.body;
-			var script = document.createElement('script');
-			script.async = true;
-			script.defer = true;
-			script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5I2PmoL-T1gNpexmVWmMX7yv-80dxDNE";
-			body.appendChild(script);
-			$(function(){
-				$('#map').googleMap({
-					zoom: 13,
-				    coords: [22.3177343, 114.1697933],
-				    type: 'ROADMAP',
-				    mapTypeId: google.maps.MapTypeId.TERRAIN
+		$content.empty();
+		$content.html($(createDiv({id: 'map', clazz: 'container'})).attr('style', 'width: 700px; height: 700px'));
+		var body = document.body;
+		var script = document.createElement('script');
+		script.async = true;
+		script.defer = true;
+		script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5I2PmoL-T1gNpexmVWmMX7yv-80dxDNE";
+		body.appendChild(script);
+		$(function(){
+			var initMap = function(){
+				var hongkong = {lat: 22.3177343, lng: 114.1697933};
+				var juloong = {lat: 22.31944, lng: 114.17778};
+				var map = new google.maps.Map(document.getElementById('map'), {
+					zoom: 14,
+					center: hongkong
 				});
-				$('#map').addMaker({
-					coords: [22.31944, 114.17778],
-	//			    url: 'http://www.tiloweb.com',
-				    id: 'juloongMaker'
+				var marker = new google.maps.Marker({
+					position: juloong,
+					map: map
 				});
-			});
+			};
+			initMap();
 		});
 	};
 	var member=x=>{
