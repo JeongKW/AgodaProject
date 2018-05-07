@@ -28,11 +28,18 @@ public class AdminController {
 	@Autowired MapperJK mapper;
 	@Autowired Command cmd;
 
-	@RequestMapping("/residence/{pageNum}")
+	@RequestMapping(value = "/residence/{pageNum}",
+			method = RequestMethod.POST)
 	public Map<?, ?> manageResidence(@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageResidence() is {}", "entered");
 		logger.info("pageNum is {}", pageNum);
+		map.put("resiList", new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.residenceList(cmd);
+			}
+		}.excute(cmd));
 		return map;
 	}
 
@@ -57,7 +64,12 @@ public class AdminController {
 				return mapper.selectAllAdminMember(cmd);
 			}
 		}.excute(cmd));
-		
+		map.put("total", new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.totalCount(cmd);
+			}
+		}.excute(cmd));
 		map.put("pageNum", Integer.parseInt(pageNum)+12);
 		return map;
 	}

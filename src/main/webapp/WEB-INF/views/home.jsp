@@ -26,7 +26,7 @@
 <script src="${context}/resources/js/yjapp.js"></script>
 <script src="${context}/resources/js/jquery.cookie.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMoS2m_FtvWU_2erB5C3r-VdM8NYbfsB4"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMoS2m_FtvWU_2erB5C3r-VdM8NYbfsB4"></script>
 </head>
 <body>
 	<div id="nav"></div>

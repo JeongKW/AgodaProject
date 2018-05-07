@@ -84,7 +84,7 @@ app.admin = (()=>{
 		});
 	};
 	var residence=x=>{
-		$.getJSON(context+'/adminjk/residence/'+x, d=>{
+		$.post(context+'/adminjk/residence/'+x, d=>{
 			$content.empty();
 			$content.html($(createHTag({num : '3', val: '숙소 리스트'})).attr('class', 'page-header'));
 		});
@@ -92,22 +92,36 @@ app.admin = (()=>{
 	var flight=x=>{
 		$content.empty();
 		$content.html($(createDiv({id: 'map', clazz: 'container'})).attr('style', 'width: 700px; height: 700px'));
-		var body = document.body;
-		var script = document.createElement('script');
-		script.async = true;
-		script.defer = true;
-		script.src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5I2PmoL-T1gNpexmVWmMX7yv-80dxDNE";
-		body.appendChild(script);
 		$(function(){
 			var initMap = function(){
 				var hongkong = {lat: 22.3177343, lng: 114.1697933};
 				var juloong = {lat: 22.31944, lng: 114.17778};
+				var loc1 = {lat: 22.3275003, lng: 114.1820670};
+				var loc2 = {lat: 22.3280561, lng: 114.1608669};
+				var loc3 = {lat: 22.3317876, lng: 114.1717674};
+				var loc4 = {lat: 22.3107468, lng: 114.1661025};
 				var map = new google.maps.Map(document.getElementById('map'), {
 					zoom: 14,
 					center: hongkong
 				});
-				var marker = new google.maps.Marker({
+				var marker1 = new google.maps.Marker({
 					position: juloong,
+					map: map
+				});
+				var marker2 = new google.maps.Marker({
+					position: loc1,
+					map: map
+				});
+				var marker3 = new google.maps.Marker({
+					position: loc2,
+					map: map
+				});
+				var marker4 = new google.maps.Marker({
+					position: loc3,
+					map: map
+				});
+				var marker5 = new google.maps.Marker({
+					position: loc4,
 					map: map
 				});
 			};
@@ -123,6 +137,15 @@ app.admin = (()=>{
 				$(test()).appendTo('#div-header');
 				$(createForm({id: 'search-form', clazz: '', action: '', method: ''})).prependTo('#div-row');
 				$(searchBox()).appendTo('#search-form');
+				$(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+					.append($(createFieldSet()))
+					.appendTo($content);
+				$(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+					.append($(createFieldSet2()))
+					.appendTo($content);
+				$(createForm({id: 'delete-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
+					.append($(deleteView()))
+					.appendTo($content);
 				$(createBtn({id: 'btn-search', clazz: 'btn btn-default', val: createGlyphicon({clazz: 'glyphicon-search', val: ''})}))
 					.on('click', e=>{
 						e.preventDefault();
@@ -180,18 +203,18 @@ app.admin = (()=>{
                             		}
                                     $(createTr2({list : x.users})).appendTo('#member-tab');
                                     $('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px')
+                                    $('.success').off('click');
+                                    $('.danger').off('click');
                                    	eventfunc();
                                     if(d.pageNum === 12){
                                     	detailHistory = JSON.parse(sessionStorage.getItem('initHistory'));
                                     	console.log(JSON.stringify(detailHistory));
                                     	detailHistory = detailHistory.concat(x.users);
                                     	sessionStorage.setItem('detailHistory', JSON.stringify(detailHistory));
-                                    	console.log(detailHistory);
                                     } else if(d.pageNum > 13){
                                     	detailHistory = detailHistory.concat(x.users);
                                     	sessionStorage.setItem('detailHistory', JSON.stringify(detailHistory));
                                     	console.log(detailHistory);
-                                    	alert('히스토리 추가 ' + d.pageNum);
                                     }
                                     d.pageNum = x.pageNum;
                             	}
@@ -206,16 +229,13 @@ app.admin = (()=>{
 				$(function(){
 					$('#btn-member-add').magnificPopup({
 							items:{
-								src: $(createForm({id: 'add-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-								.append($(createFieldSet()))
-								.appendTo($content),
+								src: '#add-form',
 								type: 'inline'
 							},
 							callbacks: {
 								beforeOpen: function(){
 												$('#btn-add-submit').on('click', e=>{
 													e.preventDefault();
-													alert('submit');
 													$.ajax({
 														url: context+'/adminjk/member/add',
 														method : 'post',
@@ -230,7 +250,7 @@ app.admin = (()=>{
 														contentType : 'application/json',
 														success : x=>{
 															$.magnificPopup.close();
-															app.admin.member(0);
+															member(0);
 														},
 														error : (x, h, m)=>{        	
 															alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -239,7 +259,7 @@ app.admin = (()=>{
 												});
 											},
 								close: function(){
-									app.admin.member(0);
+									member(0);
 								}
 							},
 						});
@@ -247,108 +267,106 @@ app.admin = (()=>{
 				
 				var eventfunc = function(){
 					$(function(){
-						$('.btn-success').click(function(){
-							var selected = $(this);
-							var id = selected.parent().siblings('td').eq(0).text();
-							var name = selected.parent().siblings('td').eq(1).text();
-							alert(id + ' ' + name);
-							history = historyAdd() || history;
-							$.magnificPopup.open({
-								items:{
-									src: $(createForm({id: 'modify-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-									.append($(createFieldSet2()))
-									.appendTo($content),
-									type: 'inline'
-								},
-								callbacks: {
-									beforeOpen: function(){
-										$('#modify-id').val(id).attr('disabled', true);
-										$('#modify-name').val(name).attr('disabled', true);
-										$('#btn-modify-submit').on('click', e=>{
-											e.preventDefault();
-											$.ajax({
-												url: context+'/adminjk/member/update',
-												method : 'POST',
-					                            data : JSON.stringify({
-					                            	id: $('#modify-id').val(),
-					                            	pw: $('#modify-pw').val(),
-					                            	name: $('#modify-name').val(),
-					                            	email: $('#modify-email').val(),
-					                            	phone: $('#modify-phone').val()
-					                            }),
-					                            dataType : 'json',
-					                            contentType : 'application/json',
-					                            success : x=>{
-					                                $.magnificPopup.close();
-					                                if(JSON.parse(history).length === 12){
-					                                	member(0);
-					                                } else {
-					                                	tableCreate(JSON.parse(history));
-					                                }
-					                                eventfunc();
-					                            },
-					                            error : (x, h, m)=>{                            	
-					                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
-					                            }
-											});
-										});
+						$('.btn-success').each(function(){
+							$(this).click(function(){
+								var selected = $(this);
+								var id = selected.parent().siblings('td').eq(0).text();
+								var name = selected.parent().siblings('td').eq(1).text();
+								history = historyAdd() || history;
+								$.magnificPopup.open({
+									items:{
+										src: '#modify-form',
+										type: 'inline'
 									},
-									close: function(){
-										if(history.length === 12){
-											alert('디폴트');
-		                                	member(0);
-		                                } else {
-		                                	alert('히스토리');
-		                                	tableCreate(history);
-		                                }
-										$('modify-form').remove();
-										eventfunc();
+									callbacks: {
+										beforeOpen: function(){
+											$('#modify-id').val(id);
+											$('#modify-name').val(name);
+											$('#btn-modify-submit').on('click', e=>{
+												e.preventDefault();
+												$.ajax({
+													url: context+'/adminjk/member/update',
+													method : 'POST',
+						                            data : JSON.stringify({
+						                            	id: $('#modify-id').val(),
+						                            	pw: $('#modify-pw').val(),
+						                            	name: $('#modify-name').val(),
+						                            	email: $('#modify-email').val(),
+						                            	phone: $('#modify-phone').val()
+						                            }),
+						                            dataType : 'json',
+						                            contentType : 'application/json',
+						                            success : x=>{
+						                                $.magnificPopup.close();
+						                                member(0);
+						                            },
+						                            error : (x, h, m)=>{                            	
+						                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+						                            }
+												});
+											});
+										},
+										close: function(){
+											if(history.length === 12){
+			                                	member(0);
+			                                } else {
+			                                	tableCreate(history);
+			                                }
+											$('.success').off('click');
+		                                    $('.danger').off('click');
+											eventfunc();
+										}
 									}
-								}
+								});
 							});
 						});
-
-						$('.btn-danger').click(function(){
-							var selected = $(this);
-							var id = selected.parent().siblings('td').eq(0).text();
-							$.magnificPopup.open({
-								items:{
-									src: $(createForm({id: 'delete-form', clazz: 'mfp-hide white-popup', action: '', method: 'post'}))
-									.append($(deleteView()))
-									.appendTo($content),
-									type: 'inline'
-								},
-								callbacks: {
-									beforeOpen: function(){
-										$('#btn-delete-member').on('click', e=>{
-											e.preventDefault();
-											$.ajax({
-												url: context+'/adminjk/member/delete/'+id,
-												method : 'POST',
-												dataType : 'json',
-												contentType : 'application/json',
-												success : x=>{
-													$.magnificPopup.close();
-													history = historyAdd();
-													member(1);
-												},
-												error : (x, h, m)=>{
-													alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
-												}
-											});
-										});
-										$('#btn-cancel-member').on('click', e=>{
-											e.preventDefault();
-											$.magnificPopup.close();
-											$('#delete-form').remove();
-											member(1);
-										});
+						
+						$('.btn-danger').each(function(){
+							$('.btn-danger').click(function(){
+								var selected = $(this);
+								var id = selected.parent().siblings('td').eq(0).text();
+								history = historyAdd() || history;
+								$.magnificPopup.open({
+									items:{
+										src: '#delete-form',
+										type: 'inline'
 									},
-									close: function(){
-										member(1);
-										$('#delete-form').remove();
+									callbacks: {
+										beforeOpen: function(){
+											$('#btn-delete-member').on('click', e=>{
+												e.preventDefault();
+												$.ajax({
+													url: context+'/adminjk/member/delete/'+id,
+													method : 'POST',
+													dataType : 'json',
+													contentType : 'application/json',
+													success : x=>{
+														$.magnificPopup.close();
+														member(0);
+													},
+													error : (x, h, m)=>{
+														alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+													}
+												});
+											});
+											$('#btn-cancel-member').on('click', e=>{
+												e.preventDefault();
+												$.magnificPopup.close();
+												member(0);
+											});
+										},
+										close: function(){
+											if(history.length === 12){
+			                                	member(0);
+			                                } else {
+			                                	tableCreate(history);
+			                                }
+											$('.success').off('click');
+		                                    $('.danger').off('click');
+											eventfunc();
+										}
 									}
-								}
+								});
 							});
 						});
 					});
@@ -391,6 +409,9 @@ app.admin = (()=>{
 								} else {
 									if ($(this).prev() != undefined) {
 										moveTop = $(this).prev().offset();
+										if(moveTop.top == 52){
+											moveTop.top = 0;
+										}
 									}
 								}
 								$("body, html").stop().animate({
