@@ -78,6 +78,15 @@ create table reservation(
 	foreign key(`res_schedule_seq`) references reservation_schedule(`res_schedule_seq`) on delete cascade
 );
 
+SELECT
+ flight_schedule_seq AS flightScheduleSeq,
+ from_location AS fromLocation, 
+ to_location AS toLocation,
+ departure_time AS departureTime,
+ arrival_time AS arrivalTime,
+ price, code, iatacode 
+ FROM flight_schedule where from_location like 'seoul' 
+and to_location like 'osaka' and departure_time like '2018-05-03';
 show tables;
 
 drop table member;
@@ -101,4 +110,5 @@ INSERT INTO Member VALUES ('lionisking', 'ehdanfdmldhkd', '사자', 'kyaowang@na
 INSERT INTO Member VALUES ('test1', 'test1', '김아무개', 'tester1@naver.com', '010-5752-3725');
 INSERT INTO Member VALUES ('test2', 'test2', '하아무개', 'tester2@hanmail.com', '010-7231-5892');
 INSERT INTO Member VALUES ('test3', 'test3', '차아무개', 'jku0150@nate.com', '010-3572-8297');
+INSERT INTO Member VALUES ('admin', '1234', 'admin', 'jku0150@nate.com', '010-9740-1123');
 
