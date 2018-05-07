@@ -24,7 +24,6 @@ import com.agoda.web.kwangwoo.Board;
 import com.agoda.web.mapper.MapperJK;
 import com.agoda.web.mapper.MapperYJ;
 
-
 @RestController
 public class MemberController {
 	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);

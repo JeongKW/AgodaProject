@@ -1,4 +1,3 @@
-
 app.login = (()=>{
 	var context, view;
 	var onCreate =()=>{
