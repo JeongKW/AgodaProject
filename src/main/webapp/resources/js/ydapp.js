@@ -1,25 +1,3 @@
-app.cookie = {setCookie: x=>{
-		console.log(x);
-		document.cookie = x.key + "=" + x.val
-	},
-	getCookie: x=>{
-		var name = x.key + "=";
-		var res = document.cookie.split(';');
-		for(var i=0; i<res.length; i++) {
-			var t = res[i];
-			while(t.charAt(0)=='') {
-				t = t.substring(1, t.length);
-				if(t.indexOf(name) == 0) {
-					return t.substring(name.length, t.length);
-				}
-			}
-		}
-	},
-	removeCookie: x=>{
-		createCookie(name, "", -1);
-	}
-};
-
 app.residenceReservation =(()=>{
 	var context, view, image;
 	var onCreate =x=>{
@@ -58,9 +36,7 @@ app.residenceReservation =(()=>{
 						.attr('style', 'display: none;')
 					}
 				})
-				
-				
-				
+											
 			})
 	};
 	return {onCreate : onCreate}
@@ -290,10 +266,9 @@ app.residenceSpec =(()=>{
 				.on('click', function(e){
 					e.preventDefault();
 					/*평점 라디오 버튼 선택해제*/
-					if($('input[name=ratingScore_radio]:checked')) {
-						console.log('true!!!!')
-						$($('input[name=ratingScore_radio]:checked')).prop('checked', false);
-					}					
+					$('input[name=ratingScore_checkbox]:checked').each(function(){
+						$(this).trigger('click');
+					})
 					$(this).hide();
 				})					
 			)
@@ -301,22 +276,22 @@ app.residenceSpec =(()=>{
 				.attr('style', 'margin-top: 10px')
 				.append($(createDiv({id:'', clazz:''}))					
 					.attr('style', 'padding-left: 10px')
-					.append($(createInput({id:'', clazz:'', type:'radio', placeholder:'9'}))
-					.attr('name', 'ratingScore_radio')		
+					.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'9'}))
+					.attr('name', 'ratingScore_checkbox')		
 					)
 					.append('<span><strong>  9+</strong>  최고의 위치</span>')
 				)			
 				.append($(createDiv({id:'', clazz:''}))
 					.attr('style', 'padding-left: 10px')
-					.append($(createInput({id:'', clazz:'', type:'radio', placeholder:'8'}))
-						.attr('name', 'ratingScore_radio')		
+					.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'8'}))
+						.attr('name', 'ratingScore_checkbox')		
 					)
 					.append('<span><strong>  8+</strong>  우수한 위치</span>')
 				)			
 				.append($(createDiv({id:'', clazz:''}))
 					.attr('style', 'padding-left: 10px')
-					.append($(createInput({id:'', clazz:'', type:'radio', placeholder:'7'}))
-						.attr('name', 'ratingScore_radio')		
+					.append($(createInput({id:'', clazz:'', type:'checkbox', placeholder:'7'}))
+						.attr('name', 'ratingScore_checkbox')		
 					)
 					.append('<span><strong>  7+</strong>  아주 좋은 위치</span>')
 				)			
@@ -324,6 +299,7 @@ app.residenceSpec =(()=>{
 			.appendTo('#resi-div-filter');
 			
 			$(document).ready(function(){
+				/*선택 해제 숨기기*/
 				$('#resi-starRating-option-cancel').hide();
 				$('#resi-ratingScore-option-cancel').hide();
 			})
@@ -558,42 +534,64 @@ app.residenceSpec =(()=>{
 												.appendTo('.li-resi-filter-item-service-2');		
 													
 											
-						$('input[type=checkbox], input[type=radio]').on('click', ()=>{
+						$('input[type=checkbox]').on('click', function(){							
+							var DATA = "";
+							var value;
+							var multiData;
+							var WhereKeyword, data4, data5;
+							/*평점 체크박스 라디오 기능 구현*/
+							if($(this).attr('name') === "ratingScore_checkbox"){
+								if($(this).prop('checked')){
+									console.log('뜨루야!');
+									$('input[name=ratingScore_checkbox]').prop('checked', false);
+									$(this).prop('checked', true);
+									value = $(this).val();
+								}
+							}
+							
+							/*체크박스 값 DATA에 저장(평점 제외)*/
+							$('input[type=checkbox]:checked').each(function(){
+								console.log('입력된 값: '+$(this).val());									
+								if($(this).is(':checked')) {
+									DATA += $(this).val()+"/";									
+								}									
+							})
+							
 							if($('input[name=starRating_checkbox]').is(':checked')){
 								$('#resi-starRating-option-cancel').show();					
 							} else {
 								$('#resi-starRating-option-cancel').hide();								
 							}							
 							
-							if($('input[name=ratingScore_radio]').is(':checked')){
+							if($('input[name=ratingScore_checkbox]').is(':checked')){
 								$('#resi-ratingScore-option-cancel').show();			
 							} else {
 								$('#resi-ratingScore-option-cancel').hide();								
-							}														
+							}							
 							
-							var DATA = "";
-							var value;
-							var multiData;
-							var WhereKeyword, data4, data5;
-							/* 체크박스 값 가져오기 */
-							$('input[type=checkbox]:checked').each(function(){
-								console.log('입력된 값: '+$(this).val());	
-								if($(this).is(':checked')) {
-									DATA += $(this).val()+"/";									
-								}
-							})							
 							var splitDATA = DATA.split("/");
-							console.log(splitDATA.length);
-							console.log('radio 값 : '+$('input[type=radio]:checked').val());
-							var ratingScore = $('input[type=radio]:checked').val();
-							/* 체크박스 값 1 or N 으로 value값 구분 */
-							if(splitDATA.length==1 || splitDATA.length==2){
+							console.log(splitDATA);
+							if(splitDATA.length==1) {
+								if(value === "price"){
+									WhereKeyword = value;
+									data4 = price1;
+									data5 = price2;
+								} else if(value==9 || value==8 || value==7){
+									WhereKeyword = 'ratingScore';
+									data4 = value;
+								} else {
+									WhereKeyword = 'null';									
+								}
+							} else if(splitDATA.length==2){
 								value = splitDATA[0];
 								if(value==="breakfast"){
 									data4 = 'breakfast';
 									data5 = 'true';
 									WhereKeyword = value;
-								} else if(value==="starRating5" || value==="starRating4" || value==="starRating3" ||
+								} else if(value==9 || value==8 || value==7){
+									WhereKeyword = 'ratingScore';
+									data4 = value;
+								}else if(value==="starRating5" || value==="starRating4" || value==="starRating3" ||
 										value==="starRating2" || value==="starRating1" || value==="starRating0"){
 									var str = value;
 									var str1 = str.substring(0, 10);
@@ -601,17 +599,11 @@ app.residenceSpec =(()=>{
 									data4 = str1;
 									data5 = str2;
 									WhereKeyword = str1;
-								} else if(ratingScore == 9 || ratingScore == 8 || ratingScore == 7) {
-									console.log('들어옴')
-									WhereKeyword = 'ratingScore';
-									data4 = ratingScore;
-								} else {
-									WhereKeyword = 'null';									
 								}
 							} else {
 								WhereKeyword = 'multiOption';
-								multiData = DATA;
-							}								
+								multiData = DATA;									
+							}										
 							console.log('WhereKeyword: '+WhereKeyword);
 							var json = {
 									WhereKeyword : WhereKeyword,
@@ -903,8 +895,6 @@ app.residenceSpec =(()=>{
 								} 
 							})
 							var splitDATA = DATA.split("/");
-							console.log(splitDATA.length);
-							console.log(splitDATA);
 							if(splitDATA.length==1) {
 								if(value === "price"){
 									WhereKeyword = value;
@@ -998,7 +988,7 @@ app.residenceSpec =(()=>{
 					)
 				)
 				.appendTo('#resi-main-col');				
-
+								
 				$(document).on('click', '#resi-move-reservation-btn', function (e){
 					e.preventDefault();					
 					$(document).scrollTop(0);
@@ -1043,7 +1033,8 @@ app.residenceSpec =(()=>{
 						$('#resi-sidebar-col-div').attr('style', 'padding:10px; box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);')
 					}
 				})
-								
+				
+				$('.openscenter').attr('style', 'left: 50%; transform: translate(-50%, 0%)');				
 		});
 	};
 	return {onCreate : onCreate};
