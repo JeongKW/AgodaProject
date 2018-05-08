@@ -162,9 +162,9 @@ public class MemberController {
 			System.out.println("5번째 endRow :"+endRow);
 			int pageStart = (blockSize*((pageNum1-1)/blockSize))+1;
 		    System.out.println("6번째 pageStart :"+pageStart);
-			int pageEnd = (totalPage == pageNum1) ? totalPage:(pageStart+blockSize)-1;
+			int pageEnd = (totalPage>blockSize) ? ((pageNum1 ==totalPage) ?  totalPage : (((pageNum1 -1)/blockSize) + 1) * blockSize)  : totalPage;
 			System.out.println("7번째 pageEnd :"+pageEnd);
-			boolean prevBlock = (pageNum1 > 5) ? true : false;
+			boolean prevBlock =  (pageStart != 1);
 			System.out.println("8번째 prevBlock :"+prevBlock);
 			boolean nextBlock = (totalPage != pageEnd);
 			System.out.println("9번째 nextBlock :"+nextBlock);
@@ -234,7 +234,7 @@ public class MemberController {
 			cmd.setTable("board");
 			cmd.setData1(b.getTitle());
 			cmd.setData2(b.getContent());
-			/*cmd.setData3(bbsSeq);*/
+			cmd.setData3(bbsSeq);
 			logger.info("업데이트 내용 들어왔나{}.",b.getContent());
 			new IUpdateService() {
 				@Override
@@ -244,13 +244,16 @@ public class MemberController {
 			}.excute(cmd);
 			return map;
 		}
-		@RequestMapping(value="/board/post/article", method=RequestMethod.POST, consumes="application/json")
-		public Map<?,?> postArticle(@RequestBody Board b){
+		@RequestMapping(value="/board/post/article/{id}", method=RequestMethod.POST, consumes="application/json")
+		public Map<?,?> postArticle(@RequestBody Board b,@PathVariable String id){
 			Map<String, Object> map = new HashMap<>();
 			logger.info("board postArticle {}.", "entered");
 			cmd.setTable("board");
 			cmd.setData1(b.getTitle());
 			cmd.setData2(b.getContent());
+			cmd.setData3(id);
+			System.out.println("글 작성자 넘어왔나"+id);
+			System.out.println("글 작성자 넘어왔나"+cmd.getData3());
 			logger.info("board postArticle 잘 등어왔나{}.",b.getContent());
 			new IPostService() {
 				@Override

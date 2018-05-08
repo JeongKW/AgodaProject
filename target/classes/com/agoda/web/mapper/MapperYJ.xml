@@ -42,7 +42,7 @@
 		WHERE bbs_seq LIKE ${data1}
 	 </update>
 	 <insert id="insertArticle" parameterType="com.agoda.web.common.Command">
-	    insert into ${table}(title,content,id) values (#{data1},#{data2},'youjin813')
+	    insert into ${table}(title,content,id) values (#{data1},#{data2},#{data3})
 	 </insert> 
 	 <delete id="deleteArticle" parameterType="com.agoda.web.common.Command">
  	  	delete from ${table} where bbs_seq like #{data1}
@@ -51,6 +51,6 @@
 	  	UPDATE ${table}
 		SET title = #{data1},
 			content = #{data2}
-		<!-- WHERE bbs_seq LIKE ${board.bbsSeq} -->
+		WHERE bbs_seq LIKE ${data3}
 	  </update>
 </mapper>
