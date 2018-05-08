@@ -6,7 +6,7 @@ app.login = (()=>{
 	    view = $.javascript()+'/yjview.js';
 	    setContentView();
 	};
-	/*로그인*/
+	/*로그인 */
 	var setContentView=()=>{
         $.getScript(view, ()=>{
         	$(createDiv({id:'mem-login-div',clazz:''})).appendTo($content);
