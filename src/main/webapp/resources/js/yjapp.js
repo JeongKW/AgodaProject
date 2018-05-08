@@ -51,7 +51,6 @@ app.login = (()=>{
                     .appendTo('#login-col-sm-6');
                 $(createBtn({id:'btn-login', clazz: 'btn btn-default btn-block', val: '로그인'}))
                     .on('click', e=>{
-                    	// sessionStorage.setItem('user',);
                         e.preventDefault();
                         var id = $('#id').val();
                         var json = {
@@ -65,6 +64,7 @@ app.login = (()=>{
                             dataType : 'json',
                             contentType : 'application/json',
                             success : x=>{
+                            	alert(x.user.id);
                                 alert('로그인 성공여부: '+x.success);
                                     var json = {
                                             id : x.user.id,
@@ -78,7 +78,8 @@ app.login = (()=>{
                                     	if(x.user.id === "admin"){
                                     		app.admin.onCreate(x);
                                     	} else {
-                                    		$.getScript(view, ()=>{
+                                    			sessionStorage.setItem('user', x.user.id);
+                                    			alert('세션' + x.user.id);
                                     			$('.close').trigger('click')
                                     			$('.navbar-right').empty();
                                     			$('.navbar-right').append($(createLI({id: '', clazz: ''}))
@@ -87,14 +88,17 @@ app.login = (()=>{
                                     						e.preventDefault();
                                     						alert('마이페이지 클릭!!!');
                                     						mypage(x);
+                                    						$('#ididididid').trigger('click');
                                     						})
                                     				)).append($(createLI({id:'',clazz:''}))
                                     				  .append($(createATag({id:'',clazz:'',val:'로그아웃'}))
                                     						  .on('click',e=>{
                                     							 //로그아웃 구현
+                                    							  sessionStorage.removeItem('user');
+                                    							  app.residence.onCreate();
+                                    							  app.nav.onCreate();
                                     						  })));
                                     			
-                                    		});
                                     	}
                                     }
                             },
@@ -188,13 +192,45 @@ app.login = (()=>{
 														.append($(createBtn({id:'',clazz:'btn btn-outline-info',val:'취소'}))
 																.attr('style','margin-top: 2%;'))
 																.on('click',e=>{
+																	$(createDiv({id:'mem-mypage-div-email',clazz:''}))
+																	.appendTo('#mem-mypage-main')
+																	.append(createDiv({id:'',clazz:''}))
+																	.attr('style','margin-top: 3%;height: 200px;padding: 24px 20px;background-image:linear-gradient(90deg,#f5f5f5,#eee);margin-right:30%;')
+																		.append($(createDiv({id:'',clazz:''}))
+																				.append($(createHTag({num:'4',val:'이메일'})))
+																				.append($(createHTag({num:'6',val:'@ 포함하여 작성해 주세요.'})))
+																				.append($(createHTag({num:'3',val:x.user.email}))
+																						.attr('style','font-weight: 700;')))
+																		.append($(createDiv({id:'',clazz:''}))
+																				.append($(createBtn({id:'',clazz:'btn btn-outline-info',val:'변경하기'}))
+																						.attr('data-toggle','collapse')
+																						.attr('data-target','#demo')
+																						.attr('style','margin-top: 2%;')
+																						.on('click',e=>{
+																							alert('변경버튼 클릭');
+																							$('#mem-mypage-div-email').empty();
+																							$(createDiv({id:'',clazz:''}))
+																							.appendTo('#mem-mypage-div-email')
+																							.append($(createHTag({num:'3',val:'변경 이메일 인증'})))
+																							.append($(createInput({type:'email',id:'',clazz:'form-control',placeholder:''}))
+																									.attr('style','width: 50%;'))
+																							.append($(createBtn({id:'',clazz:'btn btn-outline-info',val:'인증 메일 발송'}))
+																									.attr('style','margin-right:2%;margin-top: 2%;'))
+																									.on('click',e=>{
+																										
+																									})
+																							.append($(createBtn({id:'',clazz:'btn btn-outline-info',val:'취소'}))
+																									.attr('style','margin-top: 2%;'))
+																									.on('click',e=>{
+																									})
+																								})));
 																	
 																})
 															})));
 								$(createDiv({id:'mem-mypage-div-email',clazz:''}))
 								.appendTo('#mem-mypage-main')
 								.append(createDiv({id:'',clazz:''}))
-								.attr('style','margin-top: 3%;height: 220px;padding: 24px 20px;background-image:linear-gradient(90deg,#f5f5f5,#eee);margin-right:30%;')
+								.attr('style','margin-top: 3%;height: 280px;padding: 24px 20px;background-image:linear-gradient(90deg,#f5f5f5,#eee);margin-right:30%;')
 										.append($(createHTag({num:'4',val:'국가번호'})))
 										.append($(createSelect({id:'',clazz:'form-control'}))
 												.attr('style','width: 50%;')
@@ -206,7 +242,9 @@ app.login = (()=>{
 									    .append($(createHTag({num:'6',val:'- 포함하여 작성해 주세요.'})))
 									    .append($(createDiv({id:'',clazz:''}))
 									    .append($(createInput({type:'text',id:'',clazz:'form-control',placeholder: x.user.phone}))
-									    		.attr('style','width: 50%;')));
+									    		.attr('style','width: 50%;'))
+									    /*.append($(createBtn({id:'',clazz:'',val:''})))*/
+									    		);
 								$(createDiv({id:'mem-mypage-div-pass',clazz:''}))
 								.appendTo('#mem-mypage-main')
 								.append(createDiv({id:'',clazz:''}))
@@ -283,10 +321,10 @@ app.login = (()=>{
 																	    contentType : 'application/json',
 																	    success : x=>{
 																	    	alert('회원 탈퇴');
-																	    	app.nav.onCreate();
+																	    	  app.residence.onCreate();
+			                                    							  app.nav.onCreate();
 																	    }
 																	})
-																	//탈퇴하기
 																}));
 							})
 					.attr('active','background-color: #ebebeb;')		
@@ -342,30 +380,29 @@ app.board =(()=>{
 	var list = x =>{
 		$.getJSON(context+'/board/'+x, d=>{
 			$.getScript(view,()=>{
-				$('#mem-mypage-main').html($(createDiv({id:'bbs-list-div1',clazz:''}))
-						.attr('style','    margin-top: 5%;'));
+				$('#mem-mypage-main').html($(createDiv({id:'bbs-list-div1',clazz:''})));
 		    	$('#bbs-list-div1').html($(createDiv({id:'bbs-list-div2',clazz:''}))
-		    		 .attr('style','margin-left: 5%;margin-right: 5%;'))
-		    	.append($(createDiv({id:'bbs-btn-div',clazz:''}))
-		    			.attr('style','margin-left:85%;'));
+		    		 .attr('style','margin-left: 5%;margin-right: 5%;'));
+
 		    	$(createDiv({id:'',clazz:''}))
 		    		.attr('style','margin-left:15px;')
-				.appendTo('#bbs-btn-div')
-				.append($(createBtn({id:'bbs-write-btn',clazz:'',val:'글쓰기'}))
-					.attr('style','margin-bottom: 20%;background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 16px;')
+				.appendTo('#bbs-list-div1')
+				.append($(createBtn({id:'bbs-write-btn',clazz:'btn btn-outline-info',val:'글쓰기'}))
+					.attr('style','margin-left: 94%;margin-bottom: 2%;')
 					.on('click',()=>{
 						alert('글쓰기 버튼 클릭');
 						write();
 					}));
 		    	$(createDiv({id:'bbs-list-div3',clazz:'grid-list'}))
+		    	.attr('style','margin-left: 5%;')
 		    	.appendTo('#bbs-list-div1')
 		    	.append($(createP({
 		    		i:'i++',
 		    		list: ['NO','제목','작성일','작성자','조회']}))
 		    		.attr('style', 'border-bottom: 1px solid #e9e9e9;color:#969494;'));
-				$('#p-2').attr('style', 'width: 15%;');
+				/*$('#p-2').attr('style', 'width: 50%;');
 				$('#p-3').attr('style', 'width: 20%;');
-				$('#p-4').attr('style', 'width: 20%;');
+				$('#p-4').attr('style', 'width: 20%;');*/
 				$(createP2({i:'',list: d.list, seq:d.seqList}))
 				.attr('style','margin-top: 10px;font-size: 16px;')
 			    .appendTo('#bbs-list-div3');
@@ -390,18 +427,15 @@ app.board =(()=>{
 								board : bid	
 							};
 							// detail start
-							$content.empty();
-							$content.html($(createDiv({id:'bbs-detail-div1',clazz:''}))
-							.appendTo($content)
-							.attr('style','margin-left: 20%;margin-right: 20%;'));
+							$('#mem-mypage-main').html($(createDiv({id:'bbs-detail-div1',clazz:''})));
 							$(createDiv({id:'',clazz:''}))
-							.appendTo('#bbs-detail-div1')
-							.append($(createHTag({num:'2',val:'Q&A'})));
+							.appendTo('#bbs-detail-div1');
 							$(createDiv({id:'',clazz:'grid-detail'}))
-							.attr('style','margin-top: 100px')
+							.attr('style','margin-top: 70px')
 							.appendTo('#bbs-detail-div1')
 							.append($(createText({clazz:'',val:'제목'})))
-							.append($(createText({clazz:'',val:x.board.title})));
+							.append($(createText({clazz:'',val:x.board.title}))
+									.attr('style','font-size: 17px;'));
 							$(createHrTag({id:''}))
 							.attr('style','color:#272727;margin-top: 2%;')
 							.appendTo('#bbs-detail-div1');
@@ -410,7 +444,8 @@ app.board =(()=>{
 							.appendTo('#bbs-detail-div1')
 							.append($(createText({clazz:'',val:'작성자'})))
 							.append($(createText({clazz:'',val:x.board.id}))
-							.attr('id','bbs-createText-id'));
+							.attr('id','bbs-createText-id')
+							.attr('style','font-size: 17px;'));
 							$(createHrTag({id:''}))
 							.attr('style','color:#272727;margin-top: 2%;')
 							.appendTo('#bbs-detail-div1');
@@ -422,44 +457,48 @@ app.board =(()=>{
 							.appendTo('#bbs-detail-div1')
 							.append($(createHrTag({id:''}))
 							.attr('style','height:20em;')
-							.append($(createText({clazz:'',val:x.board.content}))));
+							.append($(createText({clazz:'',val:x.board.content}))
+									.attr('style','font-size: 17px;')));
 							$(createDiv({id:'bbs-detail-div3',clazz:''}))
 							.appendTo('#bbs-detail-div1')
 							.attr('style','margin-left:auto;');
-							
 							$(createBtn({id:'',clazz:'',val:'목록'}))
 							.appendTo('#bbs-detail-div3')
 								.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 80%;')
 								.on('click',()=>{
 										onCreate();
 								});
-							$(createBtn({id:'',clazz:'',val:'수정'}))
-							.appendTo('#bbs-detail-div3')
-								.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 1%;')
-								.on('click',()=>{
-									alert('update 버튼 클릭 :'+x.board.id);
-									update(x);
-								});
-							$(createBtn({id:'',clazz:'',val:'삭제'}))
-							.appendTo('#bbs-detail-div3')
-								.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 1%;')
-								.on('click',()=>{
-									alert('delete 버튼 클릭 :'+x.board.bbsSeq);
-										$.ajax({
-											url: context+'/board/delete/article/'+x.board.bbsSeq,
-											method : 'GET',
-											dataType : 'json',
-											contentType : 'application/json',
-											success : x=>{
-												alert('삭제성공');
-												onCreate();
-											},
-											error : ()=>{
-												alert('권한이 없습니다.');
-											}
-										});	
-								});
-							
+							//세션 아이디
+							alert('게시판 아이디'+x.board.id);
+							if(x.board.id == sessionStorage.getItem('user')){
+								$(createBtn({id:'',clazz:'',val:'수정'}))
+								.appendTo('#bbs-detail-div3')
+									.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 1%;')
+									.on('click',()=>{
+										alert('update 버튼 클릭 :'+x.board.id);
+										update(x);
+									});
+								$(createBtn({id:'',clazz:'',val:'삭제'}))
+								.appendTo('#bbs-detail-div3')
+									.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 1%;')
+									.on('click',()=>{
+										alert('delete 버튼 클릭 :'+x.board.bbsSeq);
+											$.ajax({
+												url: context+'/board/delete/article/'+x.board.bbsSeq,
+												method : 'GET',
+												dataType : 'json',
+												contentType : 'application/json',
+												success : x=>{
+													alert('삭제성공');
+													onCreate();
+												},
+												error : ()=>{
+													alert('권한이 없습니다.');
+												}
+											});	
+									});
+							}
+
 							//// detail end
 						}
 					});
@@ -467,7 +506,7 @@ app.board =(()=>{
 				$(createDiv({id:'bbs-pag-div',clazz:''}))
 				.appendTo('#bbs-list-div1');
 				$(createUL({id :'bbs-ul', clazz :''}))
-				.attr('style','list-style:none;margin-left: 40%;')
+				.attr('style','list-style:none;margin-left: 40%;margin-top: 5%;')
 				.appendTo('#bbs-pag-div');
 				var t = '';
 				if(d.prevBlock){
@@ -496,46 +535,50 @@ app.board =(()=>{
 				$('#bbs-ul').append(t);
 				$(createForm({id:'',clazz:'',action:'',method:''}))
 		    	.appendTo('#bbs-list-div1')
-		    	.attr('style','text-align: center;')
+		    	.attr('style','margin-bottom: 8%;margin-top: 10%;text-align: center;')
 		    	.append($(createSelect({id:'',clazz:''}))
 		    	.append($(createOption({
 		    	    	list:['통합검색','제목','작성자','내용']
-		    	 }))))
+		    	 }))
+		    	 .attr('style','height: 35px;')))
 		    	.append($(createInput({type:'text',id:'',clazz:'bbs-input-css',placeholder:''}))
 		    		.attr('style','margin: 10px 3px 10px 3px;line-height:29px;width:25%'))
-		    	.append($(createBtn({id:'',clazz:'',val:'검색'}))
-		    		.attr('style','background: #272727;color: #ffffff;border: 2px solid #272727;border-radius: 8px;font-size: 16px;'));
-		    	
+		    	.append($(createBtn({id:'',clazz:'btn btn-outline-info',val:'검색'}))
+		    			.on('click',e=>{
+		    				e.preventDefault();
+		    				
+		    			}));
 			});
 		});
 	};
-		var write =x=>{
-			alert('글쓰기 들어옴');
-			$content.empty();
-			$content.html($(createDiv({id:'bbs-write-div1',clazz:''}))
-				.appendTo($content)
-				.attr('style','margin-left: 20%;margin-right: 20%;'));
+		var write =()=>{
+			$('#mem-mypage-main').html($(createDiv({id:'bbs-write-div1',clazz:''}))
+				.attr('style','margin-right: 20%;'));
 			$('#bbs-write-div1').html($(createDiv({id:'bbs-write-div2',clazz:''}))
 		    	.attr('style','margin-left: 5%;margin-right: 5%;'))
 		    .append($(createDiv({id:'bbs-write-div3',clazz:'grid-write'})));
 			$(createDiv({id:'bbs-div-qna',clazz:''}))
 			.appendTo('#bbs-write-div3')
-			.append($(createHTag({num:'2',val:'Q&A'})));
+			.append($(createHTag({num:'2',val:'게시판'})));
 			$(createForm({id:'bbs-write-form-1',clazz:'',action:'submit',method:''}))
 			.appendTo('#bbs-write-div3');
 			$(createDiv({id:'',clazz:''}))
+			.attr('style','margin-top: 3%;')
 			.appendTo('#bbs-write-form-1')
-			.append($(createLabel({val:'제목'})))
-			.append($(createWInput({type:'text',id:'',clazz:'',placeholder:''}))
-			.attr('style','margin-left: 10px;border: none;width: 80%;height: 30px;'));
+			.append($(createLabel({val:'제목'}))
+					.attr('style','font-size: 20px;'))
+			.append($(createWInput({type:'text',id:'bbs-title-input',clazz:'',placeholder:''}))
+			.attr('style','margin-left: 10px;border: none;width: 80%;height: 30px;font-size: 17px;'));
 			$(createHrTag({id:''}))
 			.attr('style','color:#272727;margin-top: 2%;')
 			.appendTo('#bbs-write-form-1');
 			$(createDiv({id:'',clazz:''}))
 			.appendTo('#bbs-write-form-1')
 			.attr('style','margin-bottom: 20px;')
-			.append($(createLabel({val:'내용'})))
-			.append($(createTextarea({clazz:'textarea',id:'bbs-content-input',val:''})));
+			.append($(createLabel({val:'내용'}))
+					.attr('style','font-size: 20px;'))
+			.append($(createTextarea({clazz:'textarea',id:'bbs-content-input',val:''}))
+					.attr('style','height: 400px;font-size: 17px;'));
 			$(createDiv({id:'bbs-write-div4',clazz:''}))
 			.appendTo('#bbs-write-form-1')
 			.attr('style','margin-left:auto;');
@@ -543,13 +586,23 @@ app.board =(()=>{
 			.appendTo('#bbs-write-form-1')
 				.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;')
 			.on('click', e=>{
-				var user = JSON.parse(sessionStorage.getItem('user'));
+				if($('#join-phone').val() ===''){
+	          		  alert('제목을 입력 해 주세요.');
+	          		  $('#bbs-title-input').focus();
+	          		  return false;
+	          		  }
+	          	  if($('#bbs-content-input').val() ===''){
+	          		  alert('내용을 입력 해 주세요.');
+	          		  $('#join-email').focus();
+	          		  return false;
+	          		  }
+				/*var user = JSON.parse(sessionStorage.getItem('user',));*/
 				var jason ={
 						title : $('#bbs-title-input').val(),
 						content : $('#bbs-content-input').val()
 				};
 				$.ajax({
-					url:context+'/board/post/article',
+					url:context+'/board/post/article/'+x.user.id,
 					data : JSON.stringify(jason),
 					dataType : 'json',
 					contentType:'application/json',
@@ -574,20 +627,17 @@ app.board =(()=>{
 	var update =x=>{
 		alert('x값 나오나'+x);
 		alert('update 들어옴');
-		$content.empty();
-		$content.html($(createDiv({id:'bbs-update-div1',clazz:''}))
-		.appendTo($content)
-		.attr('style','margin-left: 20%;margin-right: 20%;'));
+		$('#mem-mypage-main').html($(createDiv({id:'bbs-update-div1',clazz:''})));
 		$(createDiv({id:'',clazz:''}))
 		.appendTo('#bbs-update-div1')
-		.append($(createHTag({num:'2',val:'Q&A'})));
+		.append($(createHTag({num:'2',val:'게시판'})));
 		$(createDiv({id:'',clazz:'grid-detail'}))
 		.attr('style','margin-top: 100px')
 		.appendTo('#bbs-update-div1')
 		.append($(createText({clazz:'',val:'제목'})))
 		.append($(createInput({type:'text',id:'bbs-title-update-input',clazz:'',placeholder:''}))
 		.attr('value',x.board.title)
-		.attr('style','border: none;width: 80%;height: 100%;'));
+		.attr('style','border: none;width: 80%;height: 100%;font-size: 17px;'));
 		$(createHrTag({id:''}))
 		.attr('style','color:#272727;margin-top: 2%;')
 		.appendTo('#bbs-update-div1');
@@ -595,19 +645,21 @@ app.board =(()=>{
 		.attr('style','margin-top: 20px')
 		.appendTo('#bbs-update-div1')
 		.append($(createText({clazz:'',val:'작성자'})))
-		.append($(createText({clazz:'',val:x.board.id})));
+		.append($(createText({clazz:'',val:x.board.id}))
+				.attr('style','font-size: 17px;'));
 		$(createHrTag({id:''}))
 		.attr('style','color:#272727;margin-top: 2%;')
 		.appendTo('#bbs-update-div1');
 		$(createDiv({id:'',clazz:''}))
 		.attr('style','margin-top: 20px')
 		.appendTo('#bbs-update-div1')
-		.append($(createText({clazz:'',vSSssal:'내용'})));
+		.append($(createText({clazz:'',val:'내용'})));
 		$(createDiv({id:'',clazz:''}))
 		.appendTo('#bbs-update-div1')
 		.append($(createHrTag({id:''}))
 		.attr('style','height:20em;')
-		.append($(createTextarea({clazz:'update-textarea',id:'bbs-content-update-input',val:x.board.content}))));
+		.append($(createTextarea({clazz:'update-textarea',id:'bbs-content-update-input',val:x.board.content}))
+				.attr('style','font-size: 17px;')));
 		
 		$(createDiv({id:'bbs-update-div3',clazz:''}))
 		.appendTo('#bbs-update-div1')
@@ -615,7 +667,7 @@ app.board =(()=>{
 		
 		$(createBtn({id:'',clazz:'',val:'완료'}))
 		.appendTo('#bbs-update-div3')
-			.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 80%;')
+			.attr('style','margin-bottom: 5%;margin-top: 2%;background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 80%;')
 			.on('click',()=>{
 				var jason ={
 						title : $('#bbs-title-update-input').val(),
@@ -638,7 +690,7 @@ app.board =(()=>{
 			});
 		$(createBtn({id:'',clazz:'',val:'취소'}))
 		.appendTo('#bbs-update-div3')
-			.attr('style','background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 1%;')
+			.attr('style','margin-bottom: 5%;margin-top: 2%;background: #272727;color: #ffffff;border: 1px solid #272727;border-radius: 8px;font-size: 15px;margin-left: 1%;')
 			.on('click',x=>{
 				alert('수정 버튼 클릭');
 				onCreate();
