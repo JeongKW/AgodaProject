@@ -1231,8 +1231,6 @@ app.residence = (()=>{
 								.attr('style', 'background-color: #333; color: #fff; height:60px; border-radius: 0px; font-size: 15px; font-weight: bold')
 								.on('click', (e)=>{
 									e.preventDefault();
-									console.log($('#resi-input-filter').val());
-									app.cookie.setCookie($('#resi-input-filter').val());
 									if($('#resi-input-filter').val() === '') {
 										alert("검색어를 입력해 주세요.");
 									} else {
