@@ -18,8 +18,11 @@
 			AND price BETWEEN #{data4} AND #{data5}
  	</select>
 	<select id="WherekeywordMultiOptionCount" resultType="int" parameterType="com.agoda.web.common.Command">
-		SELECT COUNT(*) FROM ${table} r, ${table2} f 
-			WHERE r.fac_code like f.fac_code ${data4}
+		SELECT COUNT(*) 
+		FROM ${table} r, ${table2} f, resi_rating_score s	
+		WHERE r.fac_code like f.fac_code
+			AND r.res_code LIKE s.res_code
+			${data4}
 	</select>
 	<select id="exist" resultType="int" parameterType="com.agoda.web.common.Command">
 		SELECT COUNT(*) FROM ${table}

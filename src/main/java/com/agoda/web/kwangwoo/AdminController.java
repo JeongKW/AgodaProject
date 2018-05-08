@@ -43,11 +43,12 @@ public class AdminController {
 		return map;
 	}
 
-	@RequestMapping("/member/{pageNum}")
+	@RequestMapping(value = "/member/{pageNum}", method = RequestMethod.POST)
 	public Map<?, ?> manageMember(
 			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageMember() is {}", "entered");
+		logger.info("manageMember() pageNum {}", pageNum);
 		cmd.setTable("member");
 		cmd.setData1(pageNum);
 		map.put("users", (List<?>) new IGetService() {
@@ -63,7 +64,8 @@ public class AdminController {
 
 	@RequestMapping(value = "/member/add", 
 			method = RequestMethod.POST, consumes = "application/json")
-	public Map<?, ?> addMember(@RequestBody Member m) {
+	public Map<?, ?> addMember(
+			@RequestBody Member m) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("addMember() is {}", "entered");
 		cmd.setTable("Member");
@@ -155,14 +157,38 @@ public class AdminController {
 	public Map<?, ?> manageStatistics(@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageStatistics() is {}", "entered");
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/statistics/board", 
+			method = RequestMethod.POST, consumes = "application/json")
+	public Map<?, ?> boardStatistics() {
+		Map<String, Object> map = new HashMap<>();
+		logger.info("boardStatistics() is {}", "entered");
+		map.put("data", (List<?>) new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.boardTest(cmd);
+			}
+		}.excute(cmd));
 		return map;
 	}
 
-	@RequestMapping("/board/{pageNum}")
-	public Map<?, ?> manageBoard(@PathVariable String pageNum) {
+	@RequestMapping(value = "/board/{pageNum}",
+			method = RequestMethod.GET, consumes = "application/json")
+	public Map<?, ?> manageBoard(
+			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageBoard() is {}", "entered");
-		map.put("success", "1");
+		cmd.setData1(pageNum);
+		map.put("board", new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.boardList(cmd);
+			}
+		}.excute(cmd));
+		map.put("pageNum", Integer.parseInt(pageNum)+15);
 		return map;
 	}
 }
