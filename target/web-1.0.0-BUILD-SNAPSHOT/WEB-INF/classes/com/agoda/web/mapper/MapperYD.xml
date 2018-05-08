@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.agoda.web.mapper.MapperYD">
+	<select id="exist" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table}
+	</select>
+	<select id="selectResiList" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT A2.* FROM(
+			SELECT @ROWNUM:=@ROWNUM+1 AS Row, A.*
+			FROM(SELECT 
+					res_code AS resCode, 
+					star_rating AS starRating, 
+					name, 
+					zipcode, 
+					fac_code As facCode 
+				FROM ${table}) A, (SELECT @ROWNUM := 0) R) A2
+		WHERE Row BETWEEN #{data1} and #{data2}
+	</select>
+
+</mapper>

@@ -20,6 +20,43 @@ var createThead=x=>{
 var createTbody=x=>{
 	return '<tbody>'+x+'</tbody>';
 };
+var createAutoLI=x=>{
+	var li = '<div>';
+	$.each(x.list, (i, j)=>{
+		 li += '<li class="" style="margin-top: 20px">'
+			 +'<a href="#">'
+				+'<div style="min-height: 250px; border: 3px solid purple; margin-top: 10px;">'
+					+'<div class="col-sm-4" style="padding-left: 0px">'
+						+'<img src="https://goo.gl/rvz1Vu" style="max-width: 100%" />'
+					+'</div>'
+					+'<div class="col-sm-5" style="padding-left: 0px">'
+						+'<ul style="list-style-type: none; padding-left: 0px">'
+							+'<li style="font-size: 20px">'
+								+'<h2>'+j.name+'</h2>'
+							+'</li>'
+							+'<li id="resi-star-list" style="font-size: 30px">'
+								for(var s=1; s<=5; s++){
+									console.log(j.starRating);
+									if(s <= j.starRating){
+										li+= '<span class="fa fa-star checked-resi-star"></span>'
+									} else {
+										li+= '<span class="fa fa-star"></span>'
+									}
+								}
+							li +='</li>'
+							+'<li style="font-size: 20px">'
+								+'<p style="color: red">12시간 전 예약됨</p>'
+							+'</li>'
+						+'</ul>'
+					+'</div>'
+					+'<div class="col-sm-3" style="background-color: #e9e9e9; min-height: 243px;">'
+					+'</div>'
+				+'</div>'
+			+'</a></li>';
+	})
+	li += "</div>"
+	return li;
+}
 var createTh=x=>{
 	var t = '<tr>';
 	$.each(x.list, (i, j)=>{

@@ -6,19 +6,51 @@
 	<select id="exist" resultType="int" parameterType="com.agoda.web.common.Command">
 		SELECT COUNT(*) FROM ${table} WHERE id like #{data1}
 	</select>
-	<select id="select" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
+	<select id="selectById" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
 		SELECT * FROM ${table} WHERE id like #{data1} AND pw like #{data2}
 	</select>
-	<select id="selectAll" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
-		SELECT * FROM ${table}
+	<select id="selectAllAdminMember" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
+		SELECT * FROM ${table} limit ${data1}, 12
 	</select>
-	<update id="update">
-		UPDATE ${table} SET 
+	<update id="updateAdminMember">
+		UPDATE ${table} SET
+		pw = #{member.pw} 
+		<if test="#{member.email} != null">
+			, email = #{member.email} 
+		</if>
+		<if test="#{member.phone} != null">
+			, phone = #{member.phone} 
+		</if>
+		WHERE id like #{member.id}
 	</update>
-	<insert id="insert" parameterType="com.agoda.web.common.Command">
+	<insert id="insertAdminMember" parameterType="com.agoda.web.common.Command">
 		INSERT INTO ${table} VALUES (#{member.id}, #{member.pw}, #{member.name}, #{member.email}, #{member.phone})
 	</insert>
-	<delete id="delete">
-		
+	<delete id="deleteAdminMember" parameterType="com.agoda.web.common.Command">
+		DELETE FROM ${table} WHERE id like #{data1}
 	</delete>
+	<select id="searchAdminMember" resultType="com.agoda.web.youjin.Member" parameterType="com.agoda.web.common.Command">
+		SELECT * FROM ${table}
+		<if test="data2 != 'allboard'.toString()">
+			WHERE
+			<if test="data1 == 'i'.toString()">
+			  id like CONCAT('%', #{data2}, '%')
+			</if>
+			<if test="data1 == 'n'.toString()">
+			  name like CONCAT('%', #{data2}, '%')
+			</if>
+			<if test="data1 == 'e'.toString()">
+			  email like CONCAT('%', #{data2}, '%')
+			</if>
+			<if test="data1 == 'p'.toString()">
+			  phone like CONCAT('%', #{data2}, '%')
+			</if>
+		</if>
+	</select>
+	<select id="boardTest" resultType="com.agoda.web.kwangwoo.GoogleChart" parameterType="com.agoda.web.common.Command">
+		SELECT id, COUNT(*) as count FROM board GROUP BY id HAVING COUNT(*) >= 5;
+	</select>
+	<select id="boardList" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		SELECT bbs_seq AS bbsSeq, title, content, regdate, id, view_count AS viewCount FROM Board ORDER BY bbsSeq limit ${data1}, 15
+	</select>
 </mapper>
