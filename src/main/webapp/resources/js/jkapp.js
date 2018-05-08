@@ -92,38 +92,29 @@ app.admin = (()=>{
 	var flight=x=>{
 		$content.empty();
 		$content.html($(createDiv({id: 'map', clazz: 'container'})).attr('style', 'width: 700px; height: 700px'));
+		var markers = [];
 		$(function(){
 			var initMap = function(){
-				var hongkong = {lat: 22.3177343, lng: 114.1697933};
-				var juloong = {lat: 22.31944, lng: 114.17778};
-				var loc1 = {lat: 22.3275003, lng: 114.1820670};
-				var loc2 = {lat: 22.3280561, lng: 114.1608669};
-				var loc3 = {lat: 22.3317876, lng: 114.1717674};
-				var loc4 = {lat: 22.3107468, lng: 114.1661025};
+				var location = [{lat: 22.3177343, lng: 114.1697933},
+								{lat: 22.31944, lng: 114.17778},
+								{lat: 22.3275003, lng: 114.1820670},
+								{lat: 22.3280561, lng: 114.1608669},
+								{lat: 22.3317876, lng: 114.1717674},
+								{lat: 22.3107468, lng: 114.1661025}];
 				var map = new google.maps.Map(document.getElementById('map'), {
 					zoom: 14,
-					center: hongkong
+					center: location[0]
 				});
-				var marker1 = new google.maps.Marker({
-					position: juloong,
-					map: map
-				});
-				var marker2 = new google.maps.Marker({
-					position: loc1,
-					map: map
-				});
-				var marker3 = new google.maps.Marker({
-					position: loc2,
-					map: map
-				});
-				var marker4 = new google.maps.Marker({
-					position: loc3,
-					map: map
-				});
-				var marker5 = new google.maps.Marker({
-					position: loc4,
-					map: map
-				});
+				for(var i = 1; i < location.length; i++){
+					var marker = new google.maps.Marker({
+						position: location[i],
+						map: map
+					});
+					markers.push(marker);
+				}
+				for(var i = 1; i < location.length; i++){
+					markers[i].setMap(map);
+				}
 			};
 			initMap();
 		});
@@ -434,9 +425,32 @@ app.admin = (()=>{
 	var statistics=x=>{
 		$content.empty();
 		$content.html($(createDiv({id: 'stat-body', clazz: 'container'})));
+		$('#stat-body').append($(createUL({id: '', clazz: 'nav nav-tabs'}))
+			.attr('style', 'margin-top: 30px')
+			.append($(createLI({id: 'li-stat-board', clazz: 'active'})))
+			.append($(createLI({id: 'li-stat-linechart', clazz: ''})))
+			.append($(createLI({id: 'li-stat-test', clazz: ''}))));
+		$('#li-stat-board').append($(createATag({id: 'a-stat-board', val: '게시판통계'}))
+			.on('click', function(){
+				if(!($('#a-stat-board').parent('li').hasClass('active'))){
+					$('#a-stat-board').parent('li').addClass('active');
+					$('#a-stat-board').parent('li').siblings('li').removeClass('active');
+				}
+				$('#dashboard').attr('hidden', true);
+				$('#chart-div').attr('hidden', false);
+			}));
+		$('#li-stat-linechart').append($(createATag({id: 'a-stat-linechart', val: '예약통계'}))
+			.on('click', function(){
+				if(!($('#a-stat-linechart').parent('li').hasClass('active'))){
+					$('#a-stat-linechart').parent('li').addClass('active');
+					$('#a-stat-linechart').parent('li').siblings('li').removeClass('active');
+				}
+				$('#chart-div').attr('hidden', true);
+				$('#dashboard').attr('hidden', false);
+			}));
 		$('#stat-body').append($(createDiv({id: 'chart-div', clazz: 'container'})));
-		$('#stat-body').append($(createBtn({id: 'edit', clazz: 'btn btn-default', val: 'Edit Chart'})));
-		$('#stat-body').append($(createDiv({id: 'dashboard', clazz: 'container'})));
+		$('#stat-body').append($(createDiv({id: 'dashboard', clazz: 'container'})).attr('hidden', true));
+		$('#dashboard').append($(createBtn({id: 'edit', clazz: 'btn btn-default', val: 'Edit Chart'})));
 		$('#dashboard').append($(createDiv({id: 'chart-div2', clazz: 'container'})));
 		$('#dashboard').append($(createDiv({id: 'control-div', clazz: 'container'})));
 		google.charts.load('current', {'packages':['corechart', 'controls', 'charteditor']});
@@ -475,7 +489,6 @@ app.admin = (()=>{
 	        type: 'post',
 	        dataType: 'json',
 	        contentType: 'application/json',
-	        async: false,
 	        success: function(lists) {
 	            google.charts.setOnLoadCallback(drawChart);
 	            function drawChart() {
