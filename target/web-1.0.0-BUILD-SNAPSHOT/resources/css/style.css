@@ -11,68 +11,27 @@
 	margin: 20px auto;
 }
 
-##accordian ul li a {
-	background-color: #333;
-	box-shadow: 0 5px 15px 1px rgba(0, 0, 0, .6), 0 0 200px 1px
-		rgba(255, 255, 255, .5);
-	color: white;
-}
-
-##accordian ul li {
-	background: #003040;
-	background: linear-gradient(#080808, #555);
-	cursor: pointer;
-	font-size: 12px;
-	line-height: 34px;
-	padding: 0 10px;
-	margin: inherit;
-}
-
-#accordian h3:hover {
-	text-shadow: 0 0 1px rgba(255, 255, 255, .7);
-}
-
-#accordian h3 span {
-	font-size: 16px;
-	margin-right: 10px;
-}
-
-#accordian li {
-	list-style-type: none;
-}
-
-#accordian ul ul li a {
-	color: white;
-	display: block;
-	font-size: 15px;
-	line-height: 27px;
-	padding: 0 15px;
-	text-decoration: none;
-	transition: all 0.15s;
-}
-
-#accordian ul ul {
-	display: none;
-}
-
-#accordian li.active ul {
-	display: block;
-}
-
 /* YDKIM */
-
+.white-popup {
+  position: relative;
+  background: #FFF;
+  padding: 20px;
+  width: auto;
+  max-width: 500px;
+  margin: 20px auto;
+}
 .checked-resi-star {
 	color: orange;
 }
-
-input[type=number]::-webkit-inner-spin-button{
-	opacity:1;
-	height: 20px;
+.openscenter {
+	top: 70%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
-
+/*nav-tab*/
 .nav-pills > li.active > a, 
 .nav-pills > li.active > a:focus,
-v-pills > li.active > a:hover {
+.nav-pills > li.active > a:hover {
 	border-bottom: 4px solid red;
 	background-color: #333;
 }
@@ -82,29 +41,29 @@ v-pills > li.active > a:hover {
 	color: #333;
 }
 /*Filp Animation*/
-.flip {
+.flipCard {
 	perspective: 800;
 	position: relative;
 }
-.flip .thumbnail.flipped {
+.flipCard .card.flipped {
 	transform: rotateY(-180deg);
 	background-color: rgba(255, 0, 0, 0.1);
 }
-.flip .thumbnail {
+.flipCard .card {
 	height: 100%;
 	transform-style: preserve-3d;
 	transition: 0.5s;
 }
-.flip .thumbnail .face {
+.flipCard .card .face {
 	backface-visibility: hidden ;
 	z-index: 2;   
 }
-.flip .thumbnail .front {
+.flipCard .card .front {
 	padding-right: 20px;
 	position: absolute;
 	z-index: 1;
 }
-.flip .thumbnail .back {
+.flipCard .card .back {
 	transform: rotateY(-180deg);
 }
 

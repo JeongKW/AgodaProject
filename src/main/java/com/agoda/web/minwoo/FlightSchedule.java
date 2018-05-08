@@ -8,5 +8,6 @@ import lombok.Data;
 @Component
 @Data @Lazy
 public class FlightSchedule {
-	private String flightScheduleSeq, fromLocation, toLocation, departureTime, arrivalTime, price, code, iatacode;
+	private String flightScheduleSeq, fromLocation, toLocation, departureTime, arrivalTime, price, code, iatacode/*,
+		arvFlightScheduleSeq, arvFromLocation, arvToLocation, arvDepartureTime, arvArrivalTime, arvPrice, arvCode, arvIatacode*/;
 }

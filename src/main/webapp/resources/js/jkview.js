@@ -1,8 +1,4 @@
-//Common Tag for Dynamic
-var googlechar=()=>{
-	
-};
-
+//Common Tag for Dynamicjquery
 var deleteView=()=>{
 	return '<h4>삭제하시겠습니까?</h4>'
 	+ '<button id="btn-delete-member">삭제</button><button id="btn-cancel-member">취소</button>';
@@ -114,13 +110,15 @@ var createTr3=x=>{
 	});
 	return t;
 };
+
 var createTd3=x=>{
 	var t = '';
 	$.each(x.list, (i, j)=>{
-		if(i !== 'content'){
+		if(i !== 'content' && i !== 'viewCount'){
 			t += '<td>'+ j +'</td>';
 		}
 	});
+	t += '<td>'+ createBtn({id: '', clazz: 'btn btn-success btn-sm', val: '수정'}) + '&nbsp' + createBtn({id: '', clazz: 'btn btn-danger btn-sm', val: '삭제'}) + '</td>';
 	return t;
 };
 var createTd2=x=>{
