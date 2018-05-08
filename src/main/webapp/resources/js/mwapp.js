@@ -482,7 +482,7 @@ app.flightDetail=(()=>{
 			//'<span class="'+x.clazz+'">'+x.val+'</span>';
 				
 			$('#air-rightcolumn-div')
-			.attr('style', 'margin-top : 20px;')
+.attr('style', 'margin-top : 20px;')
 			.append(createDiv({ id : 'air-rightbanner-div', clazz : ''}));
 			
 			
