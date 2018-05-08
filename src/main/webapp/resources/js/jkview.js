@@ -1,4 +1,16 @@
 //Common Tag for Dynamicjquery
+var modifyAdminBoard=()=>{
+	return '<h3>게시판 수정</h3>' 
+	+ '<fieldset style="border:0;">'
+	+ '<ol>'
+	+ '<li><label for="name">ID : &nbsp;</label><br><input id="modify-bid" style="width: 320px" type="text" disabled></li>'
+	+ '<li><label for="name">Title : &nbsp;</label><br><input id="modify-title" style="width: 320px" type="text"></li>'
+	+ '<li><label for="name">Content : &nbsp;</label><br><textarea style="width: 400px; height: 300px" id="modify-content" row="6" cols="50"></textarea></li>'
+	+ '</ol>'
+	+ '</fieldset>'
+	+ '<button class="btn btn-primary center-block" id="btn-modify-bsubmit">확인</button>';
+};
+
 var deleteView=()=>{
 	return '<h4>삭제하시겠습니까?</h4>'
 	+ '<button id="btn-delete-member">삭제</button><button id="btn-cancel-member">취소</button>';

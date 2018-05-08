@@ -80,7 +80,7 @@ public class AdminController {
 			@RequestBody Member m) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("addMember() is {}", "entered");
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setData1(m.getId());
 		cmd.setMember(m);
 		new IPostService() {
@@ -105,7 +105,7 @@ public class AdminController {
 			@RequestBody Member m) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("updateMember() is {}", "entered");
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setMember(m);
 		new IUpdateService() {
 			@Override
@@ -128,7 +128,7 @@ public class AdminController {
 			@PathVariable String id) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("deleteMember() is {}", "entered");
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setData1(id);
 		new IDeleteService() {
 			@Override
@@ -153,7 +153,7 @@ public class AdminController {
 			@PathVariable String data) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("searchMember() is {}", "entered");
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setData1(filter);
 		cmd.setData2(data);
 		map.put("search", (List<?>) new IGetService() {
@@ -187,6 +187,7 @@ public class AdminController {
 		return map;
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/board/{pageNum}",
 			method = RequestMethod.GET, consumes = "application/json")
 	public Map<?, ?> manageBoard(
@@ -194,13 +195,40 @@ public class AdminController {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageBoard() is {}", "entered");
 		cmd.setData1(pageNum);
-		map.put("board", new IGetService() {
+		map.put("board", (List<Board>) new IGetService() {
 			@Override
 			public Object excute(Command cmd) {
 				return mapper.boardList(cmd);
 			}
 		}.excute(cmd));
 		map.put("pageNum", Integer.parseInt(pageNum)+15);
+		return map;
+	}
+	
+	@RequestMapping(value = "/boardDetail/{seq}",
+			method = RequestMethod.GET, consumes = "application/json")
+	public Map<?, ?> manageBoardDetail(
+			@PathVariable String seq) {
+		Map<String, Object> map = new HashMap<>();
+		logger.info("manageBoardDetail() is {}", "entered");
+		logger.info("manageBoardDetail() seq {}", seq);
+		cmd.setData1(seq);
+		map.put("detail", (Board) new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.boardDetail(cmd);
+			}
+		}.excute(cmd));
+		return map;
+	}
+	
+	@RequestMapping(value = "/boardModify/{id}",
+			method = RequestMethod.GET, consumes = "application/json")
+	public Map<?, ?> manageBoardModify(
+			@PathVariable String id) {
+		Map<String, Object> map = new HashMap<>();
+		logger.info("manageBoardModify() is {}", "entered");
+		logger.info("manageBoardModify() id {}", id);
 		return map;
 	}
 }

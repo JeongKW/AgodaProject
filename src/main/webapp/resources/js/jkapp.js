@@ -1,9 +1,11 @@
 app.admin = (()=>{
-	var context, view, history, detailHistory;
+	var context, view, history, detailHistory, donutfunc;
+	
 	var onCreate =x=>{
 		$content = $('#content');
 		context = $.context();
 		history = '';
+		donutfunc = function(){};
 		$.cookie(x.user.id, 10);
 		detailHistory = [];
 		view = $.javascript() + '/jkview.js';
@@ -34,6 +36,7 @@ app.admin = (()=>{
 							if($.cookie('admin')){
 								$.removeCookie('admin');
 							}
+							clearInterval(donutfunc);
 							app.init(context);
 						})));
 			$('#a-residence').on('click', e=>{
@@ -84,12 +87,16 @@ app.admin = (()=>{
 		});
 	};
 	var residence=x=>{
+		clearInterval(donutfunc);
 		$.post(context+'/adminjk/residence/'+x, d=>{
 			$content.empty();
 			$content.html($(createHTag({num : '3', val: '숙소 리스트'})).attr('class', 'page-header'));
 		});
 	};
 	var flight=x=>{
+		if(!($('#stat-body').is('div'))){
+			clearInterval(donutfunc);
+		}
 		$content.empty();
 		$content.html($(createDiv({id: 'map', clazz: 'container'})).attr('style', 'width: 700px; height: 700px'));
 		var markers = [];
@@ -120,6 +127,7 @@ app.admin = (()=>{
 		});
 	};
 	var member=x=>{
+		clearInterval(donutfunc);
 		$.post(context+'/adminjk/member/'+x, d=>{
 			$.getScript(view, ()=>{
 				$content.empty();
@@ -194,8 +202,8 @@ app.admin = (()=>{
                             		}
                                     $(createTr2({list : x.users})).appendTo('#member-tab');
                                     $('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px')
-                                    $('.success').off('click');
-                                    $('.danger').off('click');
+                                    $('.btn-success').off('click');
+                                    $('.btn-danger').off('click');
                                    	eventfunc();
                                     if(d.pageNum === 12){
                                     	detailHistory = JSON.parse(sessionStorage.getItem('initHistory'));
@@ -303,8 +311,8 @@ app.admin = (()=>{
 			                                } else {
 			                                	tableCreate(history);
 			                                }
-											$('.success').off('click');
-		                                    $('.danger').off('click');
+											$('.btn-success').off('click');
+		                                    $('.btn-danger').off('click');
 											eventfunc();
 										}
 									}
@@ -352,8 +360,8 @@ app.admin = (()=>{
 			                                } else {
 			                                	tableCreate(history);
 			                                }
-											$('.success').off('click');
-		                                    $('.danger').off('click');
+											$('.btn-success').off('click');
+		                                    $('.btn-danger').off('click');
 											eventfunc();
 										}
 									}
@@ -368,9 +376,62 @@ app.admin = (()=>{
 	};
 
 	var board=x=>{
+		clearInterval(donutfunc);
 		var i = 1;
 		$content.empty();
 		$content.html($(createDiv({id: 'board-admin-div', clazz: ''})));
+		$content.append($(createForm({id: 'modify-bform', clazz: 'mfp-hide white-popup', action: '', method: 'get'}))
+			.append($(modifyAdminBoard())));
+		$('fieldset').attr('style', 'width: ')
+		$content.append();
+		var boardfunc = function(){
+			$(function(){
+				$('.btn-success').each(function(){
+					$(this).on('click', function(){
+						var seq = $(this).parent().siblings('td').eq(0).text();
+						$.ajax({
+							url : context+'/adminjk/boardDetail/' + seq,
+							dataType : 'json',
+							contentType : 'application/json',
+							success : x=>{
+								$.magnificPopup.open({
+									items:{
+										src: '#modify-bform',
+										type: 'inline'
+									},
+									callbacks: {
+										beforeOpen: function(){
+											$('#modify-bid').val(x.detail.id);
+											$('#modify-title').val(x.detail.title);
+											$('#modify-content').val(x.detail.content);
+											$('#btn-modify-bsubmit').on('click', e=>{
+												e.preventDefault();
+												$.ajax({
+													url : context+'/adminjk/boardModify/' + id,
+													dateType : 'json',
+													contentType : 'application/json',
+													success : x=>{
+														alert('Board 수정 Submit 들어옴');
+													}
+												});
+											});
+										},
+										close: function(){
+											board(0);
+										}
+									}
+								});
+							}
+						});
+					});
+				});
+				$('.btn-danger').each(function(){
+					$(this).on('click', function(){
+						
+					});
+				});
+			});
+		};
 		var list = function(x){
 			$.ajax({
 				url: context+'/adminjk/board/'+x,
@@ -378,49 +439,57 @@ app.admin = (()=>{
 				dataType: 'json',
 				contentType: 'application/json',
 				success: x=>{
-					var pageNum = x.pageNum;
-					$('#board-admin-div').append($(createDiv({id: 'tab-' + i, clazz: 'test'})).append($(createDiv({id: '', clazz: 'container'})).attr('style', 'width: 1197px; height: 800px; position: relative')
-						.append($(createTab({id: '', clazz: 'striped'}))
-							.append($(createThead(createTh({list: ['글번호', '글제목', '작성일', '작성자', '수정/삭제']}))))
-							.append($(createTbody(createTr3({list : x.board})))))));
-					i++;
-					$(function(){
-						$('.test').each(function(){
-							$(this).on("wheel", function (e) {
-								e.preventDefault();
-								if (!event) event = window.event;
-								if (event.wheelDelta) {
-									delta = event.wheelDelta / 120;
-								} else if (event.detail) delta = -event.detail / 3;
-								var moveTop = null;
-								if (delta < 0) {
-									if ($(this).next() != undefined) {
-										moveTop = $(this).next().offset();
-									}
-								} else {
-									if ($(this).prev() != undefined) {
-										moveTop = $(this).prev().offset();
-										if(moveTop.top == 52){
-											moveTop.top = 0;
+					if(!(x.board.length == 0)){
+						var pageNum = x.pageNum;
+						$('#board-admin-div').append($(createDiv({id: 'tab-' + i, clazz: 'test'})).append($(createDiv({id: '', clazz: 'container'})).attr('style', 'width: 1197px; height: 800px; position: relative')
+								.append($(createTab({id: '', clazz: 'striped'}))
+										.append($(createThead(createTh({list: ['글번호', '글제목', '작성일', '작성자', '수정/삭제']}))))
+										.append($(createTbody(createTr3({list : x.board})))))));
+						i++;
+						$(function(){
+							$('.test').each(function(){
+								$(this).on("wheel", function (e) {
+									e.preventDefault();
+									if (!event) event = window.event;
+									if (event.wheelDelta) {
+										delta = event.wheelDelta / 120;
+									} else if (event.detail) delta = -event.detail / 3;
+									var moveTop = null;
+									if (delta < 0) {
+										if ($(this).next() != undefined) {
+											moveTop = $(this).next().offset();
+										}
+									} else {
+										if ($(this).prev() != undefined) {
+											moveTop = $(this).prev().offset();
+											if(moveTop.top == 52){
+												moveTop.top = 0;
+											}
 										}
 									}
-								}
-								$("body, html").stop().animate({
-									scrollTop: moveTop.top + 'px'
-								}, {
-									duration: 800, complete: function () {
-									}
+									$("body, html").stop().animate({
+										scrollTop: moveTop.top + 'px'
+									}, {
+										duration: 800, complete: function () {
+										}
+									});
 								});
 							});
 						});
-					});
-					if(!(x.board.length < 15)){
-						list(pageNum);
+						$('.btn-success').off('click');
+                        $('.btn-danger').off('click');
+						boardfunc();
+						if(!(x.board.length < 15)){
+							list(pageNum);
+						}
 					}
 				}
 			});
 		};
 		list(x);
+		$('.btn-success').off('click');
+        $('.btn-danger').off('click');
+		boardfunc();
 	};
 	var statistics=x=>{
 		$content.empty();
@@ -454,13 +523,9 @@ app.admin = (()=>{
 		$('#dashboard').append($(createDiv({id: 'chart-div2', clazz: 'container'})));
 		$('#dashboard').append($(createDiv({id: 'control-div', clazz: 'container'})));
 		google.charts.load('current', {'packages':['corechart', 'controls', 'charteditor']});
-		donutChart();
 		googleChart();
-		$(function(){
-			setInterval(function(){
-				donutChart();
-			}, 10000);
-		});
+		donutChart();
+		donutfunc = setInterval(donutChart, 10000);
 	};
 	
 	var historyAdd=()=>{
