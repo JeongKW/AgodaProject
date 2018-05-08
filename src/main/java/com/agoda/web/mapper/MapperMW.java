@@ -10,7 +10,7 @@ import com.agoda.web.minwoo.FlightSchedule;
 @Repository
 public interface MapperMW {
 	public List<FlightSchedule> selectFlightList(Command cmd);
-	public List<FlightSchedule> selectBackFlightList(Command cmd);
+	public List<FlightSchedule> selectSortFlightList(Command cmd);
 	public int departureCount(Command cmd);
 	public int arrivalCount(Command cmd);
 }
