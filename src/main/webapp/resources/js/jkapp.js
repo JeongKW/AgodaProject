@@ -522,18 +522,22 @@ app.admin = (()=>{
 			.append($(createDiv({id: 'chart-div', clazz: ''})))
 		);
 		$('#select-chart').attr('style', 'margin-top: 30px')
-			.append($(createSelect({id: 'chart-sel', name: 'chart-sel', clazz: 'form-control'}))
-				.append($(createOption({val : '', content : '그래프 선택'})))
-				.append($(createOption({val : 'column', content : '막대그래프'})))
-				.append($(createOption({val : 'pie', content : '원형그래프'})))
-				.append($(createOption({val : 'test', content : '임시그래프'}))))
-			.append($(createBtn({id: 'btn-chart-sel', clazz: 'btn btn-primary', val: '선택'}))
-				.on('click', function(){
-					clearInterval(donutfunc);
-					chartSel = $('select[name="chart-sel"]').val();
-					donutChart(chartSel);
-					donutfunc = setInterval(function(){donutChart(chartSel);}, 10000);
-				}));
+			.append($(createDiv({id: '', clazz: 'row'}))
+				.append($(createDiv({id: '', clazz: 'col-xs-2'}))
+					.append($(createSelect({id: 'chart-sel', name: 'chart-sel', clazz: 'form-control'}))
+						.append($(createOption({val : '', content : '그래프 선택'})))
+						.append($(createOption({val : 'column', content : '막대그래프'})))
+						.append($(createOption({val : 'pie', content : '원형그래프'})))
+						.append($(createOption({val : 'test', content : '임시그래프'})))))
+				.append($(createDiv({id: '', clazz: 'col-xs-1'}))
+					.attr('style', 'padding-left: 0px')
+					.append($(createBtn({id: 'btn-chart-sel', clazz: 'btn btn-primary', val: '선택'}))
+					.on('click', function(){
+						clearInterval(donutfunc);
+						chartSel = $('select[name="chart-sel"]').val();
+						donutChart(chartSel);
+						donutfunc = setInterval(function(){donutChart(chartSel);}, 10000);
+					}))));
 		$('#stat-body').append($(createDiv({id: 'dashboard', clazz: 'container'})).attr('hidden', true));
 		$('#dashboard').append($(createBtn({id: 'edit', clazz: 'btn btn-default', val: 'Edit Chart'})));
 		$('#dashboard').append($(createDiv({id: 'chart-div2', clazz: 'container'})));
@@ -574,22 +578,22 @@ app.admin = (()=>{
 	        	var drawChart = function(){};
 	        	if(x == 'column'){
 	        		drawChart = function() {
-	        			var dataChart = [['아이디', '개수']];
-//	        			var color = ['#dc3912', '#ff9900', '#109618', '#3366cc', '#990099'];
+	        			var dataChart = [['아이디', '개수', {role : 'style'}]];
+	        			var color = ['#dc3912', '#ff9900', '#109618', '#3366cc', '#990099'];
 	        			if(lists.data.length != 0) {
 	        				$.each(lists.data, function(i, item){
-	        					dataChart.push([item.id, item.count]);
+	        					dataChart.push([item.id, item.count*1, color[i]]);
 	        				});
-	        			}else {
-	        				dataChart.push(['입력해주세요', '1']);
+	        			} else {
+	        				dataChart.push(['입력해주세요', 1]);
 	        			}
 	        			var data = google.visualization.arrayToDataTable(dataChart);
 	        			var view = new google.visualization.DataView(data);
 	        			var options = {
 	        					title: "게시물 top 5",
-	        					width: 600,
-	        					height: 400,
-	        					bar: {groupWidth: '95%'},
+	        					width: 1200,
+	        					height: 700,
+	        					bar: {groupWidth: '85%'},
 	        			        legend: { position: 'none' },
 	        			};
 	        			var chart = new google.visualization.ColumnChart(document.getElementById('chart-div'));
