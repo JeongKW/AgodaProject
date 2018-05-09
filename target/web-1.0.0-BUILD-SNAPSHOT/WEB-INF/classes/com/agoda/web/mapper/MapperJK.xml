@@ -47,4 +47,16 @@
 			</if>
 		</if>
 	</select>
+	<select id="boardTest" resultType="com.agoda.web.kwangwoo.GoogleChart" parameterType="com.agoda.web.common.Command">
+		SELECT id, COUNT(*) as count FROM board GROUP BY id ORDER BY count desc limit 5;
+	</select>
+	<select id="boardDetail" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		SELECT id, title, content FROM board WHERE bbs_seq like #{data1};
+	</select>
+	<select id="boardList" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		SELECT bbs_seq AS bbsSeq, title, content, regdate, id, view_count AS viewCount FROM board ORDER BY regdate desc limit ${data1}, 15
+	</select>
+	<select id="totalCount" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table}
+	</select>
 </mapper>

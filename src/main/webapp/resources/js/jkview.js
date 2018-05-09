@@ -1,12 +1,11 @@
-//Common Tag for Dynamicjquery
 var modifyAdminBoard=()=>{
 	return '<h3>게시판 수정</h3>' 
 	+ '<fieldset style="border:0;">'
-	+ '<ol>'
-	+ '<li><label for="name">ID : &nbsp;</label><br><input id="modify-bid" style="width: 320px" type="text" disabled></li>'
-	+ '<li><label for="name">Title : &nbsp;</label><br><input id="modify-title" style="width: 320px" type="text"></li>'
-	+ '<li><label for="name">Content : &nbsp;</label><br><textarea style="width: 400px; height: 300px" id="modify-content" row="6" cols="50"></textarea></li>'
-	+ '</ol>'
+	+ '<ul>'
+	+ '<li><label for="name">ID</label><br><input id="modify-bid" class="form-control" style="width: 320px" type="text" disabled></li>'
+	+ '<li><label for="name">Title</label><br><input id="modify-title" class="form-control" style="width: 320px" type="text"></li>'
+	+ '<li><label for="name">Content</label><br><textarea style="width: 400px; height: 300px" id="modify-content" class="form-control" row="6" cols="50"></textarea></li>'
+	+ '</ul>'
 	+ '</fieldset>'
 	+ '<button class="btn btn-primary center-block" id="btn-modify-bsubmit">확인</button>';
 };
@@ -17,31 +16,31 @@ var deleteView=()=>{
 };
 
 var createFieldSet=()=>{
-	return '<h3>회원 추가</h3>' 
+	return '<h4>회원 추가</h4>'
 	+ '<fieldset style="border:0;">'
-	+ '<ol>'
-	+ '<li><label for="name">ID : &nbsp;</label><input id="input-id" type="text" placeholder="아이디"></li>'
-	+ '<li><label for="name">Password : &nbsp;</label><input id="input-pw" type="password" placeholder="패스워드" required></li>'
-	+ '<li><label for="name">이름 : &nbsp;</label><input id="input-name" type="text" placeholder="이름"></li>'
-	+ '<li><label for="name">E-mail : &nbsp;</label><input id="input-email" type="email" placeholder="이메일"></li>'
-	+ '<li><label for="name">핸드폰 : &nbsp;</label><input id="input-phone" type="text" placeholder="핸드폰"></li>'
-	+ '</ol>'
+	+ '<ul>'
+	+ '<li><label for="name">ID</label><br><input id="input-id" style="width: 324px"  class="form-control" type="text" placeholder="아이디"></li>'
+	+ '<li><label for="name">Password</label><br><input id="input-pw" style="width: 324px"  class="form-control" type="password" placeholder="패스워드" required></li>'
+	+ '<li><label for="name">이름</label><br><input id="input-name" style="width: 324px"  class="form-control" type="text" placeholder="이름"></li>'
+	+ '<li><label for="name">E-mail</label><br><input id="input-email" style="width: 324px"  class="form-control" type="email" placeholder="이메일"></li>'
+	+ '<li><label for="name">핸드폰</label><br><input id="input-phone" style="width: 324px"  class="form-control" type="text" placeholder="핸드폰"></li>'
+	+ '</ul>'
 	+ '</fieldset>'
-	+ '<button id="btn-add-submit">확인</button>';
+	+ '<button id="btn-add-submit" class="btn btn-primary center-block">확인</button>';
 };
 
 var createFieldSet2=()=>{
-	return '<h3>회원 수정</h3>' 
+	return '<h4>회원 수정</h4>' 
 	+ '<fieldset style="border:0;">'
-	+ '<ol>'
-	+ '<li><label for="name">ID : &nbsp;</label><input id="modify-id" type="text" placeholder="아이디" disabled></li>'
-	+ '<li><label for="name">Password : &nbsp;</label><input id="modify-pw" type="password" placeholder="패스워드" required></li>'
-	+ '<li><label for="name">이름 : &nbsp;</label><input id="modify-name" type="text" placeholder="이름" disabled></li>'
-	+ '<li><label for="name">E-mail : &nbsp;</label><input id="modify-email" type="email" placeholder="이메일"></li>'
-	+ '<li><label for="name">핸드폰 : &nbsp;</label><input id="modify-phone" type="text" placeholder="핸드폰"></li>'
-	+ '</ol>'
+	+ '<ul>'
+	+ '<li><label for="name">ID</label><br><input id="modify-id" class="form-control" style="width: 324px" type="text" placeholder="아이디" disabled></li>'
+	+ '<li><label for="name">Password</label><br><input id="modify-pw" class="form-control" style="width: 324px"  type="password" placeholder="패스워드"></li>'
+	+ '<li><label for="name">이름</label><br><input id="modify-name" class="form-control" style="width: 324px"  type="text" placeholder="이름" disabled></li>'
+	+ '<li><label for="name">E-mail</label><br><input id="modify-email" class="form-control" style="width: 324px"  type="email" placeholder="이메일"></li>'
+	+ '<li><label for="name">핸드폰</label><br><input id="modify-phone" class="form-control" style="width: 324px"  type="text" placeholder="핸드폰"></li>'
+	+ '</ul>'
 	+ '</fieldset>'
-	+ '<button id="btn-modify-submit">확인</button>';
+	+ '<button id="btn-modify-submit" class="btn btn-primary center-block">확인</button>';
 };
 
 var test=()=>{
@@ -66,15 +65,11 @@ var searchBox=()=>{
 	+'        </div>';
 };
 
-var createSelect =x=>{
-    return '<select id="'+x.id+'" class="'+x.clazz+'"> </select>'
+var createSelect=x=>{
+    return '<select id="'+x.id+'" name="'+ x.name +'" class="'+x.clazz+'"> </select>'
 };
-var createOption =x=>{
-    var temp = '';
-    $.each(x.list,(i,j)=>{
-        temp+='<option>'+j+'</option>'
-    });
-    return temp;
+var createOption=x=>{
+    return '<option value="'+ x.val +'">'+x.content+'</option>';
 };
 var createATag=x=>{
 	return '<a id="'+x.id+'" href="#">'+x.val+'</a>';

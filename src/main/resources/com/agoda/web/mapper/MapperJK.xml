@@ -48,7 +48,7 @@
 		</if>
 	</select>
 	<select id="boardTest" resultType="com.agoda.web.kwangwoo.GoogleChart" parameterType="com.agoda.web.common.Command">
-		SELECT id, COUNT(*) as count FROM board GROUP BY id HAVING COUNT(*) >= 5;
+		SELECT id, COUNT(*) as count FROM board GROUP BY id ORDER BY count desc limit 5;
 	</select>
 	<select id="boardDetail" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
 		SELECT id, title, content FROM board WHERE bbs_seq like #{data1};

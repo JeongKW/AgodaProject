@@ -1,6 +1,5 @@
 app.admin = (()=>{
 	var context, view, history, detailHistory, donutfunc;
-	
 	var onCreate =x=>{
 		$content = $('#content');
 		context = $.context();
@@ -492,6 +491,7 @@ app.admin = (()=>{
 		boardfunc();
 	};
 	var statistics=x=>{
+		var chartSel = '';
 		$content.empty();
 		$content.html($(createDiv({id: 'stat-body', clazz: 'container'})));
 		$('#stat-body').append($(createUL({id: '', clazz: 'nav nav-tabs'}))
@@ -506,7 +506,7 @@ app.admin = (()=>{
 					$('#a-stat-board').parent('li').siblings('li').removeClass('active');
 				}
 				$('#dashboard').attr('hidden', true);
-				$('#chart-div').attr('hidden', false);
+				$('#board-chart-div').attr('hidden', false);
 			}));
 		$('#li-stat-linechart').append($(createATag({id: 'a-stat-linechart', val: '예약통계'}))
 			.on('click', function(){
@@ -514,18 +514,32 @@ app.admin = (()=>{
 					$('#a-stat-linechart').parent('li').addClass('active');
 					$('#a-stat-linechart').parent('li').siblings('li').removeClass('active');
 				}
-				$('#chart-div').attr('hidden', true);
+				$('#board-chart-div').attr('hidden', true);
 				$('#dashboard').attr('hidden', false);
 			}));
-		$('#stat-body').append($(createDiv({id: 'chart-div', clazz: 'container'})));
+		$('#stat-body').append($(createDiv({id: 'board-chart-div', clazz: 'container'}))
+			.append($(createDiv({id: 'select-chart', clazz: ''})))
+			.append($(createDiv({id: 'chart-div', clazz: ''})))
+		);
+		$('#select-chart').attr('style', 'margin-top: 30px')
+			.append($(createSelect({id: 'chart-sel', name: 'chart-sel', clazz: 'form-control'}))
+				.append($(createOption({val : '', content : '그래프 선택'})))
+				.append($(createOption({val : 'column', content : '막대그래프'})))
+				.append($(createOption({val : 'pie', content : '원형그래프'})))
+				.append($(createOption({val : 'test', content : '임시그래프'}))))
+			.append($(createBtn({id: 'btn-chart-sel', clazz: 'btn btn-primary', val: '선택'}))
+				.on('click', function(){
+					clearInterval(donutfunc);
+					chartSel = $('select[name="chart-sel"]').val();
+					donutChart(chartSel);
+					donutfunc = setInterval(function(){donutChart(chartSel);}, 10000);
+				}));
 		$('#stat-body').append($(createDiv({id: 'dashboard', clazz: 'container'})).attr('hidden', true));
 		$('#dashboard').append($(createBtn({id: 'edit', clazz: 'btn btn-default', val: 'Edit Chart'})));
 		$('#dashboard').append($(createDiv({id: 'chart-div2', clazz: 'container'})));
 		$('#dashboard').append($(createDiv({id: 'control-div', clazz: 'container'})));
 		google.charts.load('current', {'packages':['corechart', 'controls', 'charteditor']});
 		googleChart();
-		donutChart();
-		donutfunc = setInterval(donutChart, 10000);
 	};
 	
 	var historyAdd=()=>{
@@ -547,35 +561,63 @@ app.admin = (()=>{
     	$('#member-tab')
     		.append($(createThead(createTh({list: ['아이디', '이름', '이메일', '핸드폰', '수정/삭제']}))))
     		.append($(createTbody(createTr2({list : x}))));
+    	$('#member-tab thead tr th').addClass('text-center').attr('style','font-size:15px');
+		$('#member-tab tbody tr td').addClass('text-center').attr('style','font-size:15px');
 	};
-	var donutChart = function(){
+	var donutChart = function(x){
 		$.ajax({
 	        url: context+'/adminjk/statistics/board',
 	        type: 'post',
 	        dataType: 'json',
 	        contentType: 'application/json',
 	        success: function(lists) {
-	            google.charts.setOnLoadCallback(drawChart);
-	            function drawChart() {
-	                var dataChart = [['id', 'Percentage']];
-	                if(lists.data.length != 0) {
-	                    $.each(lists.data, function(i, item){
-	                        dataChart.push([item.id, item.count*1.0]);
-	                    });
-	                }else {
-	                    dataChart.push(['입력해주세요', 1]);
-	                }
-	                var data = google.visualization.arrayToDataTable(dataChart);
-	                var view = new google.visualization.DataView(data);
-	                var options = {
-	                        title: "게시글이 5개 이상인 아이디",
-	                        is3D: true,
-	                        width: 1200,
-	                        height: 700
-	                };
-	                var chart = new google.visualization.PieChart(document.getElementById('chart-div'));
-	                chart.draw(view, options);
-	            }
+	        	var drawChart = function(){};
+	        	if(x == 'column'){
+	        		drawChart = function() {
+	        			var dataChart = [['아이디', '개수']];
+//	        			var color = ['#dc3912', '#ff9900', '#109618', '#3366cc', '#990099'];
+	        			if(lists.data.length != 0) {
+	        				$.each(lists.data, function(i, item){
+	        					dataChart.push([item.id, item.count]);
+	        				});
+	        			}else {
+	        				dataChart.push(['입력해주세요', '1']);
+	        			}
+	        			var data = google.visualization.arrayToDataTable(dataChart);
+	        			var view = new google.visualization.DataView(data);
+	        			var options = {
+	        					title: "게시물 top 5",
+	        					width: 600,
+	        					height: 400,
+	        					bar: {groupWidth: '95%'},
+	        			        legend: { position: 'none' },
+	        			};
+	        			var chart = new google.visualization.ColumnChart(document.getElementById('chart-div'));
+	        			chart.draw(view, options);
+	        		};
+	        	} else if(x == 'pie'){
+	        		drawChart = function() {
+	        			var dataChart = [['id', 'Percentage']];
+	        			if(lists.data.length != 0) {
+	        				$.each(lists.data, function(i, item){
+	        					dataChart.push([item.id, item.count*1.0]);
+	        				});
+	        			}else {
+	        				dataChart.push(['입력해주세요', 1]);
+	        			}
+	        			var data = google.visualization.arrayToDataTable(dataChart);
+	        			var view = new google.visualization.DataView(data);
+	        			var options = {
+	        					title: "게시물 top 5",
+	        					is3D: true,
+	        					width: 1200,
+	        					height: 700
+	        			};
+	        			var chart = new google.visualization.PieChart(document.getElementById('chart-div'));
+	        			chart.draw(view, options);
+	        		};
+	        	}
+	        	google.charts.setOnLoadCallback(drawChart);
 	        }
 	    });
 	};
@@ -613,12 +655,10 @@ app.admin = (()=>{
                      }
                  }
              });
-
              var chart = new google.visualization.ChartWrapper({
                  chartType: 'LineChart',
                  containerId: 'chart-div2'
              });
-
              function setOptions (wrapper) {
                  // sets the options on the chart wrapper so that it draws correctly
                  wrapper.setOption('height', 700);
@@ -627,9 +667,7 @@ app.admin = (()=>{
                  // the chart editor automatically enables animations, which doesn't look right with the ChartRangeFilter
                  wrapper.setOption('animation.duration', 0);
              }
-             
              setOptions(chart);
-             
              document.getElementById('edit').onclick = function () {
                  var editor = new google.visualization.ChartEditor();
                  google.visualization.events.addListener(editor, 'ok', function () {
@@ -640,12 +678,11 @@ app.admin = (()=>{
                  });
                  editor.openDialog(chart);
              };
-             
              dash.bind([control], [chart]);
              dash.draw(data);
          }
      };
 	return {
 		onCreate : onCreate
-		};
+	};
 })();

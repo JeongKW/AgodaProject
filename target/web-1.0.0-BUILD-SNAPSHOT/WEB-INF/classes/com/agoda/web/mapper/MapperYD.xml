@@ -3,20 +3,152 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.agoda.web.mapper.MapperYD">
+	<select id="WherekeywordCount" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table} r, ${table2} f 
+			WHERE r.fac_code like f.fac_code And ${data4} LIKE #{data5}
+	</select>
+	<select id="WherekeywordCountAddRatingScore" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table} r, ${table2} f, resi_rating_score s
+		WHERE r.fac_code like f.fac_code and r.res_code LIKE s.res_code 
+			AND rating_score >= #{data4}
+	</select>
+	<select id="WherekeywordCountAddPrice" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table} r, ${table2} f, resi_rating_score s
+		WHERE r.fac_code like f.fac_code and r.res_code LIKE s.res_code 
+			AND price BETWEEN #{data4} AND #{data5}
+ 	</select>
+	<select id="WherekeywordMultiOptionCount" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) 
+		FROM ${table} r, ${table2} f, resi_rating_score s	
+		WHERE r.fac_code like f.fac_code
+			AND r.res_code LIKE s.res_code
+			${data4}
+	</select>
 	<select id="exist" resultType="int" parameterType="com.agoda.web.common.Command">
 		SELECT COUNT(*) FROM ${table}
 	</select>
-	<select id="selectResiList" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
-		SELECT A2.* FROM(
-			SELECT @ROWNUM:=@ROWNUM+1 AS Row, A.*
-			FROM(SELECT 
-					res_code AS resCode, 
-					star_rating AS starRating, 
-					name, 
-					zipcode, 
-					fac_code As facCode 
-				FROM ${table}) A, (SELECT @ROWNUM := 0) R) A2
-		WHERE Row BETWEEN #{data1} and #{data2}
+	<select id="selectByStarRating" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		select star_rating As starRating, count(*) As count from residence group by star_rating
 	</select>
-
+	<select id="selectResiInfoOne" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT r.res_code AS resCode, 
+			r.star_rating AS starRating,
+			r.name,
+			r.zipcode,
+			r.fac_code AS facCode,
+			r.price,
+			r.view_num AS viewNum,
+			f.breakfast,
+			s.rating_score AS ratingScore
+		FROM residence r, facility f, resi_rating_score s	
+		WHERE r.fac_code like f.fac_code and r.res_code LIKE s.res_code	
+		AND r.res_code LIKE ${data1}
+	</select>
+	<select id="selectResiByKeyword" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT name FROM ${table} WHERE name LIKE '%${data1}%'
+	</select>
+	<select id="selectResiList" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT A2.*
+	 	FROM (SELECT @ROWNUM := @ROWNUM + 1 AS Row, A.*
+		    FROM(SELECT 
+					r.res_code AS resCode, 
+					r.star_rating AS starRating,
+					r.name,
+					r.zipcode,
+					r.fac_code AS facCode,
+					r.price,
+					r.view_num AS viewNum,
+					f.breakfast,
+					s.rating_score AS ratingScore
+			  	FROM ${table} r, ${table2} f, resi_rating_score s
+				WHERE r.fac_code like f.fac_code and r.res_code LIKE s.res_code
+				ORDER BY ${data3}
+				LIMIT 18446744073709551615) A, (SELECT @ROWNUM := 0) R) A2
+		WHERE Row BETWEEN #{data1} AND #{data2};
+	</select>
+	<select id="selectResiListWithWhere" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT A2.*
+	 	FROM (SELECT @ROWNUM := @ROWNUM + 1 AS Row, A.*
+		    FROM(SELECT 
+					r.res_code AS resCode, 
+					r.star_rating AS starRating,
+					r.name,
+					r.zipcode,
+					r.fac_code AS facCode,
+					r.price,
+					r.view_num AS viewNum,
+					f.breakfast,
+					s.rating_score AS ratingScore
+			  	FROM ${table} r, ${table2} f, resi_rating_score s
+				WHERE r.fac_code like f.fac_code and r.res_code LIKE s.res_code And ${data4} LIKE #{data5}
+				ORDER BY ${data3} 
+				LIMIT 18446744073709551615) A, (SELECT @ROWNUM := 0) R) A2
+		WHERE Row BETWEEN #{data1} AND #{data2} 
+	</select>
+	<select id="selectResiListByRatingScore" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT A2.*
+	 	FROM (SELECT @ROWNUM := @ROWNUM + 1 AS Row, A.*
+		    FROM(SELECT 
+					r.res_code AS resCode, 
+					r.star_rating AS starRating,
+					r.name,
+					r.zipcode,
+					r.fac_code AS facCode,
+					r.price,
+					r.view_num AS viewNum,
+					f.breakfast,
+					s.rating_score AS ratingScore
+			  	FROM ${table} r, ${table2} f, resi_rating_score s
+				WHERE r.fac_code LIKE f.fac_code 
+					AND r.res_code LIKE s.res_code 
+					AND rating_score >= ${data4}
+				ORDER BY ${data3} 
+				LIMIT 18446744073709551615) A, (SELECT @ROWNUM := 0) R) A2
+		WHERE Row BETWEEN #{data1} AND #{data2} 
+	</select>
+	<select id="selectResiListByPrice" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT A2.*
+	 	FROM (SELECT @ROWNUM := @ROWNUM + 1 AS Row, A.*
+		    FROM(SELECT 
+					r.res_code AS resCode, 
+					r.star_rating AS starRating,
+					r.name,
+					r.zipcode,
+					r.fac_code AS facCode,
+					r.price,
+					r.view_num AS viewNum,
+					f.breakfast,
+					s.rating_score AS ratingScore
+			  	FROM ${table} r, ${table2} f, resi_rating_score s
+				WHERE r.fac_code LIKE f.fac_code 
+					AND r.res_code LIKE s.res_code 
+					AND price BETWEEN #{data4} AND #{data5}
+				ORDER BY ${data3} 
+				LIMIT 18446744073709551615) A, (SELECT @ROWNUM := 0) R) A2
+		WHERE Row BETWEEN #{data1} AND #{data2} 
+	</select>
+	<select id="selectResiListWithMultiOption" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
+		SELECT A2.*
+	 	FROM (SELECT @ROWNUM := @ROWNUM + 1 AS Row, A.*
+		    FROM(SELECT 
+					r.res_code AS resCode, 
+					r.star_rating AS starRating,
+					r.name,
+					r.zipcode,
+					r.fac_code AS facCode,
+					r.price,
+					r.view_num AS viewNum,
+					f.breakfast,
+					s.rating_score AS ratingScore
+			  	FROM ${table} r, ${table2} f, resi_rating_score s
+				WHERE r.fac_code like f.fac_code and r.res_code LIKE s.res_code ${data4}
+				ORDER BY ${data3} 
+				LIMIT 18446744073709551615) A, (SELECT @ROWNUM := 0) R) A2
+		WHERE Row BETWEEN #{data1} AND #{data2} 
+	</select>
+	<update id="updateResiViewNum">
+		UPDATE residence
+		SET view_num = IFNULL(view_num, 0) + 1
+		WHERE res_code LIKE #{data1};
+	</update>
 </mapper>
