@@ -117,16 +117,16 @@ app.residenceReservation =(()=>{
 						}				
 					};												
 				});
-				$('#resi-payment-modal-close-btn').on('click', function(){
-					setTimeout(function(){app.residence.onCreate();}, 200)										
-				})
-				$('#resi-payment-modal-close-btn-times').on('click', function(){
-					setTimeout(function(){app.residence.onCreate();}, 200)										
-				})
+//				$('#resi-payment-modal-close-btn').on('click', function(){
+//					setTimeout(function(){app.residence.onCreate();}, 200)										
+//				})
+//				$('#resi-payment-modal-close-btn-times').on('click', function(){
+//					setTimeout(function(){app.residence.onCreate();}, 200)										
+//				})
 				
 				$('#resi-go-mypage-span').on('click', function(){
 					$('#resi-payment-modal-close-btn').trigger('click');
-					setTimeout(function(){app.login.mypage();}, 200)
+					setTimeout(function(){app.login.mypage(); $('#mem-reser-atag').trigger('click');}, 200)
 				});
 				$('#resi-go-print-span').on('click', function(){
 				});

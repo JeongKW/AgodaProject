@@ -28,9 +28,7 @@ app.flightPayment=(()=>{
 					dataType : 'json',
 					contentType : 'application/json',
 					success : x =>{
-							var json ={
-								};
-							app.login.mypage();
+						setTimeout(function(){app.login.mypage(); $('#mem-reser-atag').trigger('click');}, 200);
 					},
 					error : (x, h, m) =>{
 					}

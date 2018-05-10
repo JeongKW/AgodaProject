@@ -326,11 +326,10 @@ app.login = (()=>{
 			$('#mem-bo-atag').on('click',e=>{
 				app.board.onCreate();
 			});
-			$('#mem-reser-atag')				.on('click',e=>{
-
+			$('#mem-reser-atag').on('click',e=>{
 	        	$('#mem-mypage-main').empty();
 				$.getJSON(context+'/mypage/reservation/'+sessionStorage.getItem('user'), d=>{
-					console.log(d.fCheck);
+					$(document).scrollTop(0);
 						if(d.rCheck==0){
 							$('#mem-mypage-main').html($(createDiv({id:'mem-reservation-div',clazz:''}))
 									.attr('style','margin-top: 6%;'));
