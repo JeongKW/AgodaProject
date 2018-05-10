@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import com.agoda.web.common.Command;
 import com.agoda.web.kwangwoo.Board;
+import com.agoda.web.minwoo.FlightSchedule;
+import com.agoda.web.yongdae.ResidenceSchedule;
 
 @Repository
 public interface MapperYJ {
@@ -23,4 +25,9 @@ public interface MapperYJ {
 	public void deleteArticle(Command cmd);
 	public void updateArticle(Command cmd);
 	public List<Board> selectAll(Command cmd);
+	public List<Board> searchBoard(Command cmd);
+	public List<ResidenceSchedule> selectResidenceReservation(Command cmd);
+	public List<FlightSchedule> selectFlightReservation(Command cmd);
+	public int residenceReservationCheck(Command cmd);
+	public int flightReservationCheck(Command cmd);
 }

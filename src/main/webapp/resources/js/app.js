@@ -58,6 +58,7 @@ app.nav = (x=>{
 								$('#a-res').parent('li').siblings('li').removeClass('active');
 							}
 							app.residence.onCreate();
+							
 						})
 					)
 				.append($(createLI({id: 'li-flight', clazz: ''}))
@@ -78,7 +79,9 @@ app.nav = (x=>{
 						})
 					)
 				.appendTo('#navbar');
-			$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
+			var loginedUser = sessionStorage.getItem('user');
+			if(loginedUser == null){
+				$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
 				.append($(createLI({id: 'li-login', clazz: ''}))
 					.append($(createATag({id: 'a-login', clazz: '', val: '로그인'}))
 						.on('click', e=>{
@@ -94,6 +97,31 @@ app.nav = (x=>{
 						})
 					)
 				.appendTo('#navbar');
+			}else{
+				$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
+				.append($(createLI({id: 'li-login', clazz: ''}))
+					.append($(createATag({id: 'a-login', clazz: '', val: '마이페이지'}))
+						.on('click', e=>{
+							e.preventDefault();
+							app.login.mypage();
+						})
+					))
+				.append($(createLI({id: 'li-join', clazz: ''}))
+					.append($(createATag({id: 'a-join', clazz: '', val: '로그아웃'})))
+						.on('click', e=>{
+							e.preventDefault();
+							sessionStorage.removeItem('user');
+							sessionStorage.removeItem('name');
+							sessionStorage.removeItem('pw');
+							sessionStorage.removeItem('phone');
+							sessionStorage.removeItem('email');
+							app.residence.onCreate();
+							app.nav.onCreate();
+						})
+					)
+				.appendTo('#navbar');
+			}
+			
 		});
 	};
 	return {onCreate : onCreate};

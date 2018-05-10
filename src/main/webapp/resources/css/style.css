@@ -209,7 +209,6 @@
 .grid-list {
    display: grid;
    grid-template-columns: 5% 43% 16% 16% 5%;
-   border-bottom : 1px solid #e9e9e9;
 }
 .grid-write {
   margin: 10px 100px 100px 100px;

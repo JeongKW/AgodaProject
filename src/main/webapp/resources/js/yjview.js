@@ -11,6 +11,13 @@ var createOption =x=>{
 	});
 	return temp;
 };
+var createOption1 =x=>{
+	var temp = '';
+	$.each(x.list,(i,j)=>{
+		temp+='<option value="'+i+'">'+j+'</option>'
+	});
+	return temp;
+};
 /*게시판 추가*/
 var createWInput=x=>{
 	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz

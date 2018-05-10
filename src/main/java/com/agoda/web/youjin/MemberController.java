@@ -40,7 +40,7 @@ public class MemberController {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("ID : {}", id);
 		logger.info("PW : {}", m.getPw());
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setData1(id);
 		cmd.setData2(m.getPw());
 		map.put("user", (Member) new IGetService() {
@@ -62,7 +62,7 @@ public class MemberController {
 	    public Map<?,?> idCheck(@PathVariable String id){
 		 logger.info("idCheck  {}", "entered");
 		 Map<String, Object> map = new HashMap<>();
-		 cmd.setTable("Member");
+		 cmd.setTable("member");
 		 cmd.setData1(id);
 		 System.out.println("중복 체크 아이디"+cmd.getData1());
 		 map.put("checkId", new ICountService() {
@@ -79,7 +79,7 @@ public class MemberController {
 	 public Map<?, ?> changePw(@RequestBody Member m){
 		Map<String, Object> map = new HashMap<>();
 		logger.info("changePw  {}", "entered");
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setData2(m.getId());
 		cmd.setData1(m.getPw());
 		System.out.println("들어온 비번 확인"+cmd.getData1());
@@ -97,7 +97,7 @@ public class MemberController {
 	 public Map<?, ?> joinMember(@RequestBody Member m){
 		Map<String, Object> map = new HashMap<>();
 		logger.info("joinMember  {}", "entered");
-		cmd.setTable("Member");
+		cmd.setTable("member");
 		cmd.setData1(m.getId());
 		cmd.setMember(m);
 		new IPostService() {
@@ -120,7 +120,7 @@ public class MemberController {
 		 logger.info("withdrawal  {}", "entered");
 		 Map<String, Object> map = new HashMap<>();
 		 System.out.println("탈퇴할 아이디"+id);
-		 cmd.setTable("Member");
+		 cmd.setTable("member");
 		 cmd.setData1(id);
 		 new IDeleteService() {
 			@Override
@@ -137,6 +137,40 @@ public class MemberController {
 		 return map;
 	 }
 	 //게시판
+	 @RequestMapping(value="/mypage/reservation/{id}")
+	 public Map<?, ?> reservation(@PathVariable String id){
+		 logger.info("reservation {}.", "entered");
+		 logger.info("board reservation id {}.", id);
+		 Map<String, Object> map = new HashMap<>();
+		 cmd.setData1(id);
+		 map.put("rCheck", new ICountService() {
+			@Override
+			public int excute(Command cmd) {
+				return mapper.residenceReservationCheck(cmd);
+			}
+		}.excute(cmd));
+		 map.put("rSuccess",(List<?>) new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.selectResidenceReservation(cmd);
+			}
+		}.excute(cmd));
+		 logger.info("들어온 예약 사항 {}"+map.get("rSuccess"));
+		 map.put("fCheck", new ICountService() {
+			 @Override
+			 public int excute(Command cmd) {
+				 return mapper.flightReservationCheck(cmd);
+			 }
+		 }.excute(cmd));
+		 map.put("fSuccess", (List<?>) new IGetService() {
+			@Override
+			public Object excute(Command cmd) {
+				return mapper.selectFlightReservation(cmd);
+			}
+		}.excute(cmd));
+		 logger.info("들어온 예약 항공 사항 {}"+map.get("fSuccess"));
+		 return map;
+	 }
 	 @RequestMapping(value="/board/{pageNum}")
 		public Map<?, ?> board(@PathVariable String pageNum){
 			logger.info("board {}.", "entered");
@@ -252,8 +286,6 @@ public class MemberController {
 			cmd.setData1(b.getTitle());
 			cmd.setData2(b.getContent());
 			cmd.setData3(id);
-			System.out.println("글 작성자 넘어왔나"+id);
-			System.out.println("글 작성자 넘어왔나"+cmd.getData3());
 			logger.info("board postArticle 잘 등어왔나{}.",b.getContent());
 			new IPostService() {
 				@Override
@@ -279,4 +311,22 @@ public class MemberController {
 			logger.info("아이디 {}.", bbsSeq);
 			return map;
 		}
+		@RequestMapping(value="/member/board/search/{filter}/{data}", method = {RequestMethod.GET, RequestMethod.POST}, consumes = "application/json")
+		public Map<?, ?> boardSearch(@PathVariable String filter,@PathVariable String data){
+			Map<String, Object> map = new HashMap<>();
+			logger.info("boardSearch {}.", "entered");
+			cmd.setData1(filter);
+			cmd.setData2(data);
+			System.out.println("필터!!!!!!!!"+filter);
+			System.out.println("데이터!!!!!!!!"+data);
+			map.put("search",(List<?>) new IGetService() {
+				@Override
+				public Object excute(Command cmd) {
+					return mapper.searchBoard(cmd);
+				}
+			}.excute(cmd));
+			logger.info("map 보여줘 {}", map.get("search"));
+			return map;
+			}
+		
 }

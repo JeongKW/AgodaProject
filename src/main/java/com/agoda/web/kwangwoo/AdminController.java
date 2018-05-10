@@ -143,6 +143,7 @@ public class AdminController {
 		logger.info("searchMember() is {}", "entered");
 		cmd.setTable("Member");
 		cmd.setData1(filter);
+		System.out.println(cmd.getData1());
 		cmd.setData2(data);
 		map.put("search", (List<?>) new IGetService() {
 			@Override
