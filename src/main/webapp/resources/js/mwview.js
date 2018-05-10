@@ -725,7 +725,7 @@ var createList =x=>{
 						+'							</div>'*/
 						+'						</div>'
 						+'					<div style=" min-height : 30px; margin-top: 15px;">'
-						+'						<div style="float: left;">'
+						+'						<div style="float: left;" class = "sort-backcode">'
 						+'							<label style=" font-size: 18px; font-weight: 600;"><input type="checkbox" name="">오는 여정</label>'
 						+'						</div>'
 						+'						<div style="float: left; margin : 3px;">'

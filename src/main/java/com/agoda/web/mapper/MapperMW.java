@@ -14,6 +14,7 @@ public interface MapperMW {
 	public List<FlightSchedule> selectBackFlightList(Command cmd);
 	public List<FlightSchedule> selectSortFlightList(Command cmd);
 	public List<FlightSchedule> selectDepartureFlightCode(Command cmd);
+	public List<FlightSchedule> selectBackFlightCode(Command cmd);
 	public List<Airport> selectAirport(Command cmd);
 	public void insertFlightBook(Command cmd);
 	public void insertArvFlightBook(Command cmd);

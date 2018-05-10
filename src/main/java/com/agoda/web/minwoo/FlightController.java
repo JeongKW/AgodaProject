@@ -150,7 +150,7 @@ public class FlightController {
 	public Map<?, ?> sortFlightListByBack(@RequestBody Map<String,String> param) {
 		Map<String, Object> map = new HashMap<>();
 		
-		logger.info("가는여정 검색 컨트롤러{}", "welcome2");
+		logger.info("오는여정 검색 컨트롤러{}", "welcome2");
 		logger.info("파람값{}", param);
 		
 		cmd.setTable("flight_schedule");
@@ -158,7 +158,7 @@ public class FlightController {
 		cmd.setData2("%"+param.get("arrival")+"%");
 		cmd.setData3("%"+param.get("departureTime") +"%");
 		cmd.setData4("%"+param.get("arrivalTime") + "%");
-		cmd.setData5(param.get("departureCode"));
+		cmd.setData5(param.get("backCode"));
 		
 		logger.info("totalCount 값은 {}", flightList.getTotalCount());
 		
@@ -167,7 +167,7 @@ public class FlightController {
 			@Override
 			public Object excute(Command cmd) {
 				// TODO Auto-generated method stub
-				return mapperMW.selectDepartureFlightCode(cmd);
+				return mapperMW.selectDepartureFlightList(cmd);
 			}
 		}.excute(cmd));
 		
@@ -176,7 +176,7 @@ public class FlightController {
 			@Override
 			public Object excute(Command cmd) {
 				// TODO Auto-generated method stub
-				return mapperMW.selectBackFlightList(cmd);
+				return mapperMW.selectBackFlightCode(cmd);
 			}
 		}.excute(cmd));
 		logger.info("detail data is {}", map.get("dptList"));
@@ -219,19 +219,31 @@ public class FlightController {
 		cmd.setData1("%"+param.get("departure")+"%");
 		cmd.setData2("%"+param.get("arrival")+"%");
 		cmd.setData3("%"+param.get("departureTime") +"%");
-		cmd.setData4("%"+param.get("arrivalTime") + "%");
+		cmd.setData4(param.get("sort"));
 		
-		map.put("list", (List<?>) new IGetService(){
+		map.put("dptList", (List<?>) new IGetService(){
 			
 			@Override
 			public Object excute(Command cmd) {
-				return mapperMW.selectSortFlightList(cmd);
+				return mapperMW.selectDepartureFlightList(cmd);
 			}
 		}.excute(cmd));
-		logger.info("detail data is {}", map.get("list"));
+		cmd.setData3(param.get("sort"));
+		cmd.setData4("%"+param.get("arrivalTime") + "%");
+		map.put("backList", (List<?>) new IGetService(){
+			
+			@Override
+			public Object excute(Command cmd) {
+				return mapperMW.selectBackFlightList(cmd);
+			}
+		}.excute(cmd));
+		logger.info("detail data is {}", map.get("dptList"));
+		logger.info("detail data is {}", map.get("backList"));
 		
 		return map;
 	}
+	
+	
 	@RequestMapping(value="/flight/payment", method=RequestMethod.POST)
 	public Map<?, ?> flightPayment(
 			@RequestBody HashMap<String,String> param) {

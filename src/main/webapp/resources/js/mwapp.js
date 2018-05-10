@@ -292,7 +292,7 @@ app.flightDetail=(()=>{
 					.attr('style', 'width : 100%; padding : 20px; background : #515b62;')
 					.append(createSerahNav(x))
 					)
-			.append(createDiv({id : 'air-leftcolumn-div', clazz : 'leftcolumn'}))
+		/*	.append(createDiv({id : 'air-leftcolumn-div', clazz : 'leftcolumn'}))*/
 			.append(createDiv({id : 'air-midcolumn-div', clazz : 'midcolumn'}))
 			.append(createDiv({id : 'air-rightcolumn-div', clazz : 'rightcolumn'}));
 			$('.change').on('click', ()=>{
@@ -382,7 +382,7 @@ app.flightDetail=(()=>{
 			})
 			
 			
-			$('#air-leftcolumn-div')
+		/*	$('#air-leftcolumn-div')
 			.attr('style', 'margin-top : 20px;')
 			.append(createDiv({ id : '', clazz : ''}))
 			.append(createDiv({ id : 'air-leftbanner-div', clazz : 'container'}));
@@ -391,7 +391,7 @@ app.flightDetail=(()=>{
 			$('#air-leftbanner-div')
 			.attr('style', 'width : 100%; background : #fff; box-shadow: 0 3px 12px 1px rgba(0,0,0,0.26);')
 			.append(createDiv({id : 'air-leftcontainer-div', clazz : ''}))
-			.append(createDiv({id : 'air-time-div', clazz : ''}));
+			.append(createDiv({id : 'air-time-div', clazz : ''}));*/
 			
 			$('#air-time-div')
 			.attr('style', 'border-top : 1px solid #c5c5c7')
@@ -485,16 +485,24 @@ app.flightDetail=(()=>{
 			//'<span class="'+x.clazz+'">'+x.val+'</span>';
 				
 			$('#air-rightcolumn-div')
-.attr('style', 'margin-top : 20px;')
+			.attr('style', 'margin-top : 20px;  width : 30%;')
 			.append(createDiv({ id : 'air-rightbanner-div', clazz : ''}));
 			
 			
 			$('#air-rightbanner-div')
-			.attr('style', 'background : #fff; box-shadow: 0 3px 12px 1pxrgba(0,0,0,0.26);')
-			.append('Some text about me in culpa qui officia deserunt mollit anim..');
-			
+			.attr('style', 'background : #fff;')
+			.append($(createDiv({id : '', clazz : 'ad-hotels'}))
+				.append($(createImg({id : '', src : 'https://goo.gl/rvz1Vu', clazz : '', alt : ''}))
+						.attr('style','width : 100%; height : 200px;')
+						)
+						.append($(createATag({id : '', link : '#' , clazz : '', val : '홍콩 숙박 알아보기 (홍콩가즈아!)'}))
+						.attr('style', 'text-align : center;')
+						)
+				);
+			//id : 'flight-img', 
+			//src : 'https://a1.r9cdn.net/dimg/phoenix-images/v3/agoda-flights-fd.jpg', clazz : '', alt : 'agoda'
 			$('#air-midcolumn-div')
-			.attr('style', 'margin-top : 20px;')
+			.attr('style', 'margin-top : 20px; width : 70%;')
 			.append(createList(x));
 			
 			$('#air-midcolumn-div .list-wrapper').hover(function(){
@@ -592,6 +600,47 @@ app.flightDetail=(()=>{
 						error : (x, h, m) =>{
 						}
 						});
+			});
+			$('.sort-backcode').on('click', function(){
+				var div = $(this).parent().parent();
+				var tr = div.children().children().children('.flightRow2').children().children().children();
+				var td = tr.children();
+				var tdArr = new Array();
+				td.each(function(i){	
+					tdArr.push(td.eq(i).text());
+				});
+				var json ={
+						departure : $('.departure').val(),
+						arrival : $('.arrival').val(),
+						bookCount : $('.flight-count').text(),
+						departureTime : x.departureTime,
+						arrivalTime : x.arrivalTime,
+						backCode : $.trim(tdArr[11])
+				}
+				$.ajax({
+					url : context+'/flight/back',
+					method : 'POST',
+					data : JSON.stringify(json),
+					dataType : 'json',
+					contentType : 'application/json',
+					success : x =>{
+						var json ={
+								dptList : x.dptList,
+								backList : x.backList,
+								fromCity : $('.departure').val(),
+								departure : $('.departure').val(),
+								arrival : $('.arrival').val(),
+								departureTime : departureTime,
+								arrivalTime : arrivalTime,
+								departureCount :x.departure ,
+								arrivalCount :  x. arrvial,
+								bookCount : $('.flight-count').val()
+						};
+						app.flightDetail.onCreate(json);
+					},
+					error : (x, h, m) =>{
+					}
+				});
 			});
 			
 			 

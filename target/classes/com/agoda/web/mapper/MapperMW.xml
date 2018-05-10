@@ -15,6 +15,9 @@
 	 WHERE 
 	 	(from_location like #{data1} 
 		and to_location like #{data2} and departure_time like #{data3})
+		<if test="data5 != null">
+		ORDER BY #{data5}			
+		</if>
 	</select>
 	<select id="selectBackFlightList" resultType="com.agoda.web.minwoo.FlightSchedule" parameterType="com.agoda.web.common.Command">
 			SELECT
@@ -28,6 +31,9 @@
 	 WHERE 
 	 	(from_location like #{data2} 
 		and to_location like #{data1} and departure_time like #{data4})
+		<if test="data5 != null">
+		ORDER BY #{data5}			
+		</if>
 	</select>
 		<select id="selectDepartureFlightCode" resultType="com.agoda.web.minwoo.FlightSchedule" parameterType="com.agoda.web.common.Command">
 			SELECT
