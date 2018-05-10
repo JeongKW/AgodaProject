@@ -10,6 +10,6 @@ import lombok.Data;
 @Component @Data
 @Lazy
 public class Command {
-	private String table, table2, data1, data2, data3, data4, data5;
+	private String table, table2, data1, data2, data3, data4, data5, data6, data7;
 	private Member member;
 }

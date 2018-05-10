@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agoda.web.common.Command;
 import com.agoda.web.common.IGetService;
+import com.agoda.web.common.IPostService;
 import com.agoda.web.common.IUpdateService;
 import com.agoda.web.mapper.MapperYD;
 
@@ -41,6 +42,46 @@ public class ResidenceController {
 		}.excute(cmd));
 		logger.info("resiInfo success is {}", map.get("success"));
 		return map;
+	}
+	
+	@RequestMapping(value="/resi/reservation", method= RequestMethod.POST, consumes="application/json")
+	public Map<?, ?> insertReservation(@RequestBody Map<String, String> params){
+		Map<String, Object> map = new HashMap<>();
+		logger.info("updateReservation is {}", "entered");
+		logger.info("updateReservation CheckIn is {}", params.get("checkIn"));
+		logger.info("updateReservation CheckOut is {}", params.get("checkOut"));
+		logger.info("updateReservation Price is {}", params.get("price"));
+		logger.info("updateReservation resCode is {}", params.get("resCode"));
+		logger.info("updateReservation headCount is {}", params.get("headCount"));
+		logger.info("updateReservation ID is {}", params.get("ID"));
+		cmd.setData1(params.get("checkIn"));
+		cmd.setData2(params.get("checkOut"));
+		cmd.setData3(params.get("price"));
+		cmd.setData4(params.get("resCode"));		
+		cmd.setData5(params.get("headCount"));
+		cmd.setData6(params.get("ID"));
+		new IPostService() {
+			public void excute(Command cmd) {
+				mapperYD.insertReservationSchedule(cmd);				
+			}
+		}.excute(cmd);
+		
+		map.put("resScheduleSeq", (String) new IGetService() {			
+			@Override
+			public Object excute(Command cmd) {
+				return mapperYD.selectReservationScheduleSeq(cmd);
+			}
+		}.excute(cmd));
+		System.out.println("resScheduleSeq is "+map.get("resScheduleSeq"));
+		
+		cmd.setData7(map.get("resScheduleSeq")+"");
+		
+		new IPostService() {
+			public void excute(Command cmd) {
+				mapperYD.insertReservation(cmd);				
+			}
+		}.excute(cmd);		
+		return map;		
 	}
 	
 	@RequestMapping(value="/resi/viewNum/{resCode}", method= RequestMethod.POST)
