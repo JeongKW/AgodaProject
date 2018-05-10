@@ -104,34 +104,31 @@ select * from member limit 12, 1;
 
 SELECT * FROM Member WHERE id like 'test1234' AND pw like '1234';
 
-CREATE VIEW resi_rating_score
-	AS
-(SELECT res_code, ROUND(view_num
-             / (SELECT sum(view_num) FROM residence)
-             * 100
-             / ((SELECT max(A.rating_score)
-                   FROM (SELECT res_code,
-                                  view_num
-                                / (SELECT sum(view_num) FROM residence)
-                                * 100
-                                   AS rating_score
-                           FROM residence) A))
-             * 10,
-             1)
-             AS rating_score
-     FROM residence);
 
-INSERT INTO Member VALUES ('jku0150', '1111', '정광우', 'whiskyhwa1@gmail.com', '010-1112-1251');
-INSERT INTO Member VALUES ('ydkim', 'ydkim1010!', '김용대', 'ydkim2110@gmail.com', '010-1234-1234');
-INSERT INTO Member VALUES ('kurekure', 'rnalsdn1234', '구민우', 'kurekure@gmail.com', '010-1112-1251');
-INSERT INTO Member VALUES ('enejwl', 'enejwl12', '두더지', 'enejwl12@naver.com', '010-5252-1231');
-INSERT INTO Member VALUES ('lionisking', 'ehdanfdmldhkd', '사자', 'kyaowang@nate.com', '010-1285-9801');
-INSERT INTO Member VALUES ('test1', 'test1', '김이나', 'tester1@naver.com', '010-5752-3725');
-INSERT INTO Member VALUES ('test2', 'test2', '하여나', 'tester2@hanmail.com', '010-7231-5892');
-INSERT INTO Member VALUES ('test3', 'test3', '차은아', 'test3@nate.com', '010-3572-8297');
-INSERT INTO Member VALUES ('admin', '1234', 'admin', 'jku0150@nate.com', '010-9740-1123');
+INSERT INTO member VALUES ('admin', '1234', 'admin', 'jku0150@nate.com', '01097401123');
+INSERT INTO member VALUES ('azxs147', '1111', '정고은', 'azxs@gmail.com', '01071092664');
+INSERT INTO member VALUES ('dlagpwls', '1111', '임혜진', 'dlagpwls@gmail.com', '01078781027');
+INSERT INTO member VALUES ('dldbwls', '1234', '이유진', 'dldbwls@naver.com', '01071711297');
+INSERT INTO member VALUES ('dlgusquf', '1111', '이한별', 'dlgusquf@gmail.com', '01003698547');
+INSERT INTO member VALUES ('dlwodud', '1111', '이재영', 'dlwodud@gmail.com', '01041004127');
+INSERT INTO member VALUES ('edfghytr', '1111', '이지희', 'edfghytr@gmail.com', '01000902082');
+INSERT INTO member VALUES ('enejwl', '12345aa', '두더지', 'enejwl12@naver.com', '01052521231');
+INSERT INTO member VALUES ('kurekure', '1111', '구민우', 'kurekure@gmail.com', '01067212321');
+INSERT INTO member VALUES ('azxs147', '1111', '정광우', 'whiskyhwa1@gmail.com', '01011121251');
+INSERT INTO member VALUES ('dlwodud', 'ehdanfdmldhkd', '사자', 'kyaowang@nate.com', '01012859801');
+INSERT INTO member VALUES ('qkrtpsk', '1111!', '박세나', 'qkrtpsk@gmail.com', '01033411111');
+INSERT INTO member VALUES ('qkrwlsdn', '1111', '박진우', 'qkrwlsdn@gmail.com', '01033574127');
+INSERT INTO member VALUES ('qkrwogus', '1111', '박재현', 'qkrwogus@naver.com', '01015961231');
+INSERT INTO member VALUES ('qwert', '1111', '김주영', 'rlawndud@naver.com', '01057529999');
+INSERT INTO member VALUES ('rkdgusdud', '1111', '강현영', 'rkdgusdud@hanmail.com', '01077555892');
+INSERT INTO member VALUES ('rkdtmfrl', '1111', '강슬기', 'rkdtmfrl@nate.com', '01074448297');
+INSERT INTO member VALUES ('youjin813', '1', '이유진', 'youjin813@naver.com', '01033513271');
+INSERT INTO member VALUES ('rladudal', '1111', '김영미', 'rladudall@nate.com', '01087551197');
+INSERT INTO member VALUES ('rlatmdgus', '1111', '김승현', 'rlatmdgusa@naver.com', '01099871588');
+INSERT INTO member VALUES ('wjdcodms', '1111', '정채은', 'wjdcodmsl@nate.com', '01077771111');
+INSERT INTO member VALUES ('rladydeo', '1', '김용대', 'rladydeo@naver.com', '01011113271');
+INSERT INTO member VALUES ('whtjds' ,'1111', '조성모', 'whtjds@gmail.com' ,'01089544587');
 
-select count(*) from member; 
 
 insert into board(title,content,id) values ('요금 환불에 대해 문의 드립니다.',' 선예약 후지불로 예약했습니다.왜 지불 날짜 이전에 금액이 청구되었습니까?','youjin813');
 insert into board(title,content,id) values ('로그인 문의 드립니다.',' 계정에 로그인 할 수 없거나 아이디와 비밀번호를 잊어버린 경우에는 어떻게 해야 하나요?','azxs147');

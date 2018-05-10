@@ -40,11 +40,6 @@ app.nav = (x=>{
 			$(createATag({id: '', clazz: 'navbar-brand', val: createImg({id: '', clazz: '', src: image+'/agada.jpg', alt: 'agada_logo'})}))
 				.on('click', e=>{
 					e.preventDefault();
-					if(!($('#a-res').parent('li').hasClass('active'))){
-						$('#a-res').parent('li').addClass('active');
-						$('#a-res').parent('li').siblings('li').removeClass('active');
-					}
-					app.residence.onCreate();
 				})
 				.attr('style', 'padding:10px 15px 15px 15px')
 				.appendTo('#nav-header');

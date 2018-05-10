@@ -1,20 +1,3 @@
-
-app.flightPayment=(()=>{
-	var context, view;
-	var onCreate=x=>{
-		$content = $('#content');
-		context =$.context();
-		view = $.javascript()+'/mwview.js';
-		setContentView(x);
-	};
-	var setContentView=x=>{
-		$.getScript(view, ()=>{
-			$content.html(createBookingPage(x));
-		});
-	}
-	return {onCreate : onCreate};
-})();
-
 app.flight=(()=>{
 	var context, view;
 	var onCreate=()=>{
@@ -25,9 +8,8 @@ app.flight=(()=>{
 	};
 	var setContentView=()=>{//
 		$.getScript(view, ()=>{
-			var date = new Date();
-			var  departureTime = moment().format("YYYY-MM-DD");
-			var arrivalTime =  moment().add(6, 'days').format("YYYY-MM-DD");
+			var  departureTime;
+			var arrivalTime;
 			/*메인 페이지 중단 (항공권, 숙소 탭)*/
 			$content.html(createDiv({id : 'div-flight' , clazz : ''}));
 			$(createDiv({id:'div-background',clazz:''})).appendTo('#div-flight')
@@ -115,22 +97,22 @@ app.flight=(()=>{
 			.append(createInput({id : 'input-find-tocity', clazz : 'form-control', type : 'text', value : ''}))
 			.append(createDiv({id : 'wrapper-tocity-btn-div', clazz : 'input-group-btn'}));
 			$('#input-find-fromcity').attr('placeholde0r','출발 도시').attr('value', '서울');
-			$('#input-find-tocity').attr('placeholder','도착 도시').attr('value', '오사카');
+			$('#input-find-tocity').attr('placeholder','도착 도시').attr('value', '부산');
 			
 			$('#wrapper-col3-div')
 			.attr('style', 'padding-right : 0px; width : 20%')
-			.append($(createDiv({id : 'air-fromDate-div', clazz : 'input-group date'}))
-					.append($(createInput({id : 'fromDate-input', type : 'text', clazz : 'form-control date', value : '' ,placeholder : ''}))
-							.attr('name', 'getdate'))
-					.append(createSpan2({ id : 'fromDate-addon-span', clazz : 'input-group-addon date',
-						val : createSpan2({id : '', clazz : 'glyphicon glyphicon-calendar', val : ''})}))
-				);
+			.append($(createDiv({id : 'air-fromDate-div', clazz : 'input-group date'})));
 			
+			$('#air-fromDate-div').append($(createInput({id : 'fromDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''})))
+			.append(createSpan2({ id : 'fromDate-addon-span', clazz : 'input-group-addon',
+				val : createSpan2({id : '', clazz : 'glyphicon glyphicon-calendar', val : ''})}))
+				.on('click', ()=>{
+				});
 			
-			$('#air-fromDate-div .date').daterangepicker({
+			$('#fromDate-input').daterangepicker({
 				"locale": {
-	                          "format": "YYYY-MM-DD",
-	                          "separator": " / ",
+	                          "format": "YY-MM-DD",
+	                          "separator": " - ",
 	                          "applyLabel": "적용",
 	                          "cancelLabel": "취소",
 	                          "fromLabel": "From",
@@ -142,20 +124,25 @@ app.flight=(()=>{
 	                          "firstDay": 1
 	                      },
 	                      minDate: new Date(),
-	                      startDate : new Date(),
-	                      endDate : moment().add(6, 'days'),
-	                      "opens": "right",
+	                      "opens": "center",
 	                      "dateLimit":{
                         	  "days" : 365
                           },
-	                      "timePicker": true,
+	                      "timePicker": true
 			}, 
 			function(start, end, label) {
 			  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
 			  departureTime =  start.format('YYYY-MM-DD');
 			  arrivalTime = end.format('YYYY-MM-DD');
 			});
-			$('.daterangepicker').attr('style', 'top : 53%; left : 43%;');
+			$('.daterangepicker').attr('style', 'top : 49%; left : 43%;')
+			
+		
+//			$(createDiv({id : 'toDate', clazz : 'input-group date'})).attr('data-data-format','mm-dd-yyyy')
+//			.appendTo('#wrapper-col4-div');
+//			$('#toDate').append(createInput({id : 'toDate-input', type : 'text', clazz : 'form-control', value : '' ,placeholder : ''}))
+//			.append(createSpan({clazz : 'input-group-addon',
+//				val : createSpan({clazz : 'glyphicon glyphicon-calendar', val : ''})}));
 			
 			
 			
@@ -200,6 +187,10 @@ app.flight=(()=>{
 				
 			$('#class-btn').attr('style', 'width : 100%; height : 34px;');
 			
+			$('#test-div').append(createDiv({id : 'test2-div', clazz : ''})).append(createDiv({id : 'test3-div', clazz : ''}))
+			
+			
+			
 			$('#wrapper-col5-div')
 			.attr('style', 'padding-right : 0px; width : 10%')
 			.append(createBtn({id : 'flight-search-btn', clazz : 'btn btn-primary', val : '검색'}));
@@ -208,51 +199,33 @@ app.flight=(()=>{
 			.on('click', e=>{
 				e.preventDefault();
 				alert('sss');
-				switch ($('#input-find-fromcity').val()) {
-				case "서울":
-					fromCity = "seoul"
-					break;
-				case "오사카":
-					fromCity = "osaka"
-					break;
-
-				default:
-					break;
-				}
-			 // $('#input-find-tocity').val()
-				
+				var id = $('#input-find-fromcity').val() +'to'+ $('#input-find-tocity').val()
 				var json ={
-					 departure : $('#input-find-fromcity').val(),
+					 id : id,
 					 arrival : $('#input-find-tocity').val(),
 					 bookcount : $('#air-rbooking-count').text(),
 					 departureTime : departureTime,
 					 arrivalTime : arrivalTime 
 				}
 				$.ajax({
-					url : context+'/flight/search',
+					url : context+'/flight/'+id+'/search',
 					method : 'POST',
 					data : JSON.stringify(json),
 					dataType : 'json',
 					contentType : 'application/json',
 					success : x =>{
-							var json ={
-									list : x.list,
-									fromCity : fromCity,
-									departure : $('#input-find-fromcity').val(),
-									arrival : $('#input-find-tocity').val(),
-									departureTime : departureTime,
-									arrivalTime : arrivalTime,
-									departureCount :x.departure ,
-									arrivalCount :  x. arrvial,
-									bookCount : $('#air-rbooking-count').text(),
-								};
-							console.log(json.list);
-						app.flightDetail.onCreate(json);
+						if(x.success == '1'){
+							
+						}else{
+							alert('로그인 실패') 	
+						}
+						
 					},
 					error : (x, h, m) =>{
 						alert('망함 x='+x+', h='+h+', m='+m);
 					}
 					});
+				app.flightDtail.onCreate();
 			});
 			
 			
@@ -266,118 +239,22 @@ app.flight=(()=>{
 	
 	return {onCreate:onCreate};
 })();
-app.flightDetail=(()=>{
+app.flightDtail=(()=>{
 	var context, view;
-	var onCreate=x=>{
+	var onCreate=()=>{
 		$content = $('#content');
 		context =$.context();
 		view = $.javascript()+'/mwview.js';
-		setContentView(x);
+		setContentView();
 	};
-	var setContentView=x=>{
+	var setContentView=()=>{
 		$.getScript(view, ()=>{
-			var  departureTime = moment().format("YYYY-MM-DD");
-			var arrivalTime =  moment().add(6, 'days').format("YYYY-MM-DD");
 			$content.html(createDiv({ id : 'air-wrapper-div', clazz : ''}));
 			$('#air-wrapper-div')
-			.attr('style', 'background-color : #f1f1f1; position : absolute; width : 100%; ')
-			.append($(createDiv({ id : '', clazz : ''}))
-					.attr('style', 'width : 100%; padding : 20px; background : #515b62;')
-					.append(createSerahNav(x))
-					)
+			.attr('style', 'background-color : #f1f1f1; height : 900px;')
 			.append(createDiv({id : 'air-leftcolumn-div', clazz : 'leftcolumn'}))
 			.append(createDiv({id : 'air-midcolumn-div', clazz : 'midcolumn'}))
 			.append(createDiv({id : 'air-rightcolumn-div', clazz : 'rightcolumn'}));
-			$('.change').on('click', ()=>{
-				var departure = $('.departure').val();
-				var arrival = $('.arrival').val();
-				$('.departure').val(arrival);
-				$('.arrival').val(departure);
-			})
-			
-			$('.flight-minus').on('click',()=>{
-				if(parseInt($('.flight-count').val(),10)!=1){
-				     $('.flight-count').val((parseInt($('.flight-count').val(), 10)-1));
-	                   $('.flight-count').val(($('.flight-count').val()));                        
-				}
-			});
-			
-			$('.flight-plus').on('click',()=>{
-				     $('.flight-count').val((parseInt($('.flight-count').val(), 10)+1));
-	                   $('.flight-count').val(($('.flight-count').val()));                        
-			});
-			
-			
-			$('#fromDate .data').daterangepicker({
-				"locale": {
-                    "format": "YYYY-MM-DD",
-                    "separator": " / ",
-                    "applyLabel": "적용",
-                    "cancelLabel": "취소",
-                    "fromLabel": "From",
-                    "toLabel": "To",
-                    "customRangeLabel": "Custom",
-                    "weekLabel": "W",
-                    "daysOfWeek": ["일", "월", "화", "수", "목", "금", "토"],
-                    "monthNames": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-                    "firstDay": 1
-                },
-                minDate: new Date(),
-                startDate : x.departureTime,
-                endDate : x.arrivalTime,
-                "opens": "right",
-                "dateLimit":{
-              	  "days" : 365
-                },
-                "timePicker": true,
-			}, 
-			function(start, end, label) {
-				console.log(x.departureTime);
-				console.log(x.arrivalTime);
-			  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-			  departureTime =  start.format('YYYY-MM-DD');
-			  arrivalTime = end.format('YYYY-MM-DD');
-			});
-			
-			
-			$('.daterangepicker').attr('style', 'top : 17%; left : 37%;');
-			
-			$('#flight-research-btn').on('click',(x)=>{
-				 var json ={
-				 departure :  $('.departure').val(),
-				 arrival :  $('.arrival').val(),
-				 bookCount : $('.flight-count').val(),
-				 departureTime : departureTime,
-				 arrivalTime : arrivalTime 
-			}
-			$.ajax({
-				url : context+'/flight/research',
-				method : 'POST',
-				data : JSON.stringify(json),
-				dataType : 'json',
-				contentType : 'application/json',
-				success : x =>{
-						
-						var json ={
-								list : x.list,
-								fromCity : fromCity,
-								 departure :  $('.departure').val(),
-								 arrival :  $('.arrival').val(),
-								departureTime : departureTime,
-								arrivalTime : arrivalTime,
-								departureCount :x.departure ,
-								arrivalCount :  x. arrvial,
-								bookCount : $('.flight-count').val()
-							};
-						console.log(json.list);
-					app.flightDetail.onCreate(json);
-				},
-				error : (x, h, m) =>{
-					alert('망함 x='+x+', h='+h+', m='+m);
-				}
-				});
-			})
-			
 			
 			$('#air-leftcolumn-div')
 			.attr('style', 'margin-top : 20px;')
@@ -418,61 +295,39 @@ app.flightDetail=(()=>{
 			$('#air-leftdrop-btn')
 			.attr('style', 'border-radius : 0; width : 100%;')
 			.attr('data-toggle', 'dropdown')
-			.text('아고다 추천');
+			.text('추천')
 			$('#air-leftdrop-ul')
-			.append($(createLI({ id : '', clazz : 'li-sort-menu'}))
-					.append($(createATag({ id : '', clazz : 'a-sort-menu', val : '아고다 추천'})))
-					)
-			.append($(createLI({ id : '', clazz : 'li-sort-menu'}))
-					.append($(createATag({ id : '', clazz : 'a-sort-menu', val : '최저가순'})))
-					)
-			.append($(createLI({ id : '', clazz : 'li-sort-menu'}))
-					.append($(createATag({ id : '', clazz : 'a-sort-menu', val : '최고가순'})))
-					)
-			.append($(createLI({ id : '', clazz : 'li-sort-menu'}))
-					.append($(createATag({ id : '', clazz : 'a-sort-menu', val : '최단시간순'})))
-					)
-			.append($(createLI({ id : '', clazz : 'li-sort-menu'}))
-					.append($(createATag({ id : '', clazz : 'a-sort-menu', val : '최장시간순'})))
-					);
+			.append(createLI({ id : 'air-rec-li', clazz : ''}))
+			.append(createLI({ id : 'air-row-li', clazz : ''}))
+			.append(createLI({ id : 'air-high-li', clazz : ''}))
+			.append(createLI({ id : 'air-short-li', clazz : ''}))
+			.append(createLI({ id : 'air-long-li', clazz : ''}));
 			
-			$('#air-leftorderby-div .dropdown-menu .li-sort-menu').on('click', function() {
-				alert($(this).text());
-				console.log(this);
-				$('#air-leftdrop-btn').text($(this).text());
-				var json ={
-						 departure : x.departure,
-						 arrival : x.arrival,
-						 bookCount : x.bookCount,
-						 departureTime : x.departureTime,
-						 arrivalTime : x.arrivalTime,
-						 sort : $(this).text()
-					}
-					$.ajax({
-						url : context+'/flight/sort',
-						method : 'POST',
-						data : JSON.stringify(json),
-						dataType : 'json',
-						contentType : 'application/json',
-						success : x =>{
-								var json ={
-										list : x.list,
-										fromCity : fromCity,
-										departure : $('#input-find-fromcity').val(),
-										arrival : $('#input-find-tocity').val(),
-										departureTime : departureTime,
-										arrivalTime : arrivalTime,
-										departureCount :x.departure ,
-										arrivalCount :  x. arrvial,
-										bookCount : $('#air-rbooking-count').text(),
-									};
-							app.flightDetail.onCreate(json);
-						},
-						error : (x, h, m) =>{
-							alert('망함 x='+x+', h='+h+', m='+m);
-						}
-						});
-			})
+			$('#air-rec-li').append(createATag({ id : 'air-a-rec', clazz : '', val : '추천'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('추천');
+			});
+			$('#air-a-rec').attr('href', '#');
+			$('#air-row-li').append(createATag({ id : 'air-a-row', clazz : '', val : '최저가순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최저가순');
+			});
+			$('#air-a-row').attr('href', '#');
+			$('#air-high-li').append(createATag({ id : 'air-a-high', clazz : '', val : '최고가순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최고가순');
+			});
+			$('#air-a-high').attr('href', '#');
+			
+			$('#air-short-li').append(createATag({ id : 'air-a-short', clazz : '', val : '최단시간순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최단시간순');
+			});
+			$('#air-a-short').attr('href', '#');
+			$('#air-long-li').append(createATag({ id : 'air-a-long', clazz : '', val : '최장시간순'}))
+			.on('click', ()=>{
+				$('#air-leftdrop-btn').text('최장시간순');
+			});
 			
 			$('#air-a-long').attr('href', '#');
 			
@@ -494,59 +349,95 @@ app.flightDetail=(()=>{
 			
 			
 			$('#air-midcolumn-div')
-			.attr('style', 'margin-top : 20px;')
-			.append($(createList(x)));
-			$('#air-midcolumn-div .list-wrapper').hover(function(){
-				$(this).attr('style', 'box-shadow : 0 3px 12px 1px rgba(0,0,0,0.26); cursor : pointer; margin-bottom : 10px;')
-			}, function() {
-				$(this).attr('style', 'margin-bottom : 10px;')
-			});
-			$('#air-midcolumn-div .list-wrapper').on('click', function(){
-				$(this).attr('style', 'box-shadow : 0 3px 12px 1px rgba(0,0,0,0.26); margin-bottom : 10px;');
-			});
-			$('#air-midcolumn-div .section-wrapper').on('click', function(){
-				$(this).next().slideToggle();
-			});
+			.attr('style', 'margin-top : 20px; background : #fff; position : relative;')
+			.append(createDiv({id : 'air-midwrapper-div', clazz : ''}));
+			$('#air-midwrapper-div')
+			.attr('style', 'box-shadow: 0 3px 12px 1px rgba(0,0,0,0.26);' )
+			.append(createSection({ id : 'air-midcolumn-section', clazz : ''}));
 			
-			$('.pay-button-div ').on('click', '.btn',function(){
-				var div = $(this).parent().parent().parent().parent().parent();
-				var tr1 = div.children('.toggles').children().children().children(3).children('.flightRow1').children().children().children();
-				var tr2 = div.children('.toggles').children().children().children(5).children().children('.flightRow2').children().children().children();
-				var td1 = tr1.children();
-				var td2 = tr2.children();
-				var td1Arr = new Array();
-				var td2Arr = new Array();
-				td1.each(function(i){	
-					td1Arr.push(td1.eq(i).text());
-				});
-				td2.each(function(i){	
-					td2Arr.push(td2.eq(i).text());
-				});
-
-				var json = {
-					fromDate : td1Arr[0],
-					fromDptTime : td1Arr[1].split('-')[0],
-					fromArvTime : td1Arr[1].split('-')[1],
-					fromTime : td1Arr[2],
-					fromPrice : td1Arr[3],
-					fromCity : td1Arr[6].split('-')[0],
-					fromCode : td1Arr[11],
-					backDate : td2Arr[0],
-					backDptTime : td2Arr[1].split('-')[0],
-					backArvTime : td2Arr[1].split('-')[1],
-					backTime : td2Arr[2],
-					backPrice : td2Arr[3],
-					backCity : td2Arr[6].split('-')[0],
-					backCode : td2Arr[11],
-					bookCount : $('.flight-count').val()
-				
-				}
-				console.log(json.fromCity);
-				app.flightPayment.onCreate(json);
-			});
-			 
+			$('#air-midwrapper-div')
+			.append(createDiv({id : 'air-schedule-detail-div', clazz : ''}));
 			
-		});
+			$('#air-schedule-detail-div')
+			.attr('style', 'border-top: 1px solid #e4e5ea; height : 400px; width : 100%; background-color: #f1f1f1; display : none;')
+			.append(createDiv({id : 'air-detailwrapper-div', clazz : ''}));
+			$('#air-detailwrapper-div').attr('style', 'margin-top : 20px;');
+			
+			
+			$('#air-midcolumn-section').on('click', e=>{
+				e.preventDefault();
+				$('#air-schedule-detail-div').slideToggle();
+			});
+			$('#air-midcolumn-section')
+			.attr('style', 'min-height : 200px;')
+			.append(createDiv({ id : 'air-infowrapper-div', clazz : ''}));
+			
+			$('#air-infowrapper-div')
+			.attr('style', 'float :left; min-height : 200px; padding : 20px; border-right: 1px solid #e4e5ea; width : 80%')
+			.append(createDiv({ id : 'air-flightInfo-div', clazz : ''}))
+			.append(createDiv({ id : 'air-pricecheck-div', clazz : ''}));
+			
+			$('#air-flightInfo-div')
+			.attr('style','height : 60px;')
+			.append(createDiv({ id : 'air-fromlogosm-div', clazz : ''}))
+			.append(createDiv({ id : 'air-fromstart-div', clazz : ''}))
+			.append(createDiv({ id : 'air-frombar-div', clazz : ''}))
+			.append(createDiv({ id : 'air-fromarrival-div', clazz : ''}))
+			.append(createDiv({ id : 'air-fromtime-div', clazz : ''}));
+			
+			$('#air-fromlogosm-div')
+			.attr('style', 'float : left;')
+			.append(createImg({id : 'air-fromlogo-img', src : 'https://a1.r9cdn.net/rimg/provider-logos/airlines/v/ZE.png?crop=false&width=108&height=92&fallback=default1.png&_v=7680ca6f4486e71450343d0d72d58ce225845fba', alt : '이스타 항공'}))
+			$('#air-fromlogo-img').attr('style', 'width : 25px;');
+		
+			$('#air-fromstart-div')
+			.attr('style', 'float : left; margin-left : 10%;')
+			.append(createPTag({val : '17 : 05'}))
+			.append(createPTag({val : 'ICN'}));
+			
+			$('#air-frombar-div')
+			.attr('style', 'width : 80px; float : left; margin-left : 5%; margin-top : 10px; border-top : 2px solid #e4e5ea;')
+			
+			$('#air-fromarrival-div')
+			.attr('style', 'float : left; margin-left : 5%;')
+			.append(createPTag({val : '17 : 05'}))
+			.append(createPTag({val : 'ICN'}));
+			
+			$('#air-fromtime-div')
+			.attr('style', 'float : left; margin-left : 10%;')
+			.append(createPTag({val : '2시간 10분'}));
+			
+			
+			$('#air-pricecheck-div')
+			.attr('style','height : 60px;')
+			.append(createDiv({ id : 'air-tologosm-div', clazz : ''}))
+			.append(createDiv({ id : 'air-tostart-div', clazz : ''}))
+			.append(createDiv({ id : 'air-tobar-div', clazz : ''}))
+			.append(createDiv({ id : 'air-toarrival-div', clazz : ''}))
+			.append(createDiv({ id : 'air-totime-div', clazz : ''}));
+			
+			$('#air-tologosm-div')
+			.attr('style', 'float : left;')
+			.append(createImg({id : 'air-tologo-img', src : 'https://a1.r9cdn.net/rimg/provider-logos/airlines/v/ZE.png?crop=false&width=108&height=92&fallback=default1.png&_v=7680ca6f4486e71450343d0d72d58ce225845fba', alt : '이스타 항공'}))
+			$('#air-tologo-img').attr('style', 'width : 25px;');
+		
+			$('#air-tostart-div')
+			.attr('style', 'float : left; margin-left : 10%;')
+			.append(createPTag({val : '17 : 05'}))
+			.append(createPTag({val : 'ICN'}));
+			
+			$('#air-tobar-div')
+			.attr('style', 'width : 80px; float : left; margin-left : 5%; margin-top : 10px; border-top : 2px solid #e4e5ea;')
+			
+			$('#air-toarrival-div')
+			.attr('style', 'float : left; margin-left : 5%;')
+			.append(createPTag({val : '17 : 05'}))
+			.append(createPTag({val : 'ICN'}));
+			
+			$('#air-totime-div')
+			.attr('style', 'float : left; margin-left : 10%;')
+			.append(createPTag({val : '2시간 10분'}));
+		})
 	}
 	return {onCreate:onCreate};
 })();

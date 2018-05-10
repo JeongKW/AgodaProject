@@ -1,5 +1,4 @@
 function Router(x) {
-	'use strict';
   sessionStorage.setItem('context', x);
   sessionStorage.setItem('javascript', x+'/resources/js');
   sessionStorage.setItem('style', x+'/resources/css');
