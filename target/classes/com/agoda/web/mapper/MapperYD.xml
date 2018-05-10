@@ -28,7 +28,10 @@
 		SELECT COUNT(*) FROM ${table}
 	</select>
 	<select id="selectByStarRating" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
-		select star_rating As starRating, count(*) As count from residence group by star_rating
+		SELECT star_rating As starRating, count(*) As count FROM residence group by star_rating
+	</select>
+	<select id="selectReservationScheduleSeq" resultType="String" parameterType="com.agoda.web.common.Command">
+		SELECT Max(res_schedule_seq) FROM reservation_schedule;
 	</select>
 	<select id="selectResiInfoOne" resultType="com.agoda.web.yongdae.Residence" parameterType="com.agoda.web.common.Command">
 		SELECT r.res_code AS resCode, 
@@ -151,4 +154,14 @@
 		SET view_num = IFNULL(view_num, 0) + 1
 		WHERE res_code LIKE #{data1};
 	</update>
+	<insert id="insertReservationSchedule">
+	INSERT INTO reservation_schedule
+		(check_in, check_out, price, res_code) 
+	VALUES(#{data1}, #{data2}, ${data3}, ${data4});
+	</insert>
+	<insert id="insertReservation">
+	INSERT INTO reservation
+		(headcount, id, res_schedule_seq) 
+	VALUES(${data5}, #{data6}, ${data7});
+	</insert>
 </mapper>
