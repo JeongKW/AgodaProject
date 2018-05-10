@@ -422,7 +422,7 @@ var createResiReserPage=x=>{
 +'							</div>'
 +'							<div class="col-sm-9">'
 +'								<div>'
-+'									<h4 style="color: #333; font-weight: bold; text-align: center;">여행을 사진을 올리고 여행상품권에 응모하세요~!!</h4>'
+/*+'									<h4 style="color: #333; font-weight: bold; text-align: center;">여행을 사진을 올리고 여행상품권에 응모하세요~!!</h4>'
 +'									<form id="dropFileForm" action="" method="" style="text-align: center; border-radius: 8px; overflow: hidden; transition: .5s;">'
 +'										<input id="fileInput" type="file" name="files[]" style="display: none;">'
 +'										<label for="fileInput" id="fileLabel"'
@@ -433,7 +433,7 @@ var createResiReserPage=x=>{
 +'										</label>'
 +'										<input class="uploadButton" type="submit" value="Upload" name="" '
 +'											style="font-weight: bold; border: 0; outline: 0; width: 100%; padding: 8px; background: #333; color: #fff; cursor: pointer;">'
-+'									</form>'
++'									</form>'*/
 +'								</div>'
 +'							</div>'
 +'						</div>'

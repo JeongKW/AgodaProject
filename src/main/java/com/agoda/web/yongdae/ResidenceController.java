@@ -72,7 +72,6 @@ public class ResidenceController {
 				return mapperYD.selectReservationScheduleSeq(cmd);
 			}
 		}.excute(cmd));
-		System.out.println("resScheduleSeq is "+map.get("resScheduleSeq"));
 		
 		cmd.setData7(map.get("resScheduleSeq")+"");
 		
@@ -292,7 +291,6 @@ public class ResidenceController {
 				if(arr[i].equals("breakfast")) {
 					breakfastBool = "AND breakfast LIKE 'true' ";
 				} else if(arr[i].equals("9") || arr[i].equals("8") || arr[i].equals("7")) {
-					System.out.println("들어옴");
 					ratingScoreCount = "AND rating_score >= "+arr[i]+" ";
 				} else if(arr[i].equals("starRating5") || arr[i].equals("starRating4") || arr[i].equals("starRating3")
 					|| arr[i].equals("starRating2") || arr[i].equals("starRating1")) {
