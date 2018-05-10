@@ -12,7 +12,7 @@ app.residenceReservation =(()=>{
 				console.log(x.headCount);
 				$content.html($(createResiReserPage(x)));
 				$(document).ready(function(){
-					// Map options
+					// Map options!
 					var options = {
 							zoom: 9,
 							center: {lat: 42.3601, lng: -71.0589}
