@@ -7,15 +7,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.agoda.web.common.Command;
-import com.agoda.web.common.ICountService;
 import com.agoda.web.common.IGetService;
+import com.agoda.web.common.IPostService;
 import com.agoda.web.mapper.MapperMW;
 
 @RestController
@@ -37,65 +36,34 @@ public class FlightController {
 		logger.info("파람값{}", param);
 		
 		cmd.setTable("flight_schedule");
-		
-		switch (param.get("departure")) {
-		case "서울":
-			cmd.setData1("seoul");
-			break;
-		default:
-			break;
-		}
-		
-		switch (param.get("arrival")) {
-		case "오사카":
-			cmd.setData2("osaka");
-			break;
-		default:
-			break;
-		}
+		cmd.setData1("%"+param.get("departure")+"%");
+		cmd.setData2("%"+param.get("arrival")+"%");
 		cmd.setData3("%"+param.get("departureTime") +"%");
 		cmd.setData4("%"+param.get("arrivalTime") + "%");
 		
+		logger.info("데이터 값{}", cmd.getData1());
+		logger.info("데이터 값{}", cmd.getData2());
+		logger.info("데이터 값{}", cmd.getData3());
+		logger.info("데이터 값{}", cmd.getData4());
 		
-		map.put("dptCount", new IGetService() {
-			
-			@Override
-			public Object excute(Command cmd) {
-				return mapperMW.departureCount(cmd);
-			}
-		}.excute(cmd));
-		
-		map.put("arvCount", new IGetService() {
-			
-			@Override
-			public Object excute(Command cmd) {
-				return mapperMW.arrivalCount(cmd);
-			}
-		}.excute(cmd));
-		logger.info("cmd 값은 {}", map.get("dptCount"));
-		logger.info("cmd 값은 {}", map.get("arvCount"));
-		
-		int departure = (int) map.get("dptCount");
-		int arrival =  (int) map.get("arvCount");
-		int totalCount = departure * arrival;
-		
-		flightList.setTotalCount(totalCount);
-		flightList.setBlockSize(5);
-		flightList.setStartRow(1);
-		flightList.setEndRow(5);
-		flightList.setBlockSize(5);
-		flightList.setListBlock(flightList.getTotalCount() / flightList.getBlockSize()+1);
-		logger.info("totalCount 값은 {}", flightList.getTotalCount());
-		
-		map.put("list", (List<?>) new IGetService() {
+		map.put("dptList", (List<?>) new IGetService() {
 			
 			@Override
 			public Object excute(Command cmd) {
 				// TODO Auto-generated method stub
-				return mapperMW.selectFlightList(cmd);
+				return mapperMW.selectDepartureFlightList(cmd);
 			}
 		}.excute(cmd));
-		logger.info("detail data is {}", map.get("list"));
+		
+		map.put("backList", (List<?>) new IGetService() {
+			
+			@Override
+			public Object excute(Command cmd) {
+				return mapperMW.selectBackFlightList(cmd);
+			}
+		}.excute(cmd));
+		
+		logger.info("detail data is {}", map.get("backList"));
 		
 		
 		return map;
@@ -109,63 +77,114 @@ public class FlightController {
 		
 		cmd.setTable("flight_schedule");
 		
-		switch (param.get("departure")) {
-		case "서울":
-			cmd.setData1("seoul");
-			break;
-		default:
-			break;
-		}
-		
-		switch (param.get("arrival")) {
-		case "오사카":
-			cmd.setData2("osaka");
-			break;
-		default:
-			break;
-		}
+		cmd.setData1("%"+param.get("departure")+"%");
+		cmd.setData2("%"+param.get("arrival")+"%");
 		cmd.setData3("%"+param.get("departureTime") +"%");
 		cmd.setData4("%"+param.get("arrivalTime") + "%");
 		
-		
-		map.put("dptCount", new IGetService() {
-			
-			@Override
-			public Object excute(Command cmd) {
-				return mapperMW.departureCount(cmd);
-			}
-		}.excute(cmd));
-		
-		map.put("arvCount", new IGetService() {
-			
-			@Override
-			public Object excute(Command cmd) {
-				return mapperMW.arrivalCount(cmd);
-			}
-		}.excute(cmd));
-		logger.info("cmd 값은 {}", map.get("dptCount"));
-		logger.info("cmd 값은 {}", map.get("arvCount"));
-		
-		int departure = (int) map.get("dptCount");
-		int arrival =  (int) map.get("arvCount");
-		int totalCount = departure * arrival;
-		
 		logger.info("totalCount 값은 {}", flightList.getTotalCount());
 		
-		map.put("list", (List<?>) new IGetService() {
+		map.put("dptList", (List<?>) new IGetService() {
 			
 			@Override
 			public Object excute(Command cmd) {
 				// TODO Auto-generated method stub
-				return mapperMW.selectFlightList(cmd);
+				return mapperMW.selectDepartureFlightList(cmd);
 			}
 		}.excute(cmd));
-		logger.info("detail data is {}", map.get("list"));
+		
+		map.put("backList", (List<?>) new IGetService() {
+			
+			@Override
+			public Object excute(Command cmd) {
+				// TODO Auto-generated method stub
+				return mapperMW.selectBackFlightList(cmd);
+			}
+		}.excute(cmd));
+		logger.info("detail data is {}", map.get("dptList"));
+		
+		
+		return map;
+	};
+	
+	@RequestMapping(value="/flight/departure", method=RequestMethod.POST, consumes="application/json")
+	public Map<?, ?> sortFlightListByDeparture(@RequestBody Map<String,String> param) {
+		Map<String, Object> map = new HashMap<>();
+		
+		logger.info("가는여정 검색 컨트롤러{}", "welcome2");
+		logger.info("파람값{}", param);
+		
+		cmd.setTable("flight_schedule");
+		cmd.setData1("%"+param.get("departure")+"%");
+		cmd.setData2("%"+param.get("arrival")+"%");
+		cmd.setData3("%"+param.get("departureTime") +"%");
+		cmd.setData4("%"+param.get("arrivalTime") + "%");
+		cmd.setData5(param.get("departureCode"));
+		
+		logger.info("totalCount 값은 {}", flightList.getTotalCount());
+		
+		map.put("dptList", (List<?>) new IGetService() {
+			
+			@Override
+			public Object excute(Command cmd) {
+				// TODO Auto-generated method stub
+				return mapperMW.selectDepartureFlightCode(cmd);
+			}
+		}.excute(cmd));
+		
+		map.put("backList", (List<?>) new IGetService() {
+			
+			@Override
+			public Object excute(Command cmd) {
+				// TODO Auto-generated method stub
+				return mapperMW.selectBackFlightList(cmd);
+			}
+		}.excute(cmd));
+		logger.info("detail data is {}", map.get("dptList"));
+		logger.info("detail data is {}", map.get("backList"));
 		
 		
 		return map;
 	}
-	
+	@RequestMapping(value="/flight/back", method=RequestMethod.POST, consumes="application/json")
+	public Map<?, ?> sortFlightListByBack(@RequestBody Map<String,String> param) {
+		Map<String, Object> map = new HashMap<>();
+		
+		logger.info("오는여정 검색 컨트롤러{}", "welcome2");
+		logger.info("파람값{}", param);
+		
+		cmd.setTable("flight_schedule");
+		cmd.setData1("%"+param.get("departure")+"%");
+		cmd.setData2("%"+param.get("arrival")+"%");
+		cmd.setData3("%"+param.get("departureTime") +"%");
+		cmd.setData4("%"+param.get("arrivalTime") + "%");
+		cmd.setData5(param.get("backCode"));
+		
+		logger.info("totalCount 값은 {}", flightList.getTotalCount());
+		
+		map.put("dptList", (List<?>) new IGetService() {
+			
+			@Override
+			public Object excute(Command cmd) {
+				// TODO Auto-generated method stub
+				return mapperMW.selectDepartureFlightList(cmd);
+			}
+		}.excute(cmd));
+		
+		map.put("backList", (List<?>) new IGetService() {
+			
+			@Override
+			public Object excute(Command cmd) {
+				// TODO Auto-generated method stub
+				return mapperMW.selectBackFlightCode(cmd);
+			}
+		}.excute(cmd));
+		logger.info("detail data is {}", map.get("dptList"));
+		logger.info("detail data is {}", map.get("backList"));
+		
+		
+		return map;
+	}
 	@RequestMapping(value="/flight/sort", method=RequestMethod.POST)
 	public Map<?, ?> flightSort(@RequestBody HashMap<String,String> param) {
 		Map<String, Object> map = new HashMap<>();
@@ -197,33 +216,66 @@ public class FlightController {
 		default:
 			break;
 		}
-		
-		switch (param.get("departure")) {
-		case "서울":
-			cmd.setData1("seoul");
-			break;
-		default:
-			break;
-		}
-		
-		switch (param.get("arrival")) {
-		case "오사카":
-			cmd.setData2("osaka");
-			break;
-		default:
-			break;
-		}
+		cmd.setData1("%"+param.get("departure")+"%");
+		cmd.setData2("%"+param.get("arrival")+"%");
 		cmd.setData3("%"+param.get("departureTime") +"%");
-		cmd.setData4("%"+param.get("arrivalTime") + "%");
+		cmd.setData4(param.get("sort"));
 		
-		map.put("list", (List<?>) new IGetService(){
+		map.put("dptList", (List<?>) new IGetService(){
 			
 			@Override
 			public Object excute(Command cmd) {
-				// TODO Auto-generated method stub
-				return mapperMW.selectSortFlightList(cmd);
+				return mapperMW.selectDepartureFlightList(cmd);
 			}
 		}.excute(cmd));
+		cmd.setData3(param.get("sort"));
+		cmd.setData4("%"+param.get("arrivalTime") + "%");
+		map.put("backList", (List<?>) new IGetService(){
+			
+			@Override
+			public Object excute(Command cmd) {
+				return mapperMW.selectBackFlightList(cmd);
+			}
+		}.excute(cmd));
+		logger.info("detail data is {}", map.get("dptList"));
+		logger.info("detail data is {}", map.get("backList"));
+		
+		return map;
+	}
+	
+	
+	@RequestMapping(value="/flight/payment", method=RequestMethod.POST)
+	public Map<?, ?> flightPayment(
+			@RequestBody HashMap<String,String> param) {
+		Map<String, Object> map = new HashMap<>();
+		logger.info("드디어 여기까지 오셨군", "");
+		logger.info("리스트 파람값 {}", param);
+		
+		cmd.setTable("booking");
+		book.setId(param.get("id"));
+		book.setFirstName(param.get("firstName"));
+		book.setBookerName(param.get("bookerName"));
+		book.setFlightScheduleSeq(param.get("dptScheduleSeq"));
+		book.setHeadCount(param.get("bookCount"));
+		book.setLastName(param.get("lastName"));
+		cmd.setBooking(book);
+		new IPostService() {
+			
+			@Override
+			public void excute(Command cmd) {
+				mapperMW.insertFlightBook(cmd);
+			}
+		}.excute(cmd);
+		book.setFlightScheduleSeq(param.get("arvScheduleSeq"));
+		cmd.setBooking(book);
+		new IPostService() {
+			
+			@Override
+			public void excute(Command cmd) {
+				mapperMW.insertArvFlightBook(cmd);
+			}
+		}.excute(cmd);;
+		
 		logger.info("detail data is {}", map.get("list"));
 		
 		return map;
