@@ -75,11 +75,11 @@ app.nav = (x=>{
 					)
 				.append($(createLI({id: 'li-sale', clazz: ''}))
 					.append($(createATag({id: 'a-sale', clazz: '', val: '특별세일'})))
-						.on('click', e=>{
-							e.preventDefault();
-						})
-					)
+						.attr('data-toggle', 'tooltip')
+						.attr('data-placement', 'bottom')
+						.attr('title', '구현되지 않은 기능입니다'))
 				.appendTo('#navbar');
+			$('#a-sale[data-toggle]').tooltip();
 			var loginedUser = sessionStorage.getItem('user');
 			if(loginedUser == null){
 				$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
@@ -98,7 +98,7 @@ app.nav = (x=>{
 						})
 					)
 				.appendTo('#navbar');
-			}else{
+			} else {
 				$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
 				.append($(createLI({id: 'li-login', clazz: ''}))
 					.append($(createATag({id: 'a-login', clazz: '', val: '마이페이지'}))
