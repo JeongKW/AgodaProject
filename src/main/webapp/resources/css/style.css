@@ -241,26 +241,11 @@
 
 /* MINWOO */
 /* Create two unequal columns that floats next to each other */
-/* Left column */
 
-.leftcolumn {   
-    float: left;
-    width: 20%;
-    padding-right : 20px;
-    padding-left : 20px;
-}
-.midcolumn {   
-    float: left;
+.midcolumn {
     width: 60%;
 }
 
-/* Right column */
-.rightcolumn {
-    float: right;
-    width: 20%;
-    background-color: #f1f1f1;
-    padding-left: 20px;
-}
 
 /* Fake image */
 .fakeimg {
