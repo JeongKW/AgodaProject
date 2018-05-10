@@ -7,6 +7,6 @@ import lombok.Data;
 
 @Component
 @Data @Lazy
-public class FlightSchedule {
-	private String flightScheduleSeq, fromLocation, toLocation, departureTime, arrivalTime, price, code, iatacode;
+public class Airport {
+	private String iatacode, name, zipcode;
 }
