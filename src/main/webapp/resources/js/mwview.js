@@ -200,9 +200,6 @@ var createBookingPage =x=>{
 	}
 		
 	var totalPrice = (parseInt(fromPrice, 10)+ parseInt(backPrice, 10))*parseInt(x.bookCount, 10);
-	console.log(parseInt(fromPrice, 10)+ parseInt(backPrice, 10));
-	console.log(fromPrice);
-	console.log(x.bookCount);
 	function addComma(num) {
 	    var len, point, str;
 	    num = num + "";
@@ -221,8 +218,8 @@ var createBookingPage =x=>{
 
 	return '<div>'
 			+'<div>'
-				+'<div style="margin: 30px auto 70px; margin-left: 30px; margin-right: 30px; min-width: 1064px; min-height: 1200px; ">'
-					+'<div id="mid" style=" text-align : center; width: 70%;">'
+				+'<div style="margin: 30px auto 70px; margin-right: 30px; min-width: 1064px; min-height: 1200px; padding-right : 10%; padding-left : 10%; ">'
+					+'<div id="mid" style=" text-align : center;">'
 						+'<h5 class="" style="font-size: 20px; font-weight: bold; ">'
 								+'선택 항공정보 '
 								+'<span style="color: #e85581; font-size: 13px; margin-left: 8px;" class="p">예약 하시고자 하는 스케줄이 맞는지 정확히 확인하시기 바랍니다.</span>'
@@ -308,7 +305,7 @@ var createBookingPage =x=>{
 							+'<div style="margin-top: 30px; padding: 20px;">'
 								+'<div>'
 									+'<div style=" color: #e85581; float: left; border: 1px solid #e85581; padding: 15px;">'
-										+'<span> 출국편 </span>'
+										+'<span> 돌아오는편 </span>'
 									+'</div>'
 									+'<ul style="float: left;'
 									+'list-style-type: none; width: 70%;">'
@@ -348,14 +345,13 @@ var createBookingPage =x=>{
 										+'<tr style="text-align: center; font-size: 13px; border-bottom: 1px solid #e4e4e4; letter-spacing: -1px;">'
 											+'<td style="border-left: 1px solid #e4e4e4;">'
 												+'<div style="margin: 25px 20px;">'
-													+'<span style="font-weight: 600">제주항공</span>'
-													+'<p>7C1382 편</p>'
+													+'<span style="font-weight: 600">'+x.backCode+'</span>'
 												+'</div>'
 											+'</td>'
 											+'<td style="border-left: 1px solid #e4e4e4;">'
 												+'<div style="margin: 25px 20px;">'
 													+'<span style="font-weight: 600">'+x.backCity.split('(')[0]+'</span>'
-													+'<p>'+x.fromDate+' '+x.fromArvTime+'</p>'
+													+'<p>'+x.backDate+' '+x.backDptTime+'</p>'
 												+'</div>'
 											+'</td>'
 											+'<td style="border-left: 1px solid #e4e4e4;">'
@@ -417,12 +413,14 @@ var createBookingPage =x=>{
 												+'<span>승객</span>'
 											+'</td>'
 											+'<td style="padding: 9px 17px 9px 17px; width: 25%;  border : 1px solid #e4e4e4;">'
-												+'<span>1</span>'
+												+'<span>'+x.bookCount+'</span>'
 											+'</td>'
 											+'<td style="padding: 9px 17px 9px 17px; width: 25%;  border : 1px solid #e4e4e4;">'
 												+'<span>'+addComma(totalPrice)+'</span>'
 											+'</td>'
 										+'</tr>'
+										+'<tr style="text-align: center;">'
+									+'</tr>'
 									+'</table>'
 								+'</div>'
 							+'</div>'
@@ -430,7 +428,7 @@ var createBookingPage =x=>{
 						+'<div style="float: left; margin-top: 20px; min-height: 130px;">'
 							+'<div style="padding: 20px;"> '
 								+'<div style=" width: 100%">'
-									+'<h5 class="" style="width: 100%; font-size: 20px; font-weight: bold; ">'
+									+'<h5 class="" style="width: 100%; font-size: 20px; font-weight: bold; text-align: left;">'
 									+'예약자 정보입력'
 									+'<span style="font-size: 13px; float: right; color: #e85581;">'
 									 +'필수사항이기에 정확히 입력해 주세요.'
@@ -446,7 +444,7 @@ var createBookingPage =x=>{
 												+'</span>'
 											+'</th>'
 											+'<td style="padding: 9px 17px 9px 17px; width: 25%;  border : 1px solid #e4e4e4;">'
-												+'<input style="width: 100%;" type="text" name="">'
+												+'<input class="insert-bookerName" style="width: 100%;" type="text" name="">'
 											+'</td>'
 											+'<th style="width: 10%; font-size: 13px; background: #f2f2f2;  border : 1px solid #e4e4e4;">'
 												+'<span>영문성</span>'
@@ -455,7 +453,7 @@ var createBookingPage =x=>{
 												+'</span>'
 											+'</th>'
 											+'<td style="padding: 9px 17px 9px 17px; width: 20%; border: 1px solid #e4e4e4;">'
-												+'<input  style="width: 100%;" type="text"" />'
+												+'<input class="insert-firstName" style="width: 100%;" type="text"" />'
 											+'</td>'
 											+'<th style="width: 10%; font-size: 13px; background: #f2f2f2; border: 1px solid #e4e4e4;">'
 												+'<span>영문이름</span>'
@@ -464,7 +462,7 @@ var createBookingPage =x=>{
 												+'</span>'
 											+'</th>'
 											+'<td style="padding: 9px 17px 9px 17px; width: 25%;  border : 1px solid #e4e4e4;">'
-												+'<input style="width: 100%;" type="text"" />'
+												+'<input class="insert-name" style="width: 100%;" type="text"" />'
 											+'</td>'
 										+'</tr>'
 									+'</table>'
@@ -472,7 +470,7 @@ var createBookingPage =x=>{
 							+'</div>'
 						+'</div>'
 						+'<div style="float: left; width: 100%; text-align: center;">'
-							+'<button class="btn btn-default">예약하기</button>'
+							+'<button id = "flight-payment-btn" class="btn btn-default">예약하기</button>'
 						+'</div>	'
 					+'</div>'
 				+'</div>'
@@ -508,17 +506,17 @@ var createSerahNav=x=>{
 	  +'      </div>'
 	  +'      <div class="col-sm-2">'
 	  +'              <div class="input-group">'
-	  +'                  <span id="resi-search-nav-minus" class="input-group-addon" style="cursor: pointer">'
+	  +'                  <span id="flight-search-nav-minus" class="input-group-addon flight-minus" style="cursor: pointer">'
 	  +'                      <span class="glyphicon glyphicon-minus"></span>'
 	  +'                  </span>'
-	  +'                  <input type="text" name="" class="form-control" value="'+x.bookCount+'" />'
-	  +'                  <span class="input-group-addon" style="cursor: pointer">'
+	  +'                  <input type="text" name="" class="form-control flight-count" value="'+x.bookCount+'" />'
+	  +'                  <span class="input-group-addon flight-plus" style="cursor: pointer">'
 	  +'                      <span class="glyphicon glyphicon-plus"></span>'
 	  +'                  </span>'
 	  +'              </div>'
 	  +'      </div>'
 	  +'      <div class="col-sm-2 text-right" style="width : 15%; padding-right: 0px;">'
-	  +'        <button id="btn" class="btn btn-primary">요금 검색하기</button>'
+	  +'        <button id="flight-research-btn" class="btn btn-primary">요금 검색하기</button>'
 	  +'      </div>'
 	  +'    </div>'
 	  +'  </div>'
@@ -533,32 +531,32 @@ var createList =x=>{
 
 	var li = '<div style="">'
 		
-	$.each(x.list, (a,b)=>{
-		var q = 1;
-		if(x.list[a].fromLocation == x.fromCity){
+	$.each(x.dptList, (a,b)=>{
+		var q = 0;
+		if(x.dptList[a].fromLocation == x.departure){
 			var diffTime={
-					day : moment.duration(moment(x.list[a].arrivalTime).diff(x.list[a].departureTime)).days(),
-					hour : moment.duration(moment(x.list[a].arrivalTime).diff(x.list[a].departureTime)).hours(),
-					minute : moment.duration(moment(x.list[a].arrivalTime).diff(x.list[a].departureTime)).minutes(),
-					second : moment.duration(moment(x.list[a].arrivalTime).diff(x.list[a].departureTime)).seconds()
+					day : moment.duration(moment(x.dptList[a].arrivalTime).diff(x.dptList[a].departureTime)).days(),
+					hour : moment.duration(moment(x.dptList[a].arrivalTime).diff(x.dptList[a].departureTime)).hours(),
+					minute : moment.duration(moment(x.dptList[a].arrivalTime).diff(x.dptList[a].departureTime)).minutes(),
+					second : moment.duration(moment(x.dptList[a].arrivalTime).diff(x.dptList[a].departureTime)).seconds()
 				};
 			var time ={
-					departure : moment(x.list[a].departureTime).format('HH : mm'),
-					arrival : moment(x.list[a].arrivalTime).format('HH : mm'),
+					departure : moment(x.dptList[a].departureTime).format('HH : mm'),
+					arrival : moment(x.dptList[a].arrivalTime).format('HH : mm'),
 					result : diffTime.hour + '시간 ' + diffTime.minute + '분'
 			};
-			$.each(x.list, (c, d)=>{
-				if(x.list[c].toLocation == x.fromCity){
-					var dayB =moment(x.list[c].arrivalTime).day(); 
+			$.each(x.backList, (c, d)=>{
+				if(x.backList[c].toLocation == x.departure){
+					var dayB =moment(x.backList[c].arrivalTime).day(); 
 					var diffTimeb={
-							days : moment.duration(moment(x.list[c].arrivalTime).diff(x.list[c].departureTime)).days(),
-							hour : moment.duration(moment(x.list[c].arrivalTime).diff(x.list[c].departureTime)).hours(),
-							minute : moment.duration(moment(x.list[c].arrivalTime).diff(x.list[c].departureTime)).minutes(),
-							second : moment.duration(moment(x.list[c].arrivalTime).diff(x.list[c].departureTime)).seconds()
+							days : moment.duration(moment(x.backList[c].arrivalTime).diff(x.backList[c].departureTime)).days(),
+							hour : moment.duration(moment(x.backList[c].arrivalTime).diff(x.backList[c].departureTime)).hours(),
+							minute : moment.duration(moment(x.backList[c].arrivalTime).diff(x.backList[c].departureTime)).minutes(),
+							second : moment.duration(moment(x.backList[c].arrivalTime).diff(x.backList[c].departureTime)).seconds()
 						};
 					var timeb ={
-							departure : moment(x.list[c].departureTime).format('HH : mm'),
-							arrival : moment(x.list[c].arrivalTime).format('HH : mm'),
+							departure : moment(x.backList[c].departureTime).format('HH : mm'),
+							arrival : moment(x.backList[c].arrivalTime).format('HH : mm'),
 							result : diffTimeb.hour + '시간 ' + diffTimeb.minute + '분'
 					};
 					var price = parseInt(b.price, 10)+ parseInt(d.price, 10);
@@ -626,26 +624,26 @@ var createList =x=>{
 					    +'</div>'
 						+'		<div id="" class="toggles" style="margin-bottom : 10px; border-top: 1px solid #e4e5ea; min-height : 400px; width : 100%; background-color: #f1f1f1; display : none;">'
 						+'			<div id="" class="" style="min-height : 30px; margin-top : 20px;">'
-						+'				<div style= "min-height : 380px; padding : 20px;">	'
+						+'				<div class="hidden-detail-div" style= "min-height : 380px; padding : 20px;">	'
 						+'					<ul class="nav nav-tabs">'
 						+'						<li data-toggle="tab">'
 						+'							<span>상세정보<span>'
 						+'						</li>'
 						+'					</ul>'
-						+'					<div style="min-height : 30px; margin-top: 15px;">'
-						+'						<div style="float: left;">'
+						+'					<div class="lable-div" style="min-height : 30px; margin-top: 15px;">'
+						+'						<div style="float: left; " class = "sort-flightcode">'
 						+'							<label style=" font-size: 18px; font-weight: 600;"><input type="checkbox" name="">가는 여정</label>'
 						+'						</div>'
 						+'						<div style="float: left; margin : 3px;">'
 						+'							<span style="vertical-align: top; font-weight : 300; font-size : 15px; text-align: left;">'+b.iatacode + '-'+d.iatacode+'</span>'
 						+'						</div>'
 						+'					</div>'
-						+'					<div style="min-height: 90px; width: 100%; padding : 10px; margin-top: 10px; background: #fff">'
+						+'					<div class ="flightRow1-wrapper" style="min-height: 90px; width: 100%; padding : 10px; margin-top: 10px; background: #fff">'
 					     +' <div id="" class="flightRow1" style=" width : 100%; padding : 10px 20px 10px 20px; float : left;">'
-					     +'            <table style="width : 100%; ">'
+					     +'            <table class="departure-table"style="width : 100%; ">'
 					     +'                  <tr>'
 					     +'                        <td style="">'
-						 +'										'+moment(x.list[a].departureTime).format('MM월DD일 ddd')+''
+						 +'										'+moment(x.dptList[a].departureTime).format('MM월DD일 ddd')+''
 					     +'                        </td>'
 					     +'                        <td style="">'
 					     +'                            '+time.departure+' - '+time.arrival+''
@@ -657,6 +655,7 @@ var createList =x=>{
 					     							+addComma(dptPrice)
 					     +'                        </td>'
 					     +'                        <td style="">'
+					     
 					     +'                        </td>'
 					     +'                  </tr>'
 					     +'                  <tr>'
@@ -675,12 +674,14 @@ var createList =x=>{
 					     +'                  <tr>'
 					     +'                        <td style="">'
 					     +'                        </td>'
-					     +'                        <td style="">'
+					     +'                        <td class="departure-code-td"style="">'
 					     								+b.code
 					     +'                        </td>'
-					     +'                        <td style="" >'
+					     +'                        <td style="visibility:hidden" >'
+					     +								x.dptList[a].flightScheduleSeq
 					     +'                        </td>'
-					     +'                        <td style="">'
+					     +'                        <td style="visibility:hidden">'
+					     +								x.backList[c].flightScheduleSeq
 					     +'                        </td>'
 					     +'                        <td style="">'
 					     +'                        </td>'
@@ -690,14 +691,14 @@ var createList =x=>{
 /*						+'							<div style="min-height : 90px; padding: 10px;">'
 						+'								<div style="padding-right : 8%; min-height : 75px; width : 25%; float: left;">'
 						+'									<div style="width : 100%;">'
-						+'										'+moment(x.list[a].departureTime).format('MM월DD일 ddd')+''
+						+'										'+moment(x.dptList[a].departureTime).format('MM월DD일 ddd')+''
 						+'									</div>'
 						+'								</div>'
 						+'								<div  style="padding-right : 5%; min-height : 75px; width : 50%; float: left;">'
 						+'									<div>'
 						+'										<div>'
 						+'											<span>'
-						+												moment(x.list[a].departureTime).format('HH:mm')+' - ' + moment(x.list[a].arrivalTime).format('HH:mm')
+						+												moment(x.dptList[a].departureTime).format('HH:mm')+' - ' + moment(x.dptList[a].arrivalTime).format('HH:mm')
 						+'											</span>'
 						+'										</div>'
 						+'										<div>'
@@ -707,7 +708,7 @@ var createList =x=>{
 						+'										</div>'
 						+'										<div>'
 						+'											<span>'
-						+												x.list[a].code
+						+												x.dptList[a].code
 						+'											</span>'
 						+'										</div>'
 						+'									</div>'
@@ -724,7 +725,7 @@ var createList =x=>{
 						+'							</div>'*/
 						+'						</div>'
 						+'					<div style=" min-height : 30px; margin-top: 15px;">'
-						+'						<div style="float: left;">'
+						+'						<div style="float: left;" class = "sort-backcode">'
 						+'							<label style=" font-size: 18px; font-weight: 600;"><input type="checkbox" name="">오는 여정</label>'
 						+'						</div>'
 						+'						<div style="float: left; margin : 3px;">'
@@ -737,7 +738,7 @@ var createList =x=>{
 					     +'            <table style="width : 100%; ">'
 					     +'                  <tr>'
 					     +'                        <td style="">'
-						 +'										'+moment(x.list[c].departureTime).format('MM월DD일 ddd')+''
+						 +'										'+moment(x.backList[c].departureTime).format('MM월DD일 ddd')+''
 					     +'                        </td>'
 					     +'                        <td style="">'
 					     +'                            '+timeb.departure+' - '+timeb.arrival+''
@@ -767,7 +768,7 @@ var createList =x=>{
 					     +'                  <tr>'
 					     +'                        <td style="">'
 					     +'                        </td>'
-					     +'                        <td style="">'
+					     +'                        <td class="arrival-code-td" style="">'
 					     								+d.code
 					     +'                        </td>'
 					     +'                        <td style="" >'
@@ -782,14 +783,14 @@ var createList =x=>{
 
 					/*	+'								<div style="padding-right : 8%; min-height : 75px; width : 25%; float: left;">'
 						+'									<div style="width : 100%;">'
-						+'										'+moment(x.list[c].departureTime).format('MM월DD일 ddd')+''
+						+'										'+moment(x.backList[c].departureTime).format('MM월DD일 ddd')+''
 						+'									</div>'
 						+'								</div>'
 						+'								<div  style="padding-right : 5%; min-height : 75px; width : 50%; float: left;">'
 						+'									<div>'
 						+'										<div>'
 						+'											<span>'
-						+												moment(x.list[c].departureTime).format('HH:mm')+' - ' + moment(x.list[a].arrivalTime).format('HH:mm')
+						+												moment(x.backList[c].departureTime).format('HH:mm')+' - ' + moment(x.dptList[a].arrivalTime).format('HH:mm')
 						+'											</span>'
 						+'										</div>'
 						+'										<div>'
@@ -799,7 +800,7 @@ var createList =x=>{
 						+'										</div>'
 						+'										<div>'
 						+'											<span>'
-						+												x.list[c].code
+						+												x.backList[c].code
 						+'											</span>'
 						+'										</div>'
 						+'									</div>'
@@ -822,7 +823,7 @@ var createList =x=>{
 				}
 			})
 			//visibility = "hidden"
-		}else{console.log('귀국 꽝임')};
+		}else{};
 	})
 	li +="</div>"
 		function addComma(num) {

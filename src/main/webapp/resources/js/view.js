@@ -31,27 +31,7 @@ var createTh=x=>{
 	t += '</tr>';
 	return t;
 };
-//var createTr=x=>{
-//	var t = '';
-//	$.each(x.list, (i, j)=> {
-//		t += '<tr>'+createTd({seq : j.bbsSeq, list : j})+'</tr>';
-//	});
-//	return t;
-//};
-//var createTd=x=>{
-//	var t = '';
-//	var seq = x.seq;
-//	$.each(x.list, (i, j)=>{
-//		if(i !== 'content'){
-//			if(i === 'title'){
-//				t += '<td><a id="a-'+seq+'">'+j+'</a></td>';
-//			} else {
-//				t += '<td>'+j+'</td>';
-//			}
-//		}
-//	});
-//	return t;
-//};
+
 var createUL=x=>{
 	return '<ul id="'+x.id+'" class="'+x.clazz+'"></ul>';
 	}
@@ -73,4 +53,6 @@ var createDiv=x=>{
 var createImg=x=>{
 	return '<img id="'+x.id+'" class="'+x.clazz+'" src="'+x.src+'" alt="'+x.alt+'" />'
 };
-
+var createPTag=x=>{
+	return'<p id="'+x.id+'" class="'+x.clazz+'">'+x.val+'</p>'
+};

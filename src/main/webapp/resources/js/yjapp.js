@@ -134,7 +134,7 @@ app.login = (()=>{
         	});
         };
         var mypage=x=>{
-			$content.html($(createDiv({id:'mem-mypage-div', clazz : ''})));
+			$content.html($(createDiv({id:'mem-mypage-div', clazz : 'container-fluid'})));
 			$('#mem-mypage-div')
 			.append(createDiv({id:'mem-mypage-left', clazz :'col-sm-2'}))
 			.append(createDiv({id:'mem-mypage-main', clazz :'col-sm-9'}));

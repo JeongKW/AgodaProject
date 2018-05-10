@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agoda.web.common.Command;
 import com.agoda.web.common.IGetService;
+import com.agoda.web.common.IPostService;
 import com.agoda.web.common.IUpdateService;
 import com.agoda.web.mapper.MapperYD;
 
@@ -41,6 +42,45 @@ public class ResidenceController {
 		}.excute(cmd));
 		logger.info("resiInfo success is {}", map.get("success"));
 		return map;
+	}
+	
+	@RequestMapping(value="/resi/reservation", method= RequestMethod.POST, consumes="application/json")
+	public Map<?, ?> insertReservation(@RequestBody Map<String, String> params){
+		Map<String, Object> map = new HashMap<>();
+		logger.info("updateReservation is {}", "entered");
+		logger.info("updateReservation CheckIn is {}", params.get("checkIn"));
+		logger.info("updateReservation CheckOut is {}", params.get("checkOut"));
+		logger.info("updateReservation Price is {}", params.get("price"));
+		logger.info("updateReservation resCode is {}", params.get("resCode"));
+		logger.info("updateReservation headCount is {}", params.get("headCount"));
+		logger.info("updateReservation ID is {}", params.get("ID"));
+		cmd.setData1(params.get("checkIn"));
+		cmd.setData2(params.get("checkOut"));
+		cmd.setData3(params.get("price"));
+		cmd.setData4(params.get("resCode"));		
+		cmd.setData5(params.get("headCount"));
+		cmd.setData6(params.get("ID"));
+		new IPostService() {
+			public void excute(Command cmd) {
+				mapperYD.insertReservationSchedule(cmd);				
+			}
+		}.excute(cmd);
+		
+		map.put("resScheduleSeq", (String) new IGetService() {			
+			@Override
+			public Object excute(Command cmd) {
+				return mapperYD.selectReservationScheduleSeq(cmd);
+			}
+		}.excute(cmd));
+		
+		cmd.setData7(map.get("resScheduleSeq")+"");
+		
+		new IPostService() {
+			public void excute(Command cmd) {
+				mapperYD.insertReservation(cmd);				
+			}
+		}.excute(cmd);		
+		return map;		
 	}
 	
 	@RequestMapping(value="/resi/viewNum/{resCode}", method= RequestMethod.POST)
@@ -240,16 +280,18 @@ public class ResidenceController {
 			logger.info("multiOption is {}", "entered");
 			logger.info("multiData is {}", params.get("multiData"));
 			String[] arr = params.get("multiData").split("/");
-			int loopCount = 0;
-			if(params.get("multiData").contains("breakfast")) {
-				loopCount = arr.length-2;
-			} else {
-				loopCount = arr.length-1;
+			int loopCount = -1;
+			for(int i=0; i<arr.length; i++) {
+				if(arr[i].contains("starRating")) {
+					loopCount++;
+				}
 			}
-			String result="", breakfastBool="", starRatingCount = "";
+			String result="", breakfastBool="", ratingScoreCount = "", starRatingCount = "";
 			for(int i=0; i<arr.length; i++) {				
 				if(arr[i].equals("breakfast")) {
 					breakfastBool = "AND breakfast LIKE 'true' ";
+				} else if(arr[i].equals("9") || arr[i].equals("8") || arr[i].equals("7")) {
+					ratingScoreCount = "AND rating_score >= "+arr[i]+" ";
 				} else if(arr[i].equals("starRating5") || arr[i].equals("starRating4") || arr[i].equals("starRating3")
 					|| arr[i].equals("starRating2") || arr[i].equals("starRating1")) {
 					if(i < loopCount) {
@@ -259,12 +301,20 @@ public class ResidenceController {
 					}
 				} 
 			}
-			if(!starRatingCount.equals("") && !breakfastBool.equals("")) {
+			if(!starRatingCount.equals("") && !breakfastBool.equals("") && !ratingScoreCount.equals("")) {
+				result = breakfastBool+ratingScoreCount+"AND star_rating IN("+starRatingCount+")";				
+			} else if(!starRatingCount.equals("") && !breakfastBool.equals("")) {
 				result = breakfastBool+"AND star_rating IN("+starRatingCount+")";				
+			} else if(!ratingScoreCount.equals("") && !breakfastBool.equals("")) {
+				result = breakfastBool+ratingScoreCount;				
+			} else if(!starRatingCount.equals("") && !ratingScoreCount.equals("")) {
+				result = ratingScoreCount+"AND star_rating IN("+starRatingCount+")";				
 			} else if(!starRatingCount.equals("")) {
 				result = "AND star_rating IN("+starRatingCount+")";	
 			} else if(!breakfastBool.equals("")) {
 				result = breakfastBool;
+			} else if(!ratingScoreCount.equals("")) {
+				result = ratingScoreCount;
 			}
 			logger.info("result is {}", result);					
 			cmd.setData3(params.get("Orderby"));
@@ -281,6 +331,7 @@ public class ResidenceController {
 					return mapperYD.selectResiListWithMultiOption(cmd);
 				}
 			}.excute(cmd));
+			logger.info("sortCount is {}", map.get("sortCount"));
 			logger.info("multiOption is {}", map.get("success"));
 		break;
 		case "breakfast":

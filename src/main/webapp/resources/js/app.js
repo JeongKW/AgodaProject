@@ -101,14 +101,14 @@ app.nav = (x=>{
 			} else {
 				$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
 				.append($(createLI({id: 'li-login', clazz: ''}))
-					.append($(createATag({id: 'a-login', clazz: '', val: '마이페이지'}))
+					.append($(createATag({id: 'a-mypage', clazz: '', val: '마이페이지'}))
 						.on('click', e=>{
 							e.preventDefault();
 							app.login.mypage();
 						})
 					))
 				.append($(createLI({id: 'li-join', clazz: ''}))
-					.append($(createATag({id: 'a-join', clazz: '', val: '로그아웃'})))
+					.append($(createATag({id: 'a-logout', clazz: '', val: '로그아웃'})))
 						.on('click', e=>{
 							e.preventDefault();
 							sessionStorage.removeItem('user');

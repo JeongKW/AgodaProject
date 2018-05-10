@@ -8,5 +8,5 @@ import lombok.Data;
 @Component
 @Data @Lazy
 public class Booking {
-	private String bookNum, headCount, bookerName, firstName, lastnName,  id, flightScheduleSeq;
+	private String bookNum, headCount, bookerName, firstName, lastName,  id, flightScheduleSeq;
 }
