@@ -48,9 +48,21 @@
 		</if>
 	</select>
 	<select id="boardTest" resultType="com.agoda.web.kwangwoo.GoogleChart" parameterType="com.agoda.web.common.Command">
-		SELECT id, COUNT(*) as count FROM board GROUP BY id HAVING COUNT(*) >= 5;
+		SELECT id, COUNT(*) as count FROM board GROUP BY id ORDER BY count desc limit 5;
+	</select>
+	<select id="boardDetail" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		SELECT id, title, content FROM board WHERE bbs_seq like #{data1};
 	</select>
 	<select id="boardList" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
-		SELECT bbs_seq AS bbsSeq, title, content, regdate, id, view_count AS viewCount FROM Board ORDER BY bbsSeq limit ${data1}, 15
+		SELECT bbs_seq AS bbsSeq, title, content, regdate, id, view_count AS viewCount FROM board ORDER BY regdate desc limit ${data1}, 15
 	</select>
+	<select id="totalCount" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table}
+	</select>
+	<delete id="deleteAdminBoard" parameterType="com.agoda.web.common.Command">
+		DELETE FROM ${table} WHERE bbs_seq like #{data1}
+	</delete>
+	<update id="updateAdminBoard" parameterType="com.agoda.web.common.Command">
+		UPDATE ${table} SET title = #{data2}, content = #{data3} WHERE id like #{data1}
+	</update>
 </mapper>

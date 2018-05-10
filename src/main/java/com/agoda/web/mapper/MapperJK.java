@@ -20,4 +20,8 @@ public interface MapperJK {
 	public List<Member> selectAllAdminMember(Command cmd);
 	public List<GoogleChart> boardTest(Command cmd);
 	public List<Board> boardList(Command cmd);
+	public Object boardDetail(Command cmd);
+	public int totalCount(Command cmd);
+	public void deleteAdminBoard(Command cmd);
+	public void updateAdminBoard(Command cmd);
 }

@@ -31,6 +31,7 @@
 <body>
 	<div id="nav"></div>
 	<div id="content"></div>
+	<div id="footer"></div>
 </body>
 <script>
 	app.init('${context}');
