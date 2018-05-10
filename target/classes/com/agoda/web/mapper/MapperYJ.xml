@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -99,4 +100,107 @@
 	   		b.flight_schedule_seq LIKE s.flight_schedule_seq
 		   and b.id like #{data1};
 	  </select>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.agoda.web.mapper.MapperYJ">
+	<update id="memberUpdatePass" parameterType="com.agoda.web.common.Command">
+		update ${table} set pw = #{data1} where id = #{data2}
+	</update>
+	<select id="idOverlapCheck" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table} WHERE id like #{data1}
+	</select>
+	<insert id="joinMember" parameterType="com.agoda.web.common.Command">
+		INSERT INTO 
+		${table} (id,pw,name,email,phone) VALUES ('${member.id}','${member.pw}','${member.name}','${member.email}','${member.phone}')
+	</insert>
+	<select id="exist" resultType="int" parameterType="com.agoda.web.common.Command">
+		SELECT COUNT(*) FROM ${table} WHERE id like #{data1}
+	</select>
+	<delete id="deleteMember" parameterType="com.agoda.web.common.Command">
+		DELETE FROM ${table} WHERE id like #{data1}
+	</delete>
+	
+	<!-- 게시판 -->
+	<select id="boardExist" resultType="int" parameterType="com.agoda.web.common.Command">
+	  	SELECT COUNT(*) FROM ${table}
+	</select>
+	<select id="selectAll" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		select A2.* from(
+				select @RNUM := @RNUM + 1 AS ROWNUM, A.* 
+				from board_bbsseq_desc A, 
+					(SELECT @RNUM :=0) R ) A2
+		 where ROWNUM between #{data1} and #{data2}
+	</select>
+	<select id="select" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+		SELECT bbs_seq as bbsSeq, title, content, regdate, id ,view_count as viewCount 
+		FROM ${table} 
+		Where bbs_seq LIKE ${data1}
+	</select>
+	<update id="updateViewCount" parameterType="com.agoda.web.common.Command">
+	  	UPDATE ${table}
+		SET view_count = ${data2} 
+		WHERE bbs_seq LIKE ${data1}
+	 </update>
+	 <insert id="insertArticle" parameterType="com.agoda.web.common.Command">
+	    insert into ${table}(title,content,id) values (#{data1},#{data2},#{data3})
+	 </insert> 
+	 <delete id="deleteArticle" parameterType="com.agoda.web.common.Command">
+ 	  	delete from ${table} where bbs_seq like #{data1}
+	 </delete> 
+	 <update id="updateArticle" parameterType="com.agoda.web.common.Command">
+	  	UPDATE ${table}
+		SET title = #{data1},
+			content = #{data2}
+		WHERE bbs_seq LIKE ${data3}
+	  </update>
+	  <select id="searchBoard" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
+	   select A2.* from(
+				select @RNUM := @RNUM + 1 AS ROWNUM, A.* 
+				from board_bbsseq_desc A, 
+					(SELECT @RNUM :=0) R ) A2
+	   where
+	   		<if test="data1 == 0">
+	   		id like CONCAT('%',#{data2},'%')
+	   		</if>
+	   		<if test="data1 == 1">
+	   		title like CONCAT('%',#{data2},'%')
+	   		</if>
+	   		<if test="data1 == 2">
+	   		content like CONCAT('%',#{data2},'%')
+	   		</if>
+	  </select>
+	  <select id="residenceReservationCheck" resultType="int" parameterType="com.agoda.web.common.Command">
+	 	 select count(*) from reservation where id like #{data1};
+	  </select>
+	  <select id="flightReservationCheck" resultType="int" parameterType="com.agoda.web.common.Command">
+	     select count(*) from booking where id like #{data1};
+	  </select>
+	  <select id="selectResidenceReservation" resultType="com.agoda.web.yongdae.ResidenceSchedule" parameterType="com.agoda.web.common.Command">
+	   select  
+		   s.check_in as checkIn , 
+		   s.check_out as checkOut,
+		   s.price
+	   FROM 
+	   		reservation r ,reservation_schedule s 
+	   where 
+	   		r.res_schedule_seq like s.res_schedule_seq
+	        and r.id like #{data1};
+	  </select>
+	  <select id="selectFlightReservation" resultType="com.agoda.web.minwoo.FlightSchedule" parameterType="com.agoda.web.common.Command">
+	   SELECT 
+	   		s.from_location as fromLocation, 
+	   		s.to_location as toLocation, 
+	   		s.departure_time as departureTime, 
+	   		s.arrival_time as arrivalTime, 
+	   		s.price
+ 	   FROM 
+ 	   		booking b, flight_schedule s
+	   WHERE 
+	   		b.flight_schedule_seq LIKE s.flight_schedule_seq
+		   and b.id like #{data1};
+	  </select>
+>>>>>>> refs/remotes/origin/Youjin
 </mapper>
