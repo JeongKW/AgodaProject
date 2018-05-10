@@ -1,9 +1,10 @@
 app.admin = (()=>{
-	var context, view, history, detailHistory, donutfunc;
+	var context, view, img, history, detailHistory, donutfunc;
 	var onCreate =x=>{
 		$content = $('#content');
 		context = $.context();
 		history = '';
+		img = $.image();
 		donutfunc = function(){};
 		$.cookie(x.user.id, 10);
 		detailHistory = [];
@@ -13,6 +14,7 @@ app.admin = (()=>{
 	var setContentView =()=>{
 		$.getScript(view, ()=>{
 			$content.empty();
+			$footer.empty();
 			$('.modal-backdrop').remove();
 			$('.modal-open').removeClass();
 			$('.navbar').empty();
@@ -44,11 +46,11 @@ app.admin = (()=>{
 					$('#a-residence').parent('li').addClass('active');
 					$('#a-residence').parent('li').siblings('li').removeClass('active');
 				}
-				residence(1);
+				residence(0);
 			});
 			$('#a-flight').on('click', e=>{
 				e.preventDefault();
-				flight(1);
+				flight(0);
 				if(!($('#a-flight').parent('li').hasClass('active'))){
 					$('#a-flight').parent('li').addClass('active');
 					$('#a-flight').parent('li').siblings('li').removeClass('active');
@@ -89,7 +91,9 @@ app.admin = (()=>{
 		clearInterval(donutfunc);
 		$.post(context+'/adminjk/residence/'+x, d=>{
 			$content.empty();
-			$content.html($(createHTag({num : '3', val: '숙소 리스트'})).attr('class', 'page-header'));
+			var marginTop = ($(window).height() - 52 - 600);
+			$content.html($(createImg({src: img + '/page_ready.jpg', clazz: 'img-rounded center-block'}))
+				.attr('style', 'margin-top : ' + marginTop + 'px'));
 		});
 	};
 	var flight=x=>{
@@ -248,7 +252,6 @@ app.admin = (()=>{
 														contentType : 'application/json',
 														success : x=>{
 															$.magnificPopup.close();
-															member(0);
 														},
 														error : (x, h, m)=>{        	
 															alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -296,7 +299,6 @@ app.admin = (()=>{
 						                            contentType : 'application/json',
 						                            success : x=>{
 						                                $.magnificPopup.close();
-						                                member(0);
 						                            },
 						                            error : (x, h, m)=>{                            	
 						                                alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -340,7 +342,6 @@ app.admin = (()=>{
 													contentType : 'application/json',
 													success : x=>{
 														$.magnificPopup.close();
-														member(0);
 													},
 													error : (x, h, m)=>{
 														alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
@@ -350,7 +351,6 @@ app.admin = (()=>{
 											$('#btn-cancel-member').on('click', e=>{
 												e.preventDefault();
 												$.magnificPopup.close();
-												member(0);
 											});
 										},
 										close: function(){
@@ -381,8 +381,8 @@ app.admin = (()=>{
 		$content.html($(createDiv({id: 'board-admin-div', clazz: ''})));
 		$content.append($(createForm({id: 'modify-bform', clazz: 'mfp-hide white-popup', action: '', method: 'get'}))
 			.append($(modifyAdminBoard())));
-		$('fieldset').attr('style', 'width: ')
-		$content.append();
+		$content.append($(createForm({id: 'delete-bform', clazz: 'mfp-hide white-popup', action: '', method: 'get'}))
+			.append($(deleteAdminBoard())));
 		var boardfunc = function(){
 			$(function(){
 				$('.btn-success').each(function(){
@@ -393,6 +393,7 @@ app.admin = (()=>{
 							dataType : 'json',
 							contentType : 'application/json',
 							success : x=>{
+								var id = x.detail.id;
 								$.magnificPopup.open({
 									items:{
 										src: '#modify-bform',
@@ -400,17 +401,23 @@ app.admin = (()=>{
 									},
 									callbacks: {
 										beforeOpen: function(){
-											$('#modify-bid').val(x.detail.id);
-											$('#modify-title').val(x.detail.title);
-											$('#modify-content').val(x.detail.content);
+											$('#modify-bid').val(id);
+											$('#modify-title').val(x.detail.title)
+											$('#modify-content').val(x.detail.content)
 											$('#btn-modify-bsubmit').on('click', e=>{
 												e.preventDefault();
+												var json = {
+													title: $('#modify-title').val(),
+													content : $('#modify-content').val()
+												};
 												$.ajax({
 													url : context+'/adminjk/boardModify/' + id,
+													data : JSON.stringify(json),
+													method: 'post',
 													dateType : 'json',
 													contentType : 'application/json',
 													success : x=>{
-														alert('Board 수정 Submit 들어옴');
+														$.magnificPopup.close();
 													}
 												});
 											});
@@ -426,7 +433,38 @@ app.admin = (()=>{
 				});
 				$('.btn-danger').each(function(){
 					$(this).on('click', function(){
-						
+						var deleteSeq = $(this).parent().siblings('td').eq(0).text();
+						$.magnificPopup.open({
+							items:{
+								src: '#delete-bform',
+								type: 'inline'
+							},
+							callbacks: {
+								beforeOpen: function(){
+									$('#btn-delete-board').on('click', e=>{
+										e.preventDefault();
+										$.ajax({
+											url: context+'/adminjk/boardDelete/'+deleteSeq,
+											dataType : 'json',
+											contentType : 'application/json',
+											success : x=>{
+												$.magnificPopup.close();
+											},
+											error : (x, h, m)=>{
+												alert('추가에서 에러 발생 x='+x+', h='+h+', m='+m);
+											}
+										});
+									});
+									$('#btn-cancel-board').on('click', e=>{
+										e.preventDefault();
+										$.magnificPopup.close();
+									});
+								},
+								close: function(){
+									board(0);
+								}
+							}
+						});
 					});
 				});
 			});

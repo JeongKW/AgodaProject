@@ -33,13 +33,6 @@ public class AdminController {
 	public Map<?, ?> manageResidence(@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageResidence() is {}", "entered");
-		logger.info("pageNum is {}", pageNum);
-		map.put("resiList", new IGetService() {
-			@Override
-			public Object excute(Command cmd) {
-				return mapper.residenceList(cmd);
-			}
-		}.excute(cmd));
 		return map;
 	}
 
@@ -55,7 +48,6 @@ public class AdminController {
 			@PathVariable String pageNum) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageMember() is {}", "entered");
-		logger.info("manageMember() pageNum {}", pageNum);
 		cmd.setTable("member");
 		cmd.setData1(pageNum);
 		map.put("users", (List<?>) new IGetService() {
@@ -211,7 +203,6 @@ public class AdminController {
 			@PathVariable String seq) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageBoardDetail() is {}", "entered");
-		logger.info("manageBoardDetail() seq {}", seq);
 		cmd.setData1(seq);
 		map.put("detail", (Board) new IGetService() {
 			@Override
@@ -223,12 +214,39 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "/boardModify/{id}",
-			method = RequestMethod.GET, consumes = "application/json")
+			method = RequestMethod.POST, consumes = "application/json")
 	public Map<?, ?> manageBoardModify(
+			@RequestBody Map<String, String> params,
 			@PathVariable String id) {
 		Map<String, Object> map = new HashMap<>();
 		logger.info("manageBoardModify() is {}", "entered");
-		logger.info("manageBoardModify() id {}", id);
+		cmd.setTable("board");
+		cmd.setData1(id);
+		cmd.setData2(params.get("title"));
+		cmd.setData3(params.get("content"));
+		new IUpdateService() {
+			@Override
+			public void excute(Command cmd) {
+				mapper.updateAdminBoard(cmd);
+			}
+		}.excute(cmd);
+		return map;
+	}
+	
+	@RequestMapping(value = "/boardDelete/{seq}",
+			method = RequestMethod.GET, consumes = "application/json")
+	public Map<?, ?> manageBoardDelete(
+			@PathVariable String seq) {
+		Map<String, Object> map = new HashMap<>();
+		logger.info("manageBoardModify() is {}", "entered");
+		cmd.setTable("board");
+		cmd.setData1(seq);
+		new IDeleteService() {
+			@Override
+			public void excute(Command cmd) {
+				mapper.deleteAdminBoard(cmd);
+			}
+		}.excute(cmd);
 		return map;
 	}
 }

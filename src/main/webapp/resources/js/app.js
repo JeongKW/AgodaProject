@@ -6,6 +6,7 @@ app = {
 			$.extend(new Router(x));
 			app.nav.onCreate();
 			app.residence.onCreate();
+			app.footer.onCreate();
 		})
 	}
 };
@@ -73,11 +74,14 @@ app.nav = (x=>{
 					)
 				.append($(createLI({id: 'li-sale', clazz: ''}))
 					.append($(createATag({id: 'a-sale', clazz: '', val: '특별세일'})))
-						.on('click', e=>{
-							e.preventDefault();
-						})
+						.attr('data-toggle', 'tooltip')
+						.attr('title', '구현되지 않은 기능입니다')
+						.attr('data-placement', 'bottom')
 					)
 				.appendTo('#navbar');
+			$(function(){
+				$('#a-sale[data-toggle="tooltip"]').tooltip();
+			});
 			$(createUL({id: '', clazz: 'nav navbar-nav navbar-right'}))
 				.append($(createLI({id: 'li-login', clazz: ''}))
 					.append($(createATag({id: 'a-login', clazz: '', val: '로그인'}))
@@ -94,6 +98,79 @@ app.nav = (x=>{
 						})
 					)
 				.appendTo('#navbar');
+		});
+	};
+	return {onCreate : onCreate};
+})();
+
+app.footer = (x=>{
+	var context, view, image;
+	var onCreate=()=>{
+		$footer = $('#footer');
+		context = $.context();
+		image = $.image();
+		view = $.javascript() + '/view.js';
+		setContentView();
+	};
+	var setContentView=()=>{
+		$.getScript(view, ()=>{
+			$(createDiv({id:'', clazz:'container-fluid'}))
+			.attr('style', 'margin-top: 50px; background-color: #333; padding-top: 40px; padding-bottom: 10px;')
+			.append($(createDiv({id:'', clazz:'container text-center'}))
+				.attr('style', 'color: #fff')
+				.append($(createPTag({id:'', clazz:'', val:'All material herein © 2005 – 2018 Agoda Company Pte. Ltd., All Rights Reserved.'}))
+					.attr('style', 'line-height: 5px')
+				)
+				.append($(createPTag({id:'', clazz:'', val:'아고다는 온라인 여행 및 관련 서비스 분야의 세계적인 선도 기업인 Booking Holdings Inc.의 일부입니다.'})))
+				.append($(createDiv({id:'', clazz:'footer-div-sns'}))
+					.attr('style', 'margin-top: 50px')
+					.append($(createUL({id:'', clazz:'list-inline'}))
+						.attr('style', 'list-style: none;')
+						.append($(createLI({id:'', clazz:''}))
+							.append($(createATag({id:'', clazz:'', link:'#', val:''}))
+								.attr('style', 'display: block; margin: 0 15px; width: 40px; height: 40px; background: #fff; transform: rotate(45deg)')
+								.append($(createITag({id:'', clazz:'fa fa-facebook',val:''}))
+									.attr('style', 'font-size: 30px; line-height: 40px; color: #333; transform: rotate(-45deg)')
+								)
+							)
+						)
+						.append($(createLI({id:'', clazz:''}))
+								.append($(createATag({id:'', clazz:'', link:'#', val:''}))
+										.attr('style', 'display: block; margin: 0 15px; width: 40px; height: 40px; background: #fff; transform: rotate(45deg)')
+										.append($(createITag({id:'', clazz:'fa fa-twitter',val:''}))
+												.attr('style', 'font-size: 30px; line-height: 40px; color: #333; transform: rotate(-45deg)')
+										)
+								)
+						)
+						.append($(createLI({id:'', clazz:''}))
+								.append($(createATag({id:'', clazz:'', link:'#', val:''}))
+										.attr('style', 'display: block; margin: 0 15px; width: 40px; height: 40px; background: #fff; transform: rotate(45deg)')
+										.append($(createITag({id:'', clazz:'fa fa-google-plus',val:''}))
+												.attr('style', 'font-size: 30px; line-height: 40px; color: #333; transform: rotate(-45deg)')
+										)
+								)
+						)
+						.append($(createLI({id:'', clazz:''}))
+								.append($(createATag({id:'', clazz:'', link:'#', val:''}))
+										.attr('style', 'display: block; margin: 0 15px; width: 40px; height: 40px; background: #fff; transform: rotate(45deg)')
+										.append($(createITag({id:'', clazz:'fa fa-linkedin',val:''}))
+												.attr('style', 'font-size: 30px; line-height: 40px; color: #333; transform: rotate(-45deg)')
+										)
+								)
+						)
+						.append($(createLI({id:'', clazz:''}))
+								.append($(createATag({id:'', clazz:'', link:'#', val:''}))
+										.attr('style', 'display: block; margin: 0 15px; width: 40px; height: 40px; background: #fff; transform: rotate(45deg)')
+										.append($(createITag({id:'', clazz:'fa fa-instagram',val:''}))
+												.attr('style', 'font-size: 30px; line-height: 40px; color: #333; transform: rotate(-45deg)')
+										)
+								)
+						)
+					)
+				)
+				.append($(createPTag({id:'', clazz:'', val:'HK-AGWEB-2A03'})).attr('style', 'margin-top: 50px'))
+			)
+			.appendTo($footer)
 		});
 	};
 	return {onCreate : onCreate};

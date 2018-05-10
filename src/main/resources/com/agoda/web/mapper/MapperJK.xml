@@ -56,6 +56,12 @@
 	<select id="boardList" resultType="com.agoda.web.kwangwoo.Board" parameterType="com.agoda.web.common.Command">
 		SELECT bbs_seq AS bbsSeq, title, content, regdate, id, view_count AS viewCount FROM board ORDER BY regdate desc limit ${data1}, 15
 	</select>
+	<update id="updateAdminBoard" parameterType="com.agoda.web.common.Command">
+		UPDATE ${table} SET title = #{data2}, content = #{data3} WHERE id like #{data1}
+	</update>
+	<delete id="deleteAdminBoard" parameterType="com.agoda.web.common.Command">
+		DELETE FROM ${table} WHERE bbs_seq like #{data1}
+	</delete>
 	<select id="totalCount" resultType="int" parameterType="com.agoda.web.common.Command">
 		SELECT COUNT(*) FROM ${table}
 	</select>

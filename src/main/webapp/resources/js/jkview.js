@@ -1,3 +1,8 @@
+var deleteAdminBoard=()=>{
+	return '<h4>삭제하시겠습니까?</h4>'
+	+ '<button class="btn btn-success" id="btn-delete-board">삭제</button><button class="btn btn-danger" id="btn-cancel-board">취소</button>';
+};
+
 var modifyAdminBoard=()=>{
 	return '<h3>게시판 수정</h3>' 
 	+ '<fieldset style="border:0;">'
@@ -12,7 +17,7 @@ var modifyAdminBoard=()=>{
 
 var deleteView=()=>{
 	return '<h4>삭제하시겠습니까?</h4>'
-	+ '<button id="btn-delete-member">삭제</button><button id="btn-cancel-member">취소</button>';
+	+ '<button class="btn btn-success" id="btn-delete-member">삭제</button><button class="btn btn-danger" id="btn-cancel-member">취소</button>';
 };
 
 var createFieldSet=()=>{
@@ -34,7 +39,7 @@ var createFieldSet2=()=>{
 	+ '<fieldset style="border:0;">'
 	+ '<ul>'
 	+ '<li><label for="name">ID</label><br><input id="modify-id" class="form-control" style="width: 324px" type="text" placeholder="아이디" disabled></li>'
-	+ '<li><label for="name">Password</label><br><input id="modify-pw" class="form-control" style="width: 324px"  type="password" placeholder="패스워드"></li>'
+	+ '<li><label for="name">Password</label><br><input id="modify-pw" class="form-control" style="width: 324px"  type="password" placeholder="패스워드" required></li>'
 	+ '<li><label for="name">이름</label><br><input id="modify-name" class="form-control" style="width: 324px"  type="text" placeholder="이름" disabled></li>'
 	+ '<li><label for="name">E-mail</label><br><input id="modify-email" class="form-control" style="width: 324px"  type="email" placeholder="이메일"></li>'
 	+ '<li><label for="name">핸드폰</label><br><input id="modify-phone" class="form-control" style="width: 324px"  type="text" placeholder="핸드폰"></li>'
