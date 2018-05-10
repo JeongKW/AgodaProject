@@ -11,6 +11,13 @@ var createOption =x=>{
 	});
 	return temp;
 };
+var createOption1 =x=>{
+	var temp = '';
+	$.each(x.list,(i,j)=>{
+		temp+='<option value="'+i+'">'+j+'</option>'
+	});
+	return temp;
+};
 /*게시판 추가*/
 var createWInput=x=>{
 	return '<input type="'+x.type+'" id="'+x.id+'"class="'+x.clazz
@@ -53,14 +60,8 @@ var createP2=x=>{
 };
 /*여기까지 추가했어요*/
 
-var createATag=x=>{
-	return '<a id="'+x.id+'" href="#">'+x.val+'</a>';
-};
 var createGlyphicon=x=>{
 	return '<span class="glyphicon ' +x.clazz+'" aria-hidden="true">&nbsp;'+x.val+'</span>'
-};
-var createText=x=>{
-	return '<span class="'+x.clazz+'">'+x.val+'</span>';
 };
 var createTab=x=>{
 	return '<table id="'+x.id+'" class="table table-'+x.clazz+'"></table>';
