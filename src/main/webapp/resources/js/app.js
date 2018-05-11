@@ -4,12 +4,31 @@ app = {
 	init : x=>{
 		$.getScript(x+'/resources/js/router.js',()=>{
 			$.extend(new Router(x));
-			app.nav.onCreate();
-			app.residence.onCreate();
-			app.footer.onCreate();
+			app.intro.onCreate();
 		})
 	}
 };
+
+app.intro = (x=>{
+	var context, view, image;
+	var onCreate=()=>{
+		$content = $('#content');
+		context = $.context();
+		view = $.javascript() + '/view.js';
+		setContentView();
+	};
+	var setContentView=()=>{
+		$.getScript(view, ()=>{
+			$content.html($(introView()));
+			$('#btn-start').on('click', function(){
+				app.nav.onCreate();
+				app.residence.onCreate();
+				app.footer.onCreate();
+			});
+		});
+	};
+	return {onCreate : onCreate};
+})();
 
 app.nav = (x=>{
 	var context, view, image;
